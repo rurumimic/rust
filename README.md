@@ -51,3 +51,43 @@ Current installation options:
 source "$HOME/.cargo/env"
 ```
 
+### Editor
+
+#### SpaceVim
+
+- spacevim layer
+  - [rust](https://spacevim.org/use-vim-as-a-rust-ide/)
+- [rust-analyzer](https://rust-analyzer.github.io/manual.html)
+
+Open SpaceVim Configuration File: `SPC f v d`
+
+```toml
+[options]
+  autocomplete_method = "coc"
+
+[[layers]]
+  name = "autocomplete"
+
+[[layers]]
+  name = "lang#rust"
+```
+
+Install `rust-src` and `rustfmt`:
+
+```bash
+rustup component add rust-src
+rustup component add rustfmt
+```
+
+in SpaceVim:
+
+```bash
+:CocInstall coc-rust-analyzer
+```
+
+---
+
+## Codes
+
+- [Hello World](src/helloworld/README.md)
+
