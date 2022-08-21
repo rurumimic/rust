@@ -1,7 +1,7 @@
 # Rust
 
 - [rust](https://www.rust-lang.org)
-   - [doc](https://doc.rust-lang.org/book/)
+   - [book](https://doc.rust-lang.org/book/)
    - [install](https://www.rust-lang.org/tools/install)
    - [learn](https://www.rust-lang.org/learn)
       - [getting started](https://www.rust-lang.org/learn/get-started)
@@ -89,5 +89,7 @@ in SpaceVim:
 
 ## Codes
 
-- [Hello World](src/helloworld/README.md)
+- [Book](https://doc.rust-lang.org/book/)
+  - [Hello World](src/helloworld/README.md)
+  - [Guessing Game](src/guessing_game/README.md)
 
