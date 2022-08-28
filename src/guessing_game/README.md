@@ -213,14 +213,12 @@ match guess.cmp(&secret_number) {
 
 #### Error Handling
 
-
 ```rs
  let guess: u32 = match guess.trim().parse() {
   Ok(num) => num,
   Err(_) => continue,
 };
 ```
-
 
 ### Run
 
