@@ -9,6 +9,8 @@
    - [users forum](https://users.rust-lang.org)
 - [cargo](https://github.com/rust-lang/cargo): package manager
    - [doc](https://doc.rust-lang.org/cargo/index.html)
+   - [fmt](https://github.com/rust-lang/rustfmt)
+   - [clippy](https://github.com/rust-lang/rust-clippy)
 - editors
    - [vim](https://github.com/rust-lang/rust.vim)
 
@@ -51,7 +53,41 @@ Current installation options:
 source "$HOME/.cargo/env"
 ```
 
+#### Update rustup
+
+```bash
+rsutup update
+```
+
+#### Add components
+
+Install `rust-src` and `rustfmt`, `clippy`:
+
+```bash
+rustup component add rust-src
+rustup component add rustfmt
+rustup component add clippy
+```
+
 ### Editor
+
+#### VSCode
+
+- extension: [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- [.vscode/settings.json](.vscode/settings.json)
+
+`settings.json`:
+
+```json
+{
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "editor.formatOnSave": true,
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
+  "rust-analyzer.cargo.features": ["all"]
+}
+```
 
 #### SpaceVim
 
@@ -72,13 +108,6 @@ Open SpaceVim Configuration File: `SPC f v d`
   name = "lang#rust"
 ```
 
-Install `rust-src` and `rustfmt`:
-
-```bash
-rustup component add rust-src
-rustup component add rustfmt
-```
-
 in SpaceVim:
 
 ```bash
@@ -93,4 +122,3 @@ in SpaceVim:
   - [Hello World](src/helloworld/README.md)
   - [Guessing Game](src/guessing_game/README.md)
   - [Ownership](src/ownership/README.md)
-
