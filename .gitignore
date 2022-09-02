@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,vim,rust,visualstudiocode,windows,linux,emacs
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,vim,rust,visualstudiocode,windows,linux,emacs
+# Created by https://www.toptal.com/developers/gitignore/api/vim,rust,tags,linux,macos,emacs,windows,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=vim,rust,tags,linux,macos,emacs,windows,visualstudiocode
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
@@ -115,6 +115,25 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
+### Tags ###
+# Ignore tags created by etags, ctags, gtags (GNU global) and cscope
+TAGS
+.TAGS
+!TAGS/
+tags
+.tags
+!tags/
+gtags.files
+GTAGS
+GRTAGS
+GPATH
+GSYMS
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out
+
+
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
@@ -131,7 +150,6 @@ Sessionx.vim
 # Temporary
 .netrwhist
 # Auto-generated tag files
-tags
 # Persistent undo
 [._]*.un~
 
@@ -186,5 +204,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,vim,rust,visualstudiocode,windows,linux,emacs
+# End of https://www.toptal.com/developers/gitignore/api/vim,rust,tags,linux,macos,emacs,windows,visualstudiocode
 

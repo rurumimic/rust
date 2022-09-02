@@ -94,6 +94,10 @@ rustup component add clippy
 - spacevim layer
   - [rust](https://spacevim.org/use-vim-as-a-rust-ide/)
 - [rust-analyzer](https://rust-analyzer.github.io/manual.html)
+- [rust.vim](https://github.com/rust-lang/rust.vim)
+  - tags
+    - [universal ctags](https://ctags.io)
+    - [rusty-tags](https://github.com/dan-t/rusty-tags)
 
 Open SpaceVim Configuration File: `SPC f v d`
 
@@ -114,6 +118,28 @@ in SpaceVim:
 :CocInstall coc-rust-analyzer
 ```
 
+##### Universal Ctags
+
+on macOS:
+
+```bash
+sudo port install global
+sudo port install universal-ctags
+cargo install rusty-tags
+```
+
+in `~/.zshrc`:
+
+```bash
+export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library/
+```
+
+in a project directory:
+
+```bash
+ctags -R
+```
+
 ---
 
 ## Codes
@@ -122,3 +148,4 @@ in SpaceVim:
   - [Hello World](src/helloworld/README.md)
   - [Guessing Game](src/guessing_game/README.md)
   - [Ownership](src/ownership/README.md)
+
