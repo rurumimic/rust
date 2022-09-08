@@ -148,4 +148,5 @@ ctags -R
   - [Hello World](src/helloworld/README.md)
   - [Guessing Game](src/guessing_game/README.md)
   - [Ownership](src/ownership/README.md)
+  - [Structure](src/struct/README.md)
 
