@@ -11,12 +11,12 @@ fn main() {
         user1.email, user1.username, user1.active, user1.sign_in_count
     );
 
-    let user = User2 {
-        email: "someone@example.com",
-        username: "someusername123",
-        active: true,
-        sign_in_count: 1,
-    };
+    // let user = User2 {
+    //     email: "someone@example.com",
+    //     username: "someusername123",
+    //     active: true,
+    //     sign_in_count: 1,
+    // };
 
     build_user(String::from("one@mail.com"), String::from("username123"));
     build_user2(String::from("one@mail.com"), String::from("username123"));
