@@ -55,8 +55,8 @@ fn calculate_length(s: &String) -> usize {
 
 // error[E0596]: cannot borrow `*some_string` as mutable, as it is behind a `&` reference
 // fn cannot_change(some_string: &String) {
-//                        -------
-//                        help: consider changing this to be a mutable reference: `&mut String`
+//                               -------
+//                               help: consider changing this to be a mutable reference: `&mut String`
 //   some_string.push_str(", world");
 //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //   `some_string` is a `&` reference, so the data it refers to cannot be borrowed as mutable

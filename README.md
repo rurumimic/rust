@@ -146,7 +146,7 @@ ctags -R
 
 - [Book](https://doc.rust-lang.org/book/)
   - [Hello World](src/helloworld/README.md)
-  - [Guessing Game](src/guessing_game/README.md)
-  - [Ownership](src/ownership/README.md)
-  - [Structure](src/struct/README.md)
-
+  - [Guessing Game](src/learn/guessing_game/README.md): pattern match, expection
+  - [Ownership](src/learn/ownership/README.md): reference, borrow, slice
+  - [Structure](src/learn/struct/README.md): implementation, associated functions, debug
+  - [Enumeration](src/learn/enums/README.md): `Option<T>`, pattern match, `if let`
