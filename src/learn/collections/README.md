@@ -33,13 +33,41 @@ for i in &v {
 - [strings/src/main.rs](strings/src/main.rs)
 
 ```rs
+let s = String::new();
+let s = String::from("== string_literal.to_string()");
 
+s.push_str("string");
+s.push('c');
+
+let s3 = s1 + &s2;
+format!("{}-{}-{}", s1, s2, s3);
+
+let s = &hello[0..4];
+
+for c in "Зд".chars() {
+    println!("{}", c); // З, д
+}
 ```
 
 ### hash map
 
 - [hashmap/src/main.rs](hashmap/src/main.rs)
+- wiki: [SipHash](https://en.wikipedia.org/wiki/SipHash)
 
 ```rs
+use std::collections::HashMap; // SipHash
 
+let mut scores = HashMap::new();
+
+scores.insert(String::from("Blue"), 10);
+scores.entry(String::from("Yellow")).or_insert(50);
+
+let score = scores.get(&team_name);
+if let Some(score) = score {
+    println!("{}: {}", &team_name, score);
+}
+
+for (key, value) in &scores {
+    println!("{}: {}", key, value);
+}
 ```
