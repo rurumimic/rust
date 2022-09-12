@@ -152,3 +152,4 @@ ctags -R
   - [Structure](src/learn/struct/README.md): implementation, associated functions, debug
   - [Enumeration](src/learn/enums/README.md): `Option<T>`, pattern match, `if let`
   - [Cargo Project](src/learn/cargo/README.md): bin crate, lib crate, `mod`, `pub`, `use`
+  - [Collections](src/learn/collections/README.md): vector, string, hash map
