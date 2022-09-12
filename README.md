@@ -5,6 +5,7 @@
    - [install](https://www.rust-lang.org/tools/install)
    - [learn](https://www.rust-lang.org/learn)
       - [getting started](https://www.rust-lang.org/learn/get-started)
+   - [api guidelines](https://rust-lang.github.io/api-guidelines/)
    - [tools](https://www.rust-lang.org/tools)
    - [users forum](https://users.rust-lang.org)
 - [cargo](https://github.com/rust-lang/cargo): package manager
@@ -150,3 +151,4 @@ ctags -R
   - [Ownership](src/learn/ownership/README.md): reference, borrow, slice
   - [Structure](src/learn/struct/README.md): implementation, associated functions, debug
   - [Enumeration](src/learn/enums/README.md): `Option<T>`, pattern match, `if let`
+  - [Cargo Project](src/learn/cargo/README.md): bin crate, lib crate, `mod`, `pub`, `use`
