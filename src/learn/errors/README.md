@@ -56,4 +56,81 @@ note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose bac
 
 ### Recover
 
+- [panic/src/main.rs](panic/src/main.rs)
+
+#### Shorten Error Recover
+
+before:
+
+```rs
+let greeting_file_result = File::open("hello.txt");
+
+let greeting_file = match greeting_file_result {
+   Ok(file) => file,
+   Err(error) => match error.kind() {
+      ErrorKind::NotFound => match File::create("hello.txt") {
+            Ok(fc) => fc,
+            Err(e) => panic!("Problem creating the file: {:?}", e),
+      },
+      other_error => {
+            panic!("Problem opening the file: {:?}", other_error);
+      }
+   },
+};
+```
+
+after:
+
+```rs
+let gretting_file = File::open("hello.txt").unwrap_or_else(|error| {
+   if error.kind() == ErrorKind::NotFound {
+      File::create("hello.txt").unwrap_or_else(|error| {
+            panic!("Problem creating the file: {:?}", error);
+      })
+   } else {
+      panic!("Problem opening the file: {:?}", error);
+   }
+});
+```
+
+#### ? operator
+
+```rs
+fn read_username_from_file() -> Result<String, io::Error> {
+    let mut username = String::new();
+    File::open("hello.txt")?.read_to_string(&mut username)?;
+    Ok(username)
+}
+```
+
+```rs
+fn last_char_of_first_line(text: &str) -> Option<char> {
+    text.lines().next()?.chars().last()
+}
+```
+
+### Custom Types for Validation
+
+- [guessing game](/src/learn/guessing_game/src/main.rs)
+
+```rs
+// thread 'main' panicked at 'The secret number will be between 1 and 100.'
+pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -> Guess {
+        if value < 1 || value > 100 {
+            panic!("The secret number will be between 1 and 100.");
+        }
+
+        Guess { value }
+    }
+
+    pub fn value(&self) -> i32 {
+        self.value
+    }
+}
+```
 
