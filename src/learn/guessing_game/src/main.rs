@@ -38,7 +38,7 @@ fn main() {
             .expect("Failed to read line");
 
         let guess = match guess.trim().parse() {
-            Ok(num) => Guess::new(num),
+            Ok(num) => Guess { value: num },
             Err(_) => continue,
         };
 
@@ -47,9 +47,9 @@ fn main() {
         //     continue;
         // }
 
-        println!("You guessed: {}", guess.value());
+        println!("You guessed: {}", guess.value);
 
-        match guess.value().cmp(&secret_number) {
+        match guess.value.cmp(&secret_number) {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
