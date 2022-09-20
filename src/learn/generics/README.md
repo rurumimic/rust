@@ -173,3 +173,111 @@ fn main() {
 fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
 }
 ```
+
+#### Lifetime Elision
+
+1. the compiler assigns a lifetime parameter to each parameter that’s a reference.
+   - `fn foo<'a, 'b>(x: &'a i32, y: &'b i32)`
+2. if there is exactly one input lifetime parameter, that lifetime is assigned to all output lifetime parameters.
+   - `fn foo<'a>(x: &'a i32) -> &'a i32`
+3. if there are multiple input lifetime parameters, but one of them is `&self` or `&mut self` because this is a *method*, the lifetime of `self` is assigned to all output lifetime parameters.
+
+##### example
+
+```rs
+// Good
+fn first_word(s: &str) -> &str {}
+
+// Good
+fn first_word<'a>(s: &'a str) -> &'a str {}
+```
+
+```rs
+// Error: 1st rule
+fn longest(x: &str, y: &str) -> &str {}
+
+// Error: 2nd, 3rd rule
+fn longest<'a, 'b>(x: &'a str, y: &'b str) -> &str {}
+```
+
+#### Lifetime Annotations in Struct Definitions
+
+```rs
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        3
+    }
+
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention please: {}", announcement);
+        self.part
+    }
+}
+
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().expect("Could not find a '.'");
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+}
+```
+
+#### Static Lifetime
+
+- the affected reference can live for the entire duration of the program
+- all string literals have the `'static` lifetime
+
+```rs
+let literal: &str = "I have a static lifetime.";
+let literal: &'static str = "I have a static lifetime.";
+```
+
+- can create a dangling reference or a mismatch of the available lifetimes
+
+### Generic Type Parameters, Trait Bounds, and Lifetimes Together
+
+- [together/src/main.rs](together/src/main.rs)
+
+```rs
+use std::fmt::Display;
+
+fn main() {
+    let string1 = String::from("abcd");
+    let string2 = "xyz";
+
+    let result = longest_with_an_announcement(
+        string1.as_str(),
+        string2,
+        "Today is someone's birthday!",
+    );
+    println!("The longest string is {}", result);
+}
+
+fn longest_with_an_announcement<'a, T>(
+    x: &'a str,
+    y: &'a str,
+    ann: T,
+) -> &'a str
+where
+    T: Display,
+{
+    println!("Announcement! {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+
+Result:
+
+```bash
+Announcement! Today is someone's birthday!
+The longest string is abcd
+```

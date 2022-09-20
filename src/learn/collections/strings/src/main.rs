@@ -1,3 +1,4 @@
+#![allow(unused)]
 fn main() {
     let mut _s = String::new();
 

@@ -3,46 +3,47 @@ use std::fs::{self, File};
 use std::io::ErrorKind;
 use std::io::{self, Read};
 
+#![allow(unused)]
 fn main() -> Result<(), Box<dyn Error>> {
     // panic
 
-    // _crash();
-    // _out_of_range();
+    // crash();
+    // out_of_range();
 
     // recover erros
 
-    // _file_not_found();
-    // _file_not_found_recover();
-    // _file_not_found_recover_shorten();
+    // file_not_found();
+    // file_not_found_recover();
+    // file_not_found_recover_shorten();
 
     // ? operator
-    // _read_username_from_file();
-    // _read_username_from_file_shorten();
-    // _read_username_from_file_chaining();
-    // _read_username_from_file_lib();
+    // read_username_from_file();
+    // read_username_from_file_shorten();
+    // read_username_from_file_chaining();
+    // read_username_from_file_lib();
 
     // ? operator Option
-    // _last_char_of_first_line("hello");
-    // _last_char_of_first_line("");
-    // _last_char_of_first_line("\nhello");
+    // last_char_of_first_line("hello");
+    // last_char_of_first_line("");
+    // last_char_of_first_line("\nhello");
 
     let greeting_file = File::open("hello.txt")?;
     Ok(())
     // Error: Os { code: 2, kind: NotFound, message: "No such file or directory" }
 }
 
-fn _crash() {
+fn crash() {
     panic!("crash and burn");
     // thread 'main' panicked at 'crash and burn'
 }
 
-fn _out_of_range() {
+fn out_of_range() {
     let v = vec![1, 2, 3];
     v[99];
     // thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 99'
 }
 
-fn _file_not_found() {
+fn file_not_found() {
     let greeting_file_result = File::open("hello.txt");
     // Result<File, Error> path
 
@@ -54,7 +55,7 @@ fn _file_not_found() {
     // Problem opening the file: Os { code: 2, kind: NotFound, message: "No such file or directory" }
 }
 
-fn _file_not_found_recover() {
+fn file_not_found_recover() {
     let greeting_file_result = File::open("hello.txt");
 
     let greeting_file = match greeting_file_result {
@@ -71,7 +72,7 @@ fn _file_not_found_recover() {
     };
 }
 
-fn _file_not_found_recover_shorten() {
+fn file_not_found_recover_shorten() {
     let gretting_file = File::open("hello.txt").unwrap_or_else(|error| {
         if error.kind() == ErrorKind::NotFound {
             File::create("hello.txt").unwrap_or_else(|error| {
@@ -83,17 +84,17 @@ fn _file_not_found_recover_shorten() {
     });
 }
 
-fn _file_not_found_unwrap() {
+fn file_not_found_unwrap() {
     let greeting_file = File::open("hello.txt").unwrap();
 }
 
-fn _file_not_found_expect() {
+fn file_not_found_expect() {
     let greeting_file =
         File::open("hello.txt").expect("hello.txt should be included in this project");
 }
 
 // ? operator
-fn _read_username_from_file() -> Result<String, io::Error> {
+fn read_username_from_file() -> Result<String, io::Error> {
     let username_file_result = File::open("hello.txt");
 
     let mut username_file = match username_file_result {
@@ -110,23 +111,23 @@ fn _read_username_from_file() -> Result<String, io::Error> {
     // Error: Os { code: 2, kind: NotFound, message: "No such file or directory" }
 }
 
-fn _read_username_from_file_shorten() -> Result<String, io::Error> {
+fn read_username_from_file_shorten() -> Result<String, io::Error> {
     let mut username_file = File::open("hello.txt")?;
     let mut username = String::new();
     username_file.read_to_string(&mut username)?;
     Ok(username)
 }
 
-fn _read_username_from_file_chaining() -> Result<String, io::Error> {
+fn read_username_from_file_chaining() -> Result<String, io::Error> {
     let mut username = String::new();
     File::open("hello.txt")?.read_to_string(&mut username)?;
     Ok(username)
 }
 
-fn _read_username_from_file_lib() -> Result<String, io::Error> {
+fn read_username_from_file_lib() -> Result<String, io::Error> {
     fs::read_to_string("hello.txt")
 }
 
-fn _last_char_of_first_line(text: &str) -> Option<char> {
+fn last_char_of_first_line(text: &str) -> Option<char> {
     text.lines().next()?.chars().last()
 }

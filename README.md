@@ -154,4 +154,4 @@ ctags -R
   - [Cargo Project](src/learn/cargo/README.md): bin crate, lib crate, `mod`, `pub`, `use`
   - [Collections](src/learn/collections/README.md): vector, string, hash map
   - [Error Handling](src/learn/errors/README.md): error kind, recover errors, ? operator
-  - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes
+  - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
