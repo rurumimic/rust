@@ -146,12 +146,13 @@ ctags -R
 ## Codes
 
 - [Book](https://doc.rust-lang.org/book/)
-  - [Hello World](src/helloworld/README.md)
-  - [Guessing Game](src/learn/guessing_game/README.md): pattern match, expection
-  - [Ownership](src/learn/ownership/README.md): reference, borrow, slice
-  - [Structure](src/learn/struct/README.md): implementation, associated functions, debug
-  - [Enumeration](src/learn/enums/README.md): `Option<T>`, pattern match, `if let`
-  - [Cargo Project](src/learn/cargo/README.md): bin crate, lib crate, `mod`, `pub`, `use`
-  - [Collections](src/learn/collections/README.md): vector, string, hash map
-  - [Error Handling](src/learn/errors/README.md): error kind, recover errors, ? operator
-  - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
+   - [Hello World](src/helloworld/README.md)
+   - [Guessing Game](src/learn/guessing_game/README.md): pattern match, expection
+   - [Ownership](src/learn/ownership/README.md): reference, borrow, slice
+   - [Structure](src/learn/struct/README.md): implementation, associated functions, debug
+   - [Enumeration](src/learn/enums/README.md): `Option<T>`, pattern match, `if let`
+   - [Cargo Project](src/learn/cargo/README.md): bin crate, lib crate, `mod`, `pub`, `use`
+   - [Collections](src/learn/collections/README.md): vector, string, hash map
+   - [Error Handling](src/learn/errors/README.md): error kind, recover errors, ? operator
+   - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
+   - [Testing](src/learn/testing/README.md)
