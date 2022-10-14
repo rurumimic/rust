@@ -57,7 +57,7 @@ source "$HOME/.cargo/env"
 #### Update rustup
 
 ```bash
-rsutup update
+rustup update
 ```
 
 #### Add components
