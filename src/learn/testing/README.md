@@ -2,6 +2,13 @@
 
 - book: [Writing Automated Tests](https://doc.rust-lang.org/book/ch11-00-testing.html)
 
+Help:
+
+```bash
+cargo test --help
+cargo test -- --help
+```
+
 ## Start
 
 ```bash
@@ -83,6 +90,7 @@ mod tests {
 
 #### left and right
 
+For structs and enums,  
 must implement the `PartialEq` and `Debug` traits:
 
 ```rs
@@ -115,5 +123,224 @@ fn greeting_contains_name() {
 test:
 
 ```rs
+pub fn greeting(name: &str) -> String {
+    format!("Hello {}!", name) // success
+}
 
+pub fn greeting(name: &str) -> String {
+    String::from("Hello!") // fail
+}
+```
+
+```rust
+test tests::greeting_contains_name ... FAILED
+
+failures:
+
+---- tests::greeting_contains_name stdout ----
+thread 'tests::greeting_contains_name' panicked at 'Greeting did not contain name, value was Hello!', src/lib.rs:75:9
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::greeting_contains_name
+```
+
+#### Result<T, E>
+
+```rs
+#[test]
+fn it_works_2() -> Result<(), String> {
+    if 2 + 2 == 4 {
+        Ok(())
+    } else {
+        Err(String::from("two plus two does not equal four"))
+    }
+}
+```
+
+- enables you to use the question mark operator in the body of tests
+- use `assert!(value.is_err())`
+
+### Guessing Game
+
+- guessing game: [test](../guessing_game/README.md#test)
+- [src/main.rs](../guessing_game/src/main.rs)
+
+```rs
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn greater_than_100() {
+        Guess::new(200);
+    }
+}
+```
+
+#### should panic ok
+
+```bash
+running 1 test
+test tests::greater_than_100 - should panic ... ok
+```
+
+#### should panic failed
+
+```rs
+// if value < 1 || value > 100 {
+if value < 1 { 
+  // ...
+}
+```
+
+```bash
+running 1 test
+test tests::greater_than_100 - should panic ... FAILED
+
+failures:
+
+---- tests::greater_than_100 stdout ----
+note: test did not panic as expected
+
+failures:
+    tests::greater_than_100
+```
+
+#### should panic expected ok
+
+```rs
+#[test]
+#[should_panic(expected = "less than or equal to 100")]
+fn greater_than_100() {  
+  // ...
+}
+```
+
+```bash
+running 1 test
+test tests::greater_than_100 - should panic ... ok
+```
+
+#### should panic expected failed
+
+```rs
+#[should_panic(expected = "less than or equal to 999")]
+```
+
+```bash
+running 1 test
+test tests::greater_than_100 - should panic ... FAILED
+
+failures:
+
+---- tests::greater_than_100 stdout ----
+thread 'tests::greater_than_100' panicked at 'Guess value must be less than or equal to 100, got 200.', src/main.rs:25:13
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+note: panic did not contain expected string
+      panic message: `"Guess value must be less than or equal to 100, got 200."`,
+ expected substring: `"less than or equal to 999"`
+
+failures:
+    tests::greater_than_100
+```
+
+---
+
+## Controll testing
+
+### threads
+
+default: run in parallel using threads
+
+```bash
+cargo test -- --test-threads=1
+```
+
+### println!
+
+```rs
+fn prints_and_returns_10(a: i32) -> i32 {
+    println!("I got the value {}", a);
+    10
+}
+```
+
+```bash
+test tests::this_test_will_pass ... ok
+test tests::this_test_will_fail ... FAILED
+
+failures:
+
+---- tests::this_test_will_fail stdout ----
+I got the value 8
+thread 'tests::this_test_will_fail' panicked at 'assertion failed: `(left == right)`
+  left: `5`,
+ right: `10`', src/lib.rs:105:9
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+```bash
+cargo test -- --show-output
+```
+
+```bash
+test tests::this_test_will_pass ... ok
+test tests::this_test_will_fail ... FAILED
+
+successes:
+
+---- tests::this_test_will_pass stdout ----
+I got the value 4
+
+failures:
+
+---- tests::this_test_will_fail stdout ----
+I got the value 8
+```
+
+### a Subset of Tests by Name
+
+```bash
+cargo test it_works
+```
+
+```bash
+running 2 tests
+test tests::it_works ... ok
+test tests::it_works_2 ... ok
+```
+### Ignoring Some Tests Unless Specifically Requested
+
+```rs
+#[test]
+#[ignore]
+fn expensive_test() {
+    // code that takes an hour to run
+}
+```
+
+```bash
+cargo test
+
+running 9 tests
+test tests::expensive_test ... ignored
+test tests::it_adds_two ... ok
+```
+
+```bash
+cargo test -- --ignored
+
+running 1 test
+test tests::expensive_test ... ok
+```
+
+```bash
+cargo test -- --include-ignored
+
+running 9 tests
+test tests::expensive_test ... ok
+test tests::it_adds_two ... ok
 ```

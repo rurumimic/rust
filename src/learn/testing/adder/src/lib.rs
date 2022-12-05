@@ -17,8 +17,13 @@ pub fn add_two(a: i32) -> i32 {
 }
 
 pub fn greeting(name: &str) -> String {
-    // format!("Hello {}!", name)
-    String::from("Hello!")
+    format!("Hello {}!", name)
+    // failed: String::from("Hello!")
+}
+
+fn prints_and_returns_10(a: i32) -> i32 {
+    println!("I got the value {}", a);
+    10
 }
 
 #[cfg(test)]
@@ -29,6 +34,15 @@ mod tests {
     fn it_works() {
         let result = 2 + 2;
         assert_eq!(result, 4);
+    }
+
+    #[test]
+    fn it_works_2() -> Result<(), String> {
+        if 2 + 2 == 4 {
+            Ok(())
+        } else {
+            Err(String::from("two plus two does not equal four"))
+        }
     }
 
     #[test]
@@ -77,5 +91,25 @@ mod tests {
             "Greeting did not contain name, value was `{}`",
             result
         );
+    }
+
+    #[test]
+    fn this_test_will_pass() {
+        let value = prints_and_returns_10(4);
+        assert_eq!(10, value);
+    }
+
+    /*
+    #[test]
+    fn this_test_will_fail() {
+        let value = prints_and_returns_10(8);
+        assert_eq!(5, value);
+    }
+    */
+
+    #[test]
+    #[ignore]
+    fn expensive_test() {
+        // code that takes an hour to run
     }
 }

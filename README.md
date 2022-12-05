@@ -145,7 +145,7 @@ ctags -R
 
 ## Codes
 
-- [Book](https://doc.rust-lang.org/book/)
+- [Book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
    - [Hello World](src/helloworld/README.md)
    - [Guessing Game](src/learn/guessing_game/README.md): pattern match, expection
    - [Ownership](src/learn/ownership/README.md): reference, borrow, slice
@@ -155,4 +155,4 @@ ctags -R
    - [Collections](src/learn/collections/README.md): vector, string, hash map
    - [Error Handling](src/learn/errors/README.md): error kind, recover errors, ? operator
    - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
-   - [Testing](src/learn/testing/README.md)
+   - [Testing](src/learn/testing/README.md): test macro, super, left!=right, custom failure message, `Result<T, E>`, should_panic, expected, help, threads, show output, select, ignore
