@@ -38,6 +38,9 @@ mod tests {
 }
 ```
 
+- `#[cfg(test)]`: configuration option is `test`
+- `#[test]`: helper function
+
 Run test:
 
 ```bash
@@ -343,4 +346,158 @@ cargo test -- --include-ignored
 running 9 tests
 test tests::expensive_test ... ok
 test tests::it_adds_two ... ok
+```
+
+---
+
+## Test Organization
+
+### Unit test
+
+#### Testing Private Functions
+
+```rs
+pub fn add_two(a: i32) -> i32 {
+    internal_adder(a, 2)
+}
+
+fn internal_adder(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn internal() {
+        assert_eq!(4, internal_adder(2, 2));
+    }
+}
+```
+
+### Integration Tests
+
+#### `tests` Directory
+
+[adder/tests/integration_test.rs](adder/tests/integration_test.rs)
+
+```bash
+adder
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    └── integration_test.rs
+```
+
+```rs
+use adder;
+
+#[test]
+fn it_adds_two() {
+    assert_eq!(4, adder::add_two(2));
+}
+```
+
+#### 3 sections
+
+```bash
+cargo test
+
+running 10 tests
+test tests::internal ... ok
+
+test result: ok. 1 passed
+
+     Running tests/integration_test.rs (target/debug/deps/integration_test-49415628897514bb)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed
+```
+
+#### Integration section
+
+```bash
+cargo test --test integration_test
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed
+```
+
+#### Submodules in tests
+
+- `tests/common.rs`
+- [tests/common/mod.rs](adder/tests/common/mod.rs)
+
+```rs
+pub fn setup() {
+    // setup code specific to your library's tests would go here
+    println!("setup...");
+}
+```
+
+```bash
+cargo test
+
+running 10 tests
+test tests::internal ... ok
+
+test result: ok. 1 passed
+
+     Running tests/integration_test.rs (target/debug/deps/integration_test-49415628897514bb)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed
+```
+
+- [tests/integration_test.rs](adder/tests/integration_test.rs)
+
+```rs
+use adder;
+
+mod common;
+
+#[test]
+fn it_adds_two() {
+    common::setup();
+    assert_eq!(4, adder::add_two(2));
+}
+```
+
+```bash
+cargo test --test integration_test -- --show-output
+
+running 1 test
+test it_adds_two ... ok
+
+successes:
+
+---- it_adds_two stdout ----
+setup...
+
+
+successes:
+    it_adds_two
+
+test result: ok. 1 passed
 ```

@@ -11,9 +11,13 @@ impl Rectangle {
 }
 
 pub fn add_two(a: i32) -> i32 {
-    a + 2
+    internal_adder(a, 2)
     // or
     // a + 3
+}
+
+fn internal_adder(a: i32, b: i32) -> i32 {
+    a + b
 }
 
 pub fn greeting(name: &str) -> String {
@@ -99,17 +103,21 @@ mod tests {
         assert_eq!(10, value);
     }
 
-    /*
     #[test]
+    #[ignore]
     fn this_test_will_fail() {
         let value = prints_and_returns_10(8);
         assert_eq!(5, value);
     }
-    */
 
     #[test]
     #[ignore]
     fn expensive_test() {
         // code that takes an hour to run
+    }
+
+    #[test]
+    fn internal() {
+        assert_eq!(4, internal_adder(2, 2));
     }
 }
