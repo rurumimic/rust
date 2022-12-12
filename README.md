@@ -143,16 +143,18 @@ ctags -R
 
 ---
 
-## Codes
+## Learn
 
-- [Book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
-   - [Hello World](src/helloworld/README.md)
-   - [Guessing Game](src/learn/guessing_game/README.md): pattern match, expection
-   - [Ownership](src/learn/ownership/README.md): reference, borrow, slice
-   - [Structure](src/learn/struct/README.md): implementation, associated functions, debug
-   - [Enumeration](src/learn/enums/README.md): `Option<T>`, pattern match, `if let`
-   - [Cargo Project](src/learn/cargo/README.md): bin crate, lib crate, `mod`, `pub`, `use`
-   - [Collections](src/learn/collections/README.md): vector, string, hash map
-   - [Error Handling](src/learn/errors/README.md): error kind, recover errors, ? operator
-   - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
-   - [Testing](src/learn/testing/README.md): test macro, super, left!=right, custom failure message, `Result<T, E>`, should_panic, expected, help, threads, show output, select, ignore, unit tests, integration tests, submodules
+[Book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu):
+
+- [Hello World](src/helloworld/README.md)
+- [Guessing Game](src/learn/guessing_game/README.md): pattern match, expection
+- [Ownership](src/learn/ownership/README.md): reference, borrow, slice
+- [Structure](src/learn/struct/README.md): implementation, associated functions, debug
+- [Enumeration](src/learn/enums/README.md): `Option<T>`, pattern match, `if let`
+- [Cargo Project](src/learn/cargo/README.md): bin crate, lib crate, `mod`, `pub`, `use`
+- [Collections](src/learn/collections/README.md): vector, string, hash map
+- [Error Handling](src/learn/errors/README.md): error kind, recover errors, ? operator
+- [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
+- [Testing](src/learn/testing/README.md): test macro, super, left!=right, custom failure message, `Result<T, E>`, should_panic, expected, help, threads, show output, select, ignore, unit tests, integration tests, submodules
+- I/O Project - [minigrep](src/learn/minigrep/README.md): refactoring, CLI, file i/o, error handling in main/lib, unittest, process exit, environment variables
