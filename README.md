@@ -158,3 +158,4 @@ ctags -R
 - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
 - [Testing](src/learn/testing/README.md): test macro, super, left!=right, custom failure message, `Result<T, E>`, should_panic, expected, help, threads, show output, select, ignore, unit tests, integration tests, submodules
 - I/O Project - [minigrep](src/learn/minigrep/README.md): refactoring, CLI, file i/o, error handling in main/lib, unittest, process exit, environment variables
+- [Functional](src/learn/functional/README.md): closures, Fn traits, iterators
