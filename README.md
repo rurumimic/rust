@@ -1,19 +1,19 @@
 # Rust
 
 - [rust](https://www.rust-lang.org)
-   - [book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
-   - [install](https://www.rust-lang.org/tools/install)
-   - [learn](https://www.rust-lang.org/learn)
-      - [getting started](https://www.rust-lang.org/learn/get-started)
-   - [api guidelines](https://rust-lang.github.io/api-guidelines/)
-   - [tools](https://www.rust-lang.org/tools)
-   - [users forum](https://users.rust-lang.org)
+  - [book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
+  - [install](https://www.rust-lang.org/tools/install)
+  - [learn](https://www.rust-lang.org/learn)
+    - [getting started](https://www.rust-lang.org/learn/get-started)
+  - [api guidelines](https://rust-lang.github.io/api-guidelines/)
+  - [tools](https://www.rust-lang.org/tools)
+  - [users forum](https://users.rust-lang.org)
 - [cargo](https://github.com/rust-lang/cargo): package manager
-   - [doc](https://doc.rust-lang.org/cargo/index.html)
-   - [fmt](https://github.com/rust-lang/rustfmt)
-   - [clippy](https://github.com/rust-lang/rust-clippy)
+  - [doc](https://doc.rust-lang.org/cargo/index.html)
+  - [fmt](https://github.com/rust-lang/rustfmt)
+  - [clippy](https://github.com/rust-lang/rust-clippy)
 - editors
-   - [vim](https://github.com/rust-lang/rust.vim)
+  - [vim](https://github.com/rust-lang/rust.vim)
 
 ## Start
 
@@ -158,3 +158,4 @@ ctags -R
 - [Generics](src/learn/generics/README.md): trait, where clauses, lifetimes, lifetime elision rules, static lifetime
 - [Testing](src/learn/testing/README.md): test macro, super, left!=right, custom failure message, `Result<T, E>`, should_panic, expected, help, threads, show output, select, ignore, unit tests, integration tests, submodules
 - I/O Project - [minigrep](src/learn/minigrep/README.md): refactoring, CLI, file i/o, error handling in main/lib, unittest, process exit, environment variables
+- [Functional](src/learn/functional/README.md): closures, Fn traits, iterators, imporring minigrep, performance
