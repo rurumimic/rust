@@ -315,6 +315,7 @@ running 2 tests
 test tests::it_works ... ok
 test tests::it_works_2 ... ok
 ```
+
 ### Ignoring Some Tests Unless Specifically Requested
 
 ```rs

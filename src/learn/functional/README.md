@@ -154,7 +154,6 @@ Fn Traits:
 
 - Enum core::option::Option::[unwrap_or_else](https://doc.rust-lang.org/src/core/option.rs.html#821-830)
 
-
 `FnOnce() -> T`: `F` must be able to be called once, take no arguments, and return a `T`
 
 ```rs
@@ -246,3 +245,192 @@ println!("{:#?}, sorted in {num_sort_operations} operations", list);
     Rectangle { width: 10, height: 1 },
 ], sorted in 6 operations
 ```
+
+---
+
+## Iterators
+
+- book: [Processing a Series of Items with Iterators](https://doc.rust-lang.org/book/ch13-02-iterators.html)
+
+iterators are *lazy*.
+
+- src: [iterators/src/main.rs](iterators/src/main.rs)
+
+```rs
+let v1 = vec![1, 2, 3];
+
+let v1_iter = v1.iter();
+
+for val in v1_iter {
+    println!("Got: {}", val);
+}
+```
+
+### Trait
+
+- Trait std::iter::[Iterator](https://doc.rust-lang.org/stable/src/core/iter/traits/iterator.rs.html#67)
+- [The three forms of iteration](https://doc.rust-lang.org/stable/std/iter/index.html#the-three-forms-of-iteration)
+  - `iter()`, which iterates over &T.
+  - `iter_mut()`, which iterates over &mut T.
+  - `into_iter()`, which iterates over T.
+
+```rs
+pub trait Iterator {
+    type Item;
+
+    fn next(&mut self) -> Option<Self::Item>;
+}
+```
+
+#### next: consuming adaptors
+
+```rs
+#[test]
+fn iterator_immutable() {
+    let v1 = vec![1, 2, 3];
+
+    let mut v1_iter = v1.iter();
+
+    assert_eq!(v1_iter.next(), Some(&1));
+    assert_eq!(v1_iter.next(), Some(&2));
+    assert_eq!(v1_iter.next(), Some(&3));
+    assert_eq!(v1_iter.next(), None);
+}
+
+#[test]
+fn iterator_take_ownership() {
+    let v1 = vec![1, 2, 3];
+
+    let mut v1_iter = v1.iter();
+
+    assert_eq!(v1_iter.next(), Some(&1));
+    assert_eq!(v1_iter.next(), Some(&2));
+    assert_eq!(v1_iter.next(), Some(&3));
+    assert_eq!(v1_iter.next(), None);
+}
+```
+
+#### sum
+
+```rs
+#[test]
+fn iterator_sum() {
+    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    let total: i32 = v1_iter.sum(); // sum takes ownership of the iterator
+
+    assert_eq!(total, 6);
+}
+```
+
+#### map: iterator adaptors
+
+```rs
+fn main() {
+    let v1: Vec<i32> = vec![1, 2, 3];
+
+    let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2, 3, 4]);
+}
+```
+
+### With Closures
+
+```rs
+#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
+
+        let in_my_size = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker")
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot")
+                },
+            ]
+        );
+    }
+}
+```
+
+---
+
+## Improving I/O Project - minigrep
+
+- book: [Improving Our I/O Project](https://doc.rust-lang.org/book/ch13-03-improving-our-io-project.html)
+
+[minigrep](/src/learn/minigrep/README.md)#[improving](/src/learn/minigrep/README.md#)
+
+---
+
+## Performance: Loops vs. Iterators
+
+- book: [Comparing Performance: Loops vs. Iterators](https://doc.rust-lang.org/book/ch13-04-performance.html)
+
+- Iterators are one of Rust’s zero-cost abstractions
+- no additional runtime overhead
+
+[performance/src/main.rs](performance/src/main.rs):
+
+```rs
+let buffer: &mut [i32];
+let coefficients: [i64; 12];
+let qlp_shift: i16;
+
+for i in 12..buffer.len() {
+    let prediction = coefficients.iter()
+                                 .zip(&buffer[i - 12..i])
+                                 .map(|(&c, &s)| c * s as i64)
+                                 .sum::<i64>() >> qlp_shift;
+    let delta = buffer[i];
+    buffer[i] = prediction as i32 + delta;
+}
+```
+
+```bash
+cargo rustc -- --emit asm
+# target/debug/deps/<crate_name>-<hash>.s
+cargo rustc --release -- --emit asm
+# target/release/deps/<crate_name>-<hash>.s
+```
+
+Rust knows that there are 12 iterations, so it “unrolls” the loop. Unrolling is an optimization that removes the overhead of the loop controlling code and instead generates repetitive code for each iteration of the loop.
+
+Now that you know this, you can use iterators and closures without fear!
