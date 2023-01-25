@@ -197,10 +197,10 @@ workspace: a set of packages that share the same `Cargo.lock` and output directo
 
 - [add](add)
   - [Cargo.toml](add/Cargo.toml)
-  - [adder/src/main.rs](adder/src/main.rs)
-  - [adder/Cargo.toml](adder/Cargo.toml)
-  - [add_one/src/lib.rs](add_one/src/lib.rs)
-  - [add_two/src/lib.rs](add_two/src/lib.rs)
+  - [adder/src/main.rs](add/adder/src/main.rs)
+  - [adder/Cargo.toml](add/adder/Cargo.toml)
+  - [add_one/src/lib.rs](add/add_one/src/lib.rs)
+  - [add_two/src/lib.rs](add/add_two/src/lib.rs)
 
 #### packages
 
@@ -260,7 +260,7 @@ cargo run -p adder
 
 #### External package in a workspace
 
-add `rand` in [add_one/Cargo.toml](add_one/Cargo.toml)
+add `rand` in [add/add_one/Cargo.toml](add/add_one/Cargo.toml)
 
 ```toml
 [dependencies]
@@ -307,7 +307,7 @@ test tests::it_works ... ok
 
 - book: [Publishing a Crate to Crates.io](https://doc.rust-lang.org/book/ch14-02-publishing-to-crates-io.html)
 
-[add_one/src/lib.rs](add_one/src/lib.rs)
+[add/add_one/src/lib.rs](add/add_one/src/lib.rs)
 
 ```rs
 /// Adds one to the number given.
