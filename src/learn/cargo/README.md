@@ -157,3 +157,297 @@ cargo build
     - [front_of_house.rs](restaurant_mods/src/front_of_house.rs)
     - front_of_house
       - [hosting.rs](restaurant_mods/src/front_of_house/hosting.rs)
+
+---
+
+## More Cargo
+
+- book: [More About Cargo and Crates.io](https://doc.rust-lang.org/book/ch14-00-more-about-cargo.html)
+- [Cargo Book](https://doc.rust-lang.org/cargo/)
+
+### Customizing Builds with Release Profiles
+
+- book: [Customizing Builds with Release Profiles](https://doc.rust-lang.org/book/ch14-01-release-profiles.html)
+
+[/src/helloworld/Cargo.toml](/src/helloworld/Cargo.toml)
+
+optimization range: 0 ~ 3 
+
+```toml
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+```
+
+```bash
+cargo build # dev profile
+  Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+
+cargo build --release # release profile
+  Finished release [optimized] target(s) in 0.10s
+```
+
+### Cargo Workspaces
+
+- book: [Cargo Workspaces](https://doc.rust-lang.org/book/ch14-03-cargo-workspaces.html)
+
+workspace: a set of packages that share the same `Cargo.lock` and output directory.
+
+- [add](add)
+  - [Cargo.toml](add/Cargo.toml)
+  - [adder/src/main.rs](adder/src/main.rs)
+  - [adder/Cargo.toml](adder/Cargo.toml)
+  - [add_one/src/lib.rs](add_one/src/lib.rs)
+  - [add_two/src/lib.rs](add_two/src/lib.rs)
+
+#### packages
+
+```bash
+cargo new adder
+cargo new add_one --lib
+cargo new add_two --lib
+```
+
+#### Cargo.toml of a workspace 
+
+```toml
+[workspace]
+
+members = [
+  "adder",
+  "add_one",
+  "add_two"
+]
+```
+
+#### Build a workspace
+
+```bash
+cargo build
+```
+
+```bash
+add/
+├── Cargo.lock
+├── Cargo.toml
+├── add_one/
+│   ├── Cargo.toml
+│   └── src/
+│       └── lib.rs
+├── add_two/
+│   ├── Cargo.toml
+│   └── src/
+│       └── lib.rs
+├── adder/
+│   ├── Cargo.toml
+│   └── src/
+│       └── main.rs
+└── target/
+```
+
+#### Run the binary
+
+```bash
+cargo run -p adder
+```
+
+```bash
+10 plus one is 11!
+10 plus two is 12!
+```
+
+#### External package in a workspace
+
+add `rand` in [add_one/Cargo.toml](add_one/Cargo.toml)
+
+```toml
+[dependencies]
+rand = "0.8.5"
+```
+
+error: use `rand` in `adder/src/main.rs` 
+
+```bash
+error[E0432]: unresolved import `rand`
+ --> adder/src/main.rs:3:5
+  |
+3 | use rand::Rng;
+  |     ^^^^ use of undeclared crate or module `rand`
+```
+
+fix: add `rand` in `adder/Cargo.toml`
+
+#### Tests
+
+```rs
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(3, add_one(2));
+    }
+}
+```
+
+```bash
+cargo test
+cargo test -p add_one
+
+running 1 test
+test tests::it_works ... ok
+
+...
+```
+
+### Publishing a Crate to Crates.io
+
+- book: [Publishing a Crate to Crates.io](https://doc.rust-lang.org/book/ch14-02-publishing-to-crates-io.html)
+
+[add_one/src/lib.rs](add_one/src/lib.rs)
+
+```rs
+/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```rs
+/// let arg = 5;
+/// let answer = add_one::add_one(arg);
+///
+/// assert_eq!(6, answer);
+/// ```
+pub fn add_one(x: i32) -> i32 {
+    x + 1
+}
+```
+
+#### Documentation comments
+
+```bash
+cargo doc --open
+```
+
+![](images/cargo_doc.png)
+
+#### Test example code
+
+```bash
+cargo test
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+#### Export API with pub use
+
+- [art/src/lib.rs](art/src/lib.rs)
+- [art/src/main.rs](art/src/main.rs)
+
+```rs
+// main.rs
+use art::mix; // <- use art::kinds::PrimaryColor;
+use art::PrimaryColor; // <- use art::utils::mix;
+```
+
+```rs
+pub use self::kinds::PrimaryColor;
+pub use self::kinds::SecondaryColor;
+pub use self::utils::mix;
+
+pub mod kinds {
+    pub enum PrimaryColor {
+// ... 
+```
+
+![](images/cargo_doc_api.png)
+
+#### Crates.io
+
+1. login: [crates.io](https://crates.io)
+2. new [API Tokens](https://crates.io/settings/tokens)
+3. `cargo login <TOKEN>` (save in `~/.cargo/credentials` by default)
+
+```bash
+cargo login abcdefghijklmnopqrstuvwxyz012345
+  Login token for `crates.io` saved
+```
+
+```bash
+cat ~/.cargo/credentials
+
+[registry]
+token = "abcdefghijklmnopqrstuvwxyz012345"
+```
+
+##### Add metadata to a crate
+
+[/src/learn/guessing_game/Cargo.toml](/src/learn/guessing_game/Cargo.toml)
+
+```toml
+[package]
+name = "guessing_game"
+version = "0.1.0"
+edition = "2021"
+description = "A fun game where you guess what number the computer has chosen."
+license = "MIT"
+
+[dependencies]
+rand = "0.8.5"
+```
+
+##### Publish the crate
+
+```bash
+# cargo publish
+```
+
+##### Deprecating versions
+
+```bash
+cargo yank --vers 1.0.1
+cargo yank --vers 1.0.1 --undo
+```
+
+### Installing Binaries from Crates.io with cargo install
+
+- book: [Installing Binaries with cargo install](https://doc.rust-lang.org/book/ch14-04-installing-binaries.html)
+
+default install path: `$HOME/.cargo/bin`
+
+```bash
+cargo install ripgrep
+```
+
+```bash
+rg --help | rg github
+
+Project home page: https://github.com/BurntSushi/ripgrep
+```
+
+### Extending Cargo with Custom Commands
+
+- book: [Extending Cargo with Custom Commands](https://doc.rust-lang.org/book/ch14-05-extending-cargo.html)
+
+
+```bash
+cargo subcommand
+
+cargo clippy
+cargo fmt
+```
+
+```bash
+~/.cargo/bin
+├── cargo
+├── cargo-clippy
+├── cargo-fmt
+├── cargo-miri
+# ...
+```
+
