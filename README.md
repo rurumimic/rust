@@ -160,4 +160,4 @@ ctags -R
 - I/O Project - [minigrep](src/learn/minigrep/README.md): refactoring, CLI, file i/o, error handling in main/lib, unittest, process exit, environment variables
 - [Functional](src/learn/functional/README.md): closures, Fn traits, iterators, imporring minigrep, performance
 - [More Cargo](src/learn/cargo/README.md#more-cargo): profiles, workspace, documentation, crates.io, binary, custom commands
-
+- [Smart Pointers](src/learn/pointer/README.md): reference count
