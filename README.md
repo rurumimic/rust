@@ -1,21 +1,45 @@
 # Rust
 
 - [rust](https://www.rust-lang.org)
-  - [book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
+  - [tools](https://www.rust-lang.org/tools)
   - [install](https://www.rust-lang.org/tools/install)
   - [learn](https://www.rust-lang.org/learn)
-    - [getting started](https://www.rust-lang.org/learn/get-started)
+- docs
+  - [rust by example](https://doc.rust-lang.org/rust-by-example/)
+  - [book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
+  - [rustlings](https://github.com/rust-lang/rustlings)
+  - core
+    - [crate std](https://doc.rust-lang.org/std/)
+    - [edition guide](https://doc.rust-lang.org/edition-guide)
+    - [cargo](https://github.com/rust-lang/cargo): package manager
+      - [doc](https://doc.rust-lang.org/cargo/index.html)
+      - [fmt](https://github.com/rust-lang/rustfmt)
+      - [clippy](https://github.com/rust-lang/rust-clippy)
+    - [rustdoc](https://doc.rust-lang.org/rustdoc)
+    - [rustc](https://doc.rust-lang.org/rustc)
+    - [error codes](https://doc.rust-lang.org/error_codes)
+  - skills
+    - [cli](https://rust-cli.github.io/book)
+    - [wasm](https://rustwasm.github.io/docs/book/)
+    - [embedded](https://doc.rust-lang.org/stable/embedded-book)
+  - master
+    - [reference](https://doc.rust-lang.org/reference)
+    - [rustonomicon](https://doc.rust-lang.org/stable/nomicon/)
+    - [unstable](https://doc.rust-lang.org/nightly/unstable-book)
   - [api guidelines](https://rust-lang.github.io/api-guidelines/)
-  - [tools](https://www.rust-lang.org/tools)
+- [community](https://www.rust-lang.org/community)
   - [users forum](https://users.rust-lang.org)
-- [cargo](https://github.com/rust-lang/cargo): package manager
-  - [doc](https://doc.rust-lang.org/cargo/index.html)
-  - [fmt](https://github.com/rust-lang/rustfmt)
-  - [clippy](https://github.com/rust-lang/rust-clippy)
+- [blog](https://blog.rust-lang.org/) & [inside](https://blog.rust-lang.org/inside-rust)
 - editors
   - [vim](https://github.com/rust-lang/rust.vim)
 
 ## Start
+
+### Update Rust
+
+```bash
+rustup update stable
+```
 
 ### Install by [rustup](https://rustup.rs)
 
@@ -145,7 +169,9 @@ ctags -R
 
 ## Learn
 
-[Book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu):
+### Rust [Book](https://doc.rust-lang.org/book/)
+
+with [quiz](https://rust-book.cs.brown.edu)
 
 - [Hello World](src/helloworld/README.md)
 - [Guessing Game](src/learn/guessing_game/README.md): pattern match, expection
@@ -160,4 +186,11 @@ ctags -R
 - I/O Project - [minigrep](src/learn/minigrep/README.md): refactoring, CLI, file i/o, error handling in main/lib, unittest, process exit, environment variables
 - [Functional](src/learn/functional/README.md): closures, Fn traits, iterators, imporring minigrep, performance
 - [More Cargo](src/learn/cargo/README.md#more-cargo): profiles, workspace, documentation, crates.io, binary, custom commands
-- [Smart Pointers](src/learn/pointer/README.md): reference count
+- [Smart Pointers](src/learn/pointer/README.md): reference count, box, rc, refcell, weak, deref, drop
+- Concurrency
+- OOP
+- Patterns & Matching
+- Advanced
+- Final Project - Multithreaded Web Server
+- Appendix
+  - read: [derivable traits](https://doc.rust-lang.org/book/appendix-03-derivable-traits.html)

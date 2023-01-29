@@ -231,7 +231,7 @@ count after c goes out of = 2
 
 ---
 
-## Interior mutability Pattern
+## Interior mutability Pattern: RefCell<T>
 
 - book: [RefCell<T> and the Interior Mutability Pattern](https://doc.rust-lang.org/book/ch15-05-interior-mutability.html)
 
@@ -249,15 +249,15 @@ count after c goes out of = 2
 
 - **Box**
   - 1 owner
-  - borrows checked
+  - borrows check
     - compile time: immutable & mutable (compiler error)
 - **Rc**
   - multiple owners
-  - borrows checked
+  - borrows check
     - compile time: immutable (compiler error)
 - **RefCell**
   - 1 owner
-  - borrows checked
+  - borrows check
     - runtime: immutable & mutable (program panic)
   - can mutate the value inside the immutable `RefCell`
 
@@ -346,6 +346,112 @@ c after = Cons(RefCell { value: 4 }, Cons(RefCell { value: 15 }, Nil))
 
 ---
 
-## Reference Cycle
+## Reference Cycle → Weak<T>
 
 - book: [Reference Cycles Can Leak Memory](https://doc.rust-lang.org/book/ch15-06-reference-cycles.html)
+
+### Create a reference cycle
+
+<img src="https://doc.rust-lang.org/book/img/trpl15-04.svg" width="500px">
+
+[weak/src/main.rs](weak/src/main.rs)
+
+```rs
+enum List {
+    Cons(i32, RefCell<Rc<List>>),
+    Nil,
+}
+
+impl List {
+    fn tail(&self) -> Option<&RefCell<Rc<List>>> {
+        match self {
+            Cons(_, item) => Some(item),
+            Nil => None,
+        }
+    }
+}
+```
+
+```bash
+a initial rc count = 1
+a next item = Some(RefCell { value: Nil })
+
+a rc count after b creation = 2
+b initial rc count = 1
+b next item = Some(RefCell { value: Cons(5, RefCell { value: Nil }) })
+
+b rc count after changing a = 2
+a rc count after changing a = 2
+
+a next item = Some(RefCell { value: Cons(5, RefCell { value: Cons(10, RefCell { value: Cons(5, RefCell { value: Cons(10, RefCell { value: Cons(5, RefCell { value: Cons(10, RefCell { ...
+
+thread 'main' has overflowed its stack
+fatal runtime error: stack overflow
+[1]    42100 IOT instruction (core dumped)  cargo run
+```
+
+### Preventing Reference Cycles: Weak<T>
+
+### Tree Structure
+
+[weak/src/main.rs](weak/src/main.rs)
+
+```rs
+struct Node {
+    value: i32,
+    parent: RefCell<Weak<Node>>,
+    children: RefCell<Vec<Rc<Node>>>,
+}
+
+let leaf = Rc::new(Node {
+    value: 3,
+    parent: RefCell::new(Weak::new()),
+    children: RefCell::new(vec![]),
+});
+
+println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+
+let branch = Rc::new(Node {
+    value: 5,
+    parent: RefCell::new(Weak::new()),
+    children: RefCell::new(vec![Rc::clone(&leaf)]),
+});
+
+*leaf.parent.borrow_mut() = Rc::downgrade(&branch); // create a Weak<Node> reference to branch from the Rc<Node> in branch
+
+println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+```
+
+`Node` in `leaf` has two owners: `leaf` and `branch`
+
+Print: `(Weak)`
+
+```bash
+leaf parent = None
+
+leaf parent = Some(Node { 
+    value: 5, 
+    parent: RefCell { value: (Weak) }, 
+    children: RefCell { value: [
+        Node {
+            value: 3, 
+            parent: RefCell { value: (Weak) }, 
+            children: RefCell { value: [] } 
+        }
+    ]}
+})
+```
+
+#### Change cycle
+
+`strong_count` → `weak_count`
+
+[weak/src/main.rs](weak/src/main.rs)
+
+```bash
+leaf strong = 1, weak = 0
+branch strong = 1, weak = 1
+leaf strong = 2, weak = 0
+leaf parent = None
+leaf strong = 1, weak = 0
+```
