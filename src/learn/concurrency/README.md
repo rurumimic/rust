@@ -109,9 +109,55 @@ Got: thread
 
 ---
 
- Shared-State
+## Shared-State
 
 - book: [Shared-State Concurrency](https://doc.rust-lang.org/book/ch16-03-shared-state.html)
+
+### Mutex: mutual exclusion
+
+rule:
+
+- must attempt to acquire the lock before using the data
+- must unlock the data so other threads can acquire the lock
+
+[shared/src/main.rs](shared/src/main.rs)
+
+```rs
+use std::sync::Mutex;
+
+let m = Mutex::new(5);
+
+{
+  let mut num = m.lock().unwrap();
+  *num = 6;
+}
+
+println!("m = {:?}", m); // m = Mutex { data: 6, poisoned: false, .. }
+```
+
+#### Arc: mutex between threads
+
+- can’t move the ownership of lock into multiple threads.
+- `Rc<Mutex<i32>>` cannot be sent between threads safely.
+  - the trait `Send` is not implemented for `Rc<Mutex<i32>>`.
+
+`Arc<T>` = `Rc<T>` + atomic : atomically reference counted
+
+```rs
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+let counter = Arc::new(Mutex::new(0));
+let counter = Arc::clone(&counter);
+
+thread::spawn(move || {
+    let mut num = counter.lock().unwrap();
+    *num += 1;
+});
+```
+
+- `Rc<T>` cause memory leaks
+- `Mutex<T>` create deadlocks
 
 ---
 
@@ -119,4 +165,10 @@ Got: thread
 
 - book: [Extensible Concurrency with the Sync and Send Traits](https://doc.rust-lang.org/book/ch16-04-extensible-concurrency-sync-and-send.html)
 
+standard library:
 
+- Trait std::marker::[Sync](https://doc.rust-lang.org/std/marker/trait.Sync.html)
+  - safe for the type implementing `Sync` to be referenced from multiple threads.
+  - any type `T` is `Sync` if `&T` is `Send`
+- Trait std::marker::[Send](https://doc.rust-lang.org/std/marker/trait.Send.html)
+  - almost evey Rust type. except, `Rc<T>` ...
