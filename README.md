@@ -187,7 +187,7 @@ with [quiz](https://rust-book.cs.brown.edu)
 - [Functional](src/learn/functional/README.md): closures, Fn traits, iterators, imporring minigrep, performance
 - [More Cargo](src/learn/cargo/README.md#more-cargo): profiles, workspace, documentation, crates.io, binary, custom commands
 - [Smart Pointers](src/learn/pointer/README.md): reference count, box, rc, refcell, weak, deref, drop
-- Concurrency
+- [Concurrency](src/learn/concurrency/README.md): threads, spawn, join, channel, mutex, arc, sync, send
 - OOP
 - Patterns & Matching
 - Advanced
