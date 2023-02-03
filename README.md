@@ -1,37 +1,77 @@
 # Rust
 
+## Links
+
+<details>
+    <summary>rust</summary>
+
 - [rust](https://www.rust-lang.org)
   - [tools](https://www.rust-lang.org/tools)
   - [install](https://www.rust-lang.org/tools/install)
   - [learn](https://www.rust-lang.org/learn)
-- docs
-  - [rust by example](https://doc.rust-lang.org/rust-by-example/)
-  - [book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
-  - [rustlings](https://github.com/rust-lang/rustlings)
-  - core
-    - [crate std](https://doc.rust-lang.org/std/)
-    - [edition guide](https://doc.rust-lang.org/edition-guide)
-    - [cargo](https://github.com/rust-lang/cargo): package manager
-      - [doc](https://doc.rust-lang.org/cargo/index.html)
-      - [fmt](https://github.com/rust-lang/rustfmt)
-      - [clippy](https://github.com/rust-lang/rust-clippy)
-    - [rustdoc](https://doc.rust-lang.org/rustdoc)
-    - [rustc](https://doc.rust-lang.org/rustc)
-    - [error codes](https://doc.rust-lang.org/error_codes)
-  - skills
-    - [cli](https://rust-cli.github.io/book)
-    - [wasm](https://rustwasm.github.io/docs/book/)
-    - [embedded](https://doc.rust-lang.org/stable/embedded-book)
-  - master
-    - [reference](https://doc.rust-lang.org/reference)
-    - [rustonomicon](https://doc.rust-lang.org/stable/nomicon/)
-    - [unstable](https://doc.rust-lang.org/nightly/unstable-book)
-  - [api guidelines](https://rust-lang.github.io/api-guidelines/)
+
+</details>
+<details>
+    <summary>docs</summary>
+
+- [rust by example](https://doc.rust-lang.org/rust-by-example/)
+- [book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
+- [rustlings](https://github.com/rust-lang/rustlings)
+- core
+  - [crate std](https://doc.rust-lang.org/std/)
+  - [edition guide](https://doc.rust-lang.org/edition-guide)
+  - [cargo](https://github.com/rust-lang/cargo): package manager
+    - [doc](https://doc.rust-lang.org/cargo/index.html)
+    - [fmt](https://github.com/rust-lang/rustfmt)
+    - [clippy](https://github.com/rust-lang/rust-clippy)
+  - [rustdoc](https://doc.rust-lang.org/rustdoc)
+  - [rustc](https://doc.rust-lang.org/rustc)
+  - [error codes](https://doc.rust-lang.org/error_codes)
+- skills
+  - [cli](https://rust-cli.github.io/book)
+  - [wasm](https://rustwasm.github.io/docs/book/)
+  - [embedded](https://doc.rust-lang.org/stable/embedded-book)
+- master
+  - [reference](https://doc.rust-lang.org/reference)
+  - [rustonomicon](https://doc.rust-lang.org/stable/nomicon/)
+  - [unstable](https://doc.rust-lang.org/nightly/unstable-book)
+- [api guidelines](https://rust-lang.github.io/api-guidelines/)
+
+</details>
+<details>
+    <summary>community</summary>
+
 - [community](https://www.rust-lang.org/community)
   - [users forum](https://users.rust-lang.org)
-- [blog](https://blog.rust-lang.org/) & [inside](https://blog.rust-lang.org/inside-rust)
-- editors
-  - [vim](https://github.com/rust-lang/rust.vim)
+
+</details>
+<details>
+    <summary>blog</summary>
+
+- blog: [main](https://blog.rust-lang.org/)
+- blog: [inside](<https://blog.rust-lang.org/inside-rust>)
+
+</details>
+<details>
+    <summary>editor</summary>
+
+- [vim](https://github.com/rust-lang/rust.vim)
+
+</details>
+
+---
+
+## Contents
+
+- how to [start](#start)
+- read
+  - [rust book](#rust-book)
+- source code
+  - [hello world](src/helloworld/README.md)
+  - container: [backyard](src/container/backyard/README.md)
+  - app: [tauri](src/tauri/README.md)
+
+---
 
 ## Start
 
