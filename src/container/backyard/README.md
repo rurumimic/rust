@@ -17,4 +17,3 @@ I'm growing Asparagus!
 ```bash
 podman rm backyard
 ```
-
