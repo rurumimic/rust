@@ -228,7 +228,7 @@ with [quiz](https://rust-book.cs.brown.edu)
 - [More Cargo](src/learn/cargo/README.md#more-cargo): profiles, workspace, documentation, crates.io, binary, custom commands
 - [Smart Pointers](src/learn/pointer/README.md): reference count, box, rc, refcell, weak, deref, drop
 - [Concurrency](src/learn/concurrency/README.md): threads, spawn, join, channel, mutex, arc, sync, send
-- OOP
+- [Object-Oriented](src/learn/oop/README.md): encapsulation, public & private, inheritance, trait, polymorphism
 - Patterns & Matching
 - Advanced
 - Final Project - Multithreaded Web Server
