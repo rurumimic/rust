@@ -38,3 +38,5 @@ cd helloworld
 cargo tauri dev
 ```
 
+![](helloworld/images/helloworld.png)
+
