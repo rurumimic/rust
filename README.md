@@ -70,6 +70,7 @@
   - [hello world](src/helloworld/README.md)
   - container: [backyard](src/container/backyard/README.md)
   - app: [tauri](src/tauri/README.md)
+  - [wasm](src/wasm/README.md)
 
 ---
 
