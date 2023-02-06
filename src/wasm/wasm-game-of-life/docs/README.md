@@ -69,11 +69,13 @@ npm install
 
 ### Using our Local wasm-game-of-life Package in www
 
-`vi www/package.json`
+```bash
+vi package.json
+```
 
 ```json
 {
-  "dependencies": { // Add this three lines block!
+  "dependencies": {
     "wasm-game-of-life": "file:../pkg"
   },
 }
@@ -88,3 +90,5 @@ npm install
 ```bash
 npm run start
 ```
+
+![](images/helloworld.png)

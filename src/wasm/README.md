@@ -9,7 +9,6 @@
 1. install [rust](/README.md#install-by-rustup)
 2. install wasm-pack
 3. install cargo-generate
-4. install [npm](https://github.com/rurumimic/supply/blob/master/languages/node.md)
 
 ```bash
 # install wasm-pack
@@ -23,7 +22,18 @@ cargo install cargo-generate
 rustc --version
 wasm-pack --help
 cargo generate --help
-node --version
+```
+
+### Node v16
+
+- install [npm](https://github.com/rurumimic/supply/blob/master/languages/node.md) v16
+
+```bash
+nvm ls-remote
+nvm install v16.19.0
+nvm use v16.19.0
+
+node --version # v16
 ```
 
 ---
