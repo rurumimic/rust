@@ -231,7 +231,7 @@ with [quiz](https://rust-book.cs.brown.edu)
 - [Concurrency](src/learn/concurrency/README.md): threads, spawn, join, channel, mutex, arc, sync, send
 - [Object-Oriented](src/learn/oop/README.md): encapsulation, public & private, inheritance, trait, polymorphism, dynamic dispatch, design pattern with types
 - [Patterns & Matching](src/learn/pattern/README.md): refutable patterns, irrefutable patterns, match, match guard, `@` binding, `_` ignore
-- Advanced
+- [Advanced](src/learn/advanced/README.md)
 - Final Project - Multithreaded Web Server
 - Appendix
   - read: [derivable traits](https://doc.rust-lang.org/book/appendix-03-derivable-traits.html)
