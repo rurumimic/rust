@@ -196,6 +196,204 @@ fn main() {}
 
 ## Traits
 
+- book: [Advanced Traits](https://doc.rust-lang.org/book/ch19-03-advanced-traits.html)
+
+### Associated Types
+
+```rs
+pub trait Iterator {
+    type Item; // placeholder
+
+    fn next(&mut self) -> Option<Self::Item>;
+}
+```
+
+implement trait: don’t need to annotate types because we can’t implement a trait on a type multiple times.
+
+```rs
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        // --snip--
+```
+
+generics: must annotate the types in each implementation.
+
+```rs
+pub trait Iterator<T> {
+    fn next(&mut self) -> Option<T>;
+}
+```
+
+### Default Generic Type Parameters and Operator Overloading
+
+```rs
+use std::ops::Add;
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+trait Add<Rhs=Self> {
+    type Output;
+
+    fn add(self, rhs: Rhs) -> Self::Output;
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -> Point {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+fn main() {
+    assert_eq!(
+        Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
+        Point { x: 3, y: 3 }
+    );
+}
+```
+
+```rs
+use std::ops::Add;
+
+struct Millimeters(u32);
+struct Meters(u32);
+
+impl Add<Meters> for Millimeters {
+    type Output = Millimeters;
+
+    fn add(self, other: Meters) -> Millimeters {
+        Millimeters(self.0 + (other.0 * 1000))
+    }
+}
+```
+
+### Fully Qualified Syntax
+
+```rs
+<Type as Trait>::function(receiver_if_method, next_arg, ...);
+```
+
+example:
+
+```rs
+trait Pilot {
+    fn fly(&self);
+}
+
+trait Wizard {
+    fn fly(&self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&self) {
+        println!("*waving arms furiously*");
+    }
+}
+```
+
+```rs
+fn main() {
+    let person = Human;
+    Pilot::fly(&person); // This is your captain speaking.
+    Wizard::fly(&person); // Up!
+    Human::fly(&person); // *waving arms furiously*
+    // or
+    // person.fly(); // *waving arms furiously*
+
+    // A baby dog is called a Spot
+    println!("A baby dog is called a {}", Dog::baby_name());
+    // A baby dog is called a puppy
+   println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
+
+}
+```
+
+### Supertraits
+
+```rs
+use std::fmt;
+
+trait OutlinePrint: fmt::Display {
+    fn outline_print(&self) {
+        let output = self.to_string();
+        let len = output.len();
+        println!("{}", "*".repeat(len + 4));
+        println!("*{}*", " ".repeat(len + 2));
+        println!("* {} *", output);
+        println!("*{}*", " ".repeat(len + 2));
+        println!("{}", "*".repeat(len + 4));
+    }
+}
+```
+
+```rs
+**********
+*        *
+* (1, 3) *
+*        *
+**********
+```
+
+```rs
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl OutlinePrint for Point {}
+
+impl fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+```
+
+### Newtype Pattern
+
+Newtype is a term that originates from the Haskell programming language.
+
+```rs
+use std::fmt;
+
+struct Wrapper(Vec<String>);
+
+impl fmt::Display for Wrapper {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[{}]", self.0.join(", "))
+    }
+}
+
+fn main() {
+    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
+    println!("w = {}", w);
+}
+```
+
 ---
 
 ## Types
