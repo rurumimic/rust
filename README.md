@@ -238,6 +238,6 @@ with [quiz](https://rust-book.cs.brown.edu)
   - types: type aliases, never type, `Sized` trait
   - function pointer, return clousre
   - macro: declarative macro, `macro_rules!`, procedural macro, `derive`, attribute-like, function-like
-- Final Project - Multithreaded Web Server
+- [Final Project](src/learn/final_project/README.md) - Multithreaded Web Server
 - Appendix
   - read: [derivable traits](https://doc.rust-lang.org/book/appendix-03-derivable-traits.html)
