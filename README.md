@@ -36,6 +36,7 @@
   - [rustonomicon](https://doc.rust-lang.org/stable/nomicon/)
   - [unstable](https://doc.rust-lang.org/nightly/unstable-book)
 - [api guidelines](https://rust-lang.github.io/api-guidelines/)
+- [little book of rust macros](https://danielkeep.github.io/tlborm/book/index.html)
 
 </details>
 <details>
@@ -232,6 +233,11 @@ with [quiz](https://rust-book.cs.brown.edu)
 - [Object-Oriented](src/learn/oop/README.md): encapsulation, public & private, inheritance, trait, polymorphism, dynamic dispatch, design pattern with types
 - [Patterns & Matching](src/learn/pattern/README.md): refutable patterns, irrefutable patterns, match, match guard, `@` binding, `_` ignore
 - [Advanced](src/learn/advanced/README.md)
+  - unsafe: raw pointer, extern, mutable static variable
+  - traits: associated types, fully qualified syntax, supertraits, newtype
+  - types: type aliases, never type, `Sized` trait
+  - function pointer, return clousre
+  - macro: declarative macro, `macro_rules!`, procedural macro, `derive`, attribute-like, function-like
 - Final Project - Multithreaded Web Server
 - Appendix
   - read: [derivable traits](https://doc.rust-lang.org/book/appendix-03-derivable-traits.html)

@@ -277,6 +277,8 @@ impl Add<Meters> for Millimeters {
 }
 ```
 
+ref: [Newtype Pattern for Type Safety and Abstraction](#newtype-pattern-for-type-safety-and-abstraction)
+
 ### Fully Qualified Syntax
 
 ```rs
@@ -327,7 +329,7 @@ fn main() {
     // A baby dog is called a Spot
     println!("A baby dog is called a {}", Dog::baby_name());
     // A baby dog is called a puppy
-   println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
+    println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
 
 }
 ```
@@ -380,11 +382,11 @@ Newtype is a term that originates from the Haskell programming language.
 ```rs
 use std::fmt;
 
-struct Wrapper(Vec<String>);
+struct Wrapper(Vec<String>); // tuple struct
 
 impl fmt::Display for Wrapper {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}]", self.0.join(", "))
+        write!(f, "[{}]", self.0.join(", ")) // tuple.0
     }
 }
 
@@ -394,14 +396,347 @@ fn main() {
 }
 ```
 
+- it doesn’t have the methods of the value it’s holding
+- have to implement all the methods of `Vec<T>` directly on `Wrapper`
+- implementing the `Deref` trait on the `Wrapper` to return the inner type would be a solution
+
 ---
 
 ## Types
+
+- book: [Advanced Types](https://doc.rust-lang.org/book/ch19-04-advanced-types.html)
+
+### Newtype Pattern for Type Safety and Abstraction
+
+ref: [Millimeters and Meters](#default-generic-type-parameters-and-operator-overloading)
+
+- statically enforcing that values are never confused and indicating the units of a value
+- abstract away some implementation details of a type
+  - new type can expose a public API that is different from the API of the private inner type
+- hide internal implementation
+  - OOP: [Encapsulation that Hides Implementation Details](../oop/README.md#encapsulation)
+
+### Type Synonyms with Type Aliases
+
+- type alias
+  - give an existing type another name
+  - to reduce repetition
+- Choosing a meaningful name for a type alias can help communicate your intent as well.
+
+```rs
+type Kilometers = i32;
+
+let x: i32 = 5;
+let y: Kilometers = 5;
+
+println!("x + y = {}", x + y);
+```
+
+```rs
+type Thunk = Box<dyn Fn() + Send + 'static>;
+
+let f: Thunk = Box::new(|| println!("hi"));
+
+fn takes_long_type(f: Thunk) {
+    // --snip--
+}
+
+fn returns_long_type() -> Thunk {
+    // --snip--
+}
+```
+
+```rs
+type Result<T> = std::result::Result<T, std::io::Error>;
+
+pub trait Write {
+    fn write(&mut self, buf: &[u8]) -> Result<usize>;
+    fn flush(&mut self) -> Result<()>;
+
+    fn write_all(&mut self, buf: &[u8]) -> Result<()>;
+    fn write_fmt(&mut self, fmt: fmt::Arguments) -> Result<()>;
+}
+```
+
+### Never Type that Never Returns
+
+- never type
+  - empty type has no values
+
+diverging functions:
+
+```rs
+fn bar() -> ! {
+    // --snip--
+}
+```
+
+`continue` has a `!` value:
+
+```rs
+let guess: u32 = match guess.trim().parse() {
+    Ok(num) => num,
+    Err(_) => continue,
+};
+```
+
+`panic!` has the type `!`:
+
+```rs
+impl<T> Option<T> {
+    pub fn unwrap(self) -> T {
+        match self {
+            Some(val) => val,
+            None => panic!("called `Option::unwrap()` on a `None` value"),
+        }
+    }
+}
+```
+
+`loop` has the type `!`:
+
+```rs
+print!("forever ");
+
+loop {
+    print!("and ever ");
+}
+```
+
+However, this wouldn’t be true if we included a `break`.
+
+### Dynamically Sized Types and the `Sized` Trait
+
+let us write code using values whose size we can know only at runtime:
+
+- DST
+- Dynamically Sized Types
+- Unsized Types
+
+```rs
+let s1: str = "Hello there!";
+let s2: str = "How's it going?";
+```
+
+```rs
+fn generic<T>(t: T) {
+    // --snip--
+}
+// same as:
+fn generic<T: Sized>(t: T) {
+    // --snip--
+}
+// special syntax to relax this restriction:
+fn generic<T: ?Sized>(t: &T) {
+    // --snip--
+}
+```
 
 ---
 
 ## Functions and Closures
 
+- book: [Advanced Functions and Closures](https://doc.rust-lang.org/book/ch19-05-advanced-functions-and-closures.html)
+
+### Function Pointers
+
+- Function pointers implement all three of the closure traits
+  - `Fn`, `FnMut`, and `FnOnce`
+- only accept `fn` and not closures: interfacing with external code that doesn’t have closures
+  - C langauge
+
+```rs
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+
+fn apply_twice(f: fn(i32) -> i32, x: i32) -> i32 {
+    f(f(x))
+}
+
+fn main() {
+    apply_twice(add_one, 3); // 5 = (3 + 1) + 1
+}
+```
+
+closure vs function pointer:
+
+```rs
+let list_of_numbers = vec![1, 2, 3];
+
+let list_of_strings: Vec<String> =
+    list_of_numbers.iter().map(|i| i.to_string()).collect();
+
+let list_of_strings: Vec<String> =
+    list_of_numbers.iter().map(ToString::to_string).collect();
+```
+
+enum function pointer:
+
+```rs
+ enum Status {
+    Value(u32),
+    Stop,
+}
+
+let list_of_statuses: Vec<Status> = (0u32..20).map(Status::Value).collect();
+```
+
+### Returning Closures
+
+- Closures are represented by traits
+  - which means you can’t return closures directly
+  - don’t have a concrete type that is returnable
+
+```rs
+// Err
+fn returns_closure() -> dyn Fn(i32) -> i32 {
+    |x| x + 1
+}
+
+// OK
+fn returns_closure() -> Box<dyn Fn(i32) -> i32> {
+    Box::new(|x| x + 1)
+}
+```
+
 ---
 
 ## Macros
+
+- book: [Macros](https://doc.rust-lang.org/book/ch19-06-macros.html)
+- [The Little Book of Rust Macros](https://danielkeep.github.io/tlborm/book/index.html)
+
+### Macros vs Functions
+
+- function signature
+  - must declare the number and type of parameters
+  - can define anywhere and call anywhere
+- macro
+  - can take a variable number of parameters
+  - expanded before the compiler interprets the meaning of the code
+  - must define macros or bring them into scope before you call them in a file
+
+write Rust code that writes Rust code
+
+### Declarative Macros: with `macro_rules!` for General Metaprogramming
+
+```rs
+let v: Vec<u32> = vec![1, 2, 3];
+```
+
+slightly simplified definition of the `vec!` macro:
+
+```rs
+#[macro_export]
+macro_rules! vec {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
+}
+```
+
+If the pattern matches, the associated block of code will be emitted.
+
+### Procedural Macros: for Generating Code from Attributes
+
+```rs
+use proc_macro;
+
+#[some_attribute]
+pub fn some_name(input: TokenStream) -> TokenStream {
+}
+```
+
+### How to Write a Custom `derive` Macro
+
+- [Cargo.toml](macro/Cargo.toml)
+- hello
+  - [main.rs](macro/hello/src/main.rs)
+- hello_macro
+  - [lib.rs](macro/hello_macro/src/lib.rs)
+  - hello_macro_derive
+    - [Cargo.toml](macro/hello_macro/hello_macro_derive/Cargo.toml)
+    - [lib.rs](macro/hello_macro/hello_macro_derive/src/lib.rs)
+
+```bash
+macro/
+├── Cargo.toml
+├── hello/
+│   ├── Cargo.toml
+│   └── src/
+│       └── main.rs
+└── hello_macro/
+    ├── Cargo.toml
+    ├── hello_macro_derive/
+    │   ├── Cargo.toml
+    │   └── src/
+    │       └── lib.rs
+    └── src/
+        └── lib.rs
+```
+
+#### hello_macro_derive/Cargo.toml
+
+```toml
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1.0"
+quote = "1.0"
+```
+
+- `syn`: parses Rust code from a string into a data structure that we can perform operations on
+- `quote`: turns `syn` data structures back into Rust code
+
+#### Run Hello
+
+```bash
+cargo run
+
+Hello, Macro! My name is Pancakes!
+```
+
+1. `hello/src/main.rs` → `#[derive(HelloMacro)] struct Pancakes`
+2. `hello_macro_derive/src/lib.rs` → `#[proc_macro_derive(HelloMacro)] pub fn hello_macro_derive`
+   1. `Pancakes`: `parse(input)` → `ast: DeriveInput` → `&ast.ident`
+   2. `quote! { Rust Code }` → `into()` → `TokenStream`
+3. `hello/src/main.rs` → `Pancakes::hello_macro()` → `trait HelloMacro::hello_macro()` → `println!("Hello... Pancakes!")`
+
+### Attribute-like macros
+
+- allow to create new attributes
+- `derive`: only structs and enums
+
+```rs
+#[route(GET, "/")]
+fn index() {}
+```
+
+```rs
+#[proc_macro_attribute]
+pub fn route(attr: TokenStream, item: TokenStream) -> TokenStream {}
+```
+
+- `attr`: `GET, "/"`
+- `item`: `fn index() {}`
+
+### Function-like macros
+
+- take a TokenStream parameter and their definition manipulates that TokenStream using Rust code as the other two types of procedural macros do
+
+```rs
+let sql = sql!(SELECT * FROM posts WHERE id=1);
+```
+
+```rs
+#[proc_macro]
+pub fn sql(input: TokenStream) -> TokenStream {}
+```
