@@ -85,6 +85,29 @@ vi package.json
 npm install
 ```
 
+### Update Hello World
+
+```bash
+www/src/index.js
+```
+
+```js
+import * as wasm from "wasm-game-of-life";
+
+wasm.greet("World");
+```
+
+```bash
+src/lib.rs
+```
+
+```js
+#[wasm_bindgen]
+pub fn greet(name: &str) {
+    alert(&format!("Hello, {}!", name));
+}
+```
+
 ### Serving Locally
 
 ```bash
