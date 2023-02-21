@@ -114,4 +114,4 @@ pub fn greet(name: &str) {
 npm run start
 ```
 
-![](images/helloworld.png)
+![helloworld](images/helloworld.png)

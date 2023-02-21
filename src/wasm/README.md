@@ -48,3 +48,4 @@ node --version # v16
 ### Content
 
 - [Hello, World!](wasm-game-of-life/docs/README.md)
+- [Implementing Conway's Game of Life](wasm-game-of-life/docs/implementing.md)
