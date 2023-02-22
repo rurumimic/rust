@@ -15,6 +15,16 @@
         align-items: center;
         justify-content: center;
       }
+
+      #play-pause {
+        position: relative;
+        margin: 8px auto;
+      }
+
+      #fps {
+        white-space: pre;
+        font-family: monospace;
+      }
     </style>
   </head>
   <body>
@@ -22,6 +32,8 @@
       This page contains webassembly and javascript content, please enable javascript in your browser.
     </noscript>
     <canvas id="game-of-life-canvas"></canvas>
+    <button id="play-pause"></button>
+    <div id="fps"></div>
     <script src="./bootstrap.js"></script>
   </body>
 </html>

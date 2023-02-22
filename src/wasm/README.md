@@ -51,4 +51,7 @@ node --version # v16
 - [Implementing Conway's Game of Life](wasm-game-of-life/docs/implementing.md)
 - [Testing Conway's Game of Life](wasm-game-of-life/docs/test.md)
 - [Debugging](wasm-game-of-life/docs/debug.md)
-
+- [Interactive](wasm-game-of-life/docs/interactive.md)
+- [Time Profile](wasm-game-of-life/docs/profile.md)
+- [Shrink Size](wasm-game-of-life/docs/size.md)
+- [Publish](wasm-game-of-life/docs/publish.md)
