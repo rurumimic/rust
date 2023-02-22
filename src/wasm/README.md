@@ -50,4 +50,5 @@ node --version # v16
 - [Hello, World!](wasm-game-of-life/docs/README.md)
 - [Implementing Conway's Game of Life](wasm-game-of-life/docs/implementing.md)
 - [Testing Conway's Game of Life](wasm-game-of-life/docs/test.md)
+- [Debugging](wasm-game-of-life/docs/debug.md)
 
