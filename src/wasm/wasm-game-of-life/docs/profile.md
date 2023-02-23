@@ -167,35 +167,76 @@ for (let i = 0; i < 9; i++) {
 
 ```rs
 pub fn tick(&mut self) {
-        let _timer = Timer::new("Universe::tick");
+    let _timer = Timer::new("Universe::tick");
 
-        let mut next = {
-            let _timer = Timer::new("allocate next cells");
-            self.cells.clone()
-        };
+    let mut next = {
+        let _timer = Timer::new("allocate next cells");
+        self.cells.clone()
+    };
 
-        {
-            let _timer = Timer::new("new generation");
-            for row in 0..self.height {
-                for col in 0..self.width {
-                    let idx = self.get_index(row, col);
-                    let cell = self.cells[idx];
-                    let live_neighbors = self.live_neighbor_count(row, col);
+    {
+        let _timer = Timer::new("new generation");
+        for row in 0..self.height {
+            for col in 0..self.width {
+                let idx = self.get_index(row, col);
+                let cell = self.cells[idx];
+                let live_neighbors = self.live_neighbor_count(row, col);
 
-                    let next_cell = match (cell, live_neighbors) {
-                        (Cell::Alive, x) if x < 2 => Cell::Dead,
-                        (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
-                        (Cell::Alive, x) if x > 3 => Cell::Dead,
-                        (Cell::Dead, 3) => Cell::Alive,
-                        (otherwise, _) => otherwise,
-                    };
-                    
-                    next[idx] = next_cell;
-                }
+                let next_cell = match (cell, live_neighbors) {
+                    (Cell::Alive, x) if x < 2 => Cell::Dead,
+                    (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
+                    (Cell::Alive, x) if x > 3 => Cell::Dead,
+                    (Cell::Dead, 3) => Cell::Alive,
+                    (otherwise, _) => otherwise,
+                };
+                
+                next[idx] = next_cell;
             }
         }
-
-        let _timer = Timer::new("free old cells");
-        self.cells = next;
     }
+
+    let _timer = Timer::new("free old cells");
+    self.cells = next;
+}
+```
+
+#### benches/bench.rs
+
+```rs
+#![feature(test)]
+
+extern crate test;
+extern crate wasm_game_of_life;
+
+#[bench]
+fn universe_ticks(b: &mut test::Bencher) {
+    let mut universe = wasm_game_of_life::Universe::new();
+
+    b.iter(|| {
+        universe.tick();
+    });
+}
+```
+
+```bash
+rustup toolchain list
+rustup toolchain install nightly
+rustup override set nightly
+cargo install cargo-benchcmp
+```
+
+Comment out all the `#[wasm_bindgen]`:
+
+```rs
+// #[wasm_bindgen]
+```
+
+Comment out `cdylib` in `Cargo.toml`:
+
+```toml
+
+```
+
+```bash
+cargo bench | tee before.txt
 ```
