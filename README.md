@@ -73,6 +73,8 @@
   - app: [tauri](src/tauri/README.md)
   - [wasm](src/wasm/README.md)
     - Game of Life
+  - [rustpython](src/python/README.md)
+    - call between rust and python
 
 ---
 
