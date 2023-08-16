@@ -75,6 +75,7 @@
     - Game of Life
   - [rustpython](src/python/README.md)
     - call between rust and python
+- [concurrent](src/concurrent/README.md)
 
 ---
 
