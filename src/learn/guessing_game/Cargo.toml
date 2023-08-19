@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "A fun game where you guess what number the computer has chosen."
 license = "MIT"
+publish = false
 
 [dependencies]
 rand = "0.8.5"
