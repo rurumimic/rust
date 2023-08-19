@@ -1,123 +1,13 @@
-#![allow(dead_code, unused)]
-
 use std::ptr::{read_volatile, write_volatile};
 use std::sync::atomic::{fence, Ordering};
-use std::sync::{Arc, Barrier, Condvar, Mutex, RwLock};
 use std::thread;
 
-fn main() {
-    // ex_mutex();
-    // ex_condvar();
-    // ex_rwlock();
-    // ex_barrier();
-    ex_bakery();
-}
+/*
 
-/* Mutex */
-fn add_one(lock: Arc<Mutex<u64>>) {
-    loop {
-        let mut val = lock.lock().unwrap();
-        *val += 1;
-        println!("{}", *val);
-        break;
-    }
-}
+COUNT = 400000 (expected = 400000)
 
-fn ex_mutex() {
-    let lock0 = Arc::new(Mutex::new(0));
-    let lock1 = lock0.clone();
+*/
 
-    let thread0 = thread::spawn(move || {
-        add_one(lock0);
-    });
-
-    let thread1 = thread::spawn(move || {
-        add_one(lock1);
-    });
-
-    thread0.join().unwrap();
-    thread1.join().unwrap();
-}
-
-/* Condvar */
-
-fn child(id: u64, p: Arc<(Mutex<bool>, Condvar)>) {
-    let &(ref lock, ref cvar) = &*p;
-
-    let mut started = lock.lock().unwrap();
-
-    // cvar.wait_while(started, |started| !*started).unwrap();
-    // or
-    while !*started {
-        started = cvar.wait(started).unwrap();
-    }
-
-    println!("child {}", id);
-}
-
-fn parent(p: Arc<(Mutex<bool>, Condvar)>) {
-    let &(ref lock, ref cvar) = &*p;
-
-    let mut started = lock.lock().unwrap();
-    *started = true;
-    cvar.notify_all();
-
-    println!("parent");
-}
-
-fn ex_condvar() {
-    let pair0 = Arc::new((Mutex::new(false), Condvar::new()));
-    let pair1 = Arc::clone(&pair0);
-    let pair2 = Arc::clone(&pair0);
-
-    let c0 = thread::spawn(move || child(0, pair0));
-    let c1 = thread::spawn(move || child(1, pair1));
-    let p = thread::spawn(move || parent(pair2));
-
-    c0.join().unwrap();
-    c1.join().unwrap();
-    p.join().unwrap();
-}
-
-/* RwLock */
-fn ex_rwlock() {
-    let lock = RwLock::new(10);
-
-    {
-        let v1 = lock.read().unwrap();
-        let v2 = lock.read().unwrap();
-        println!("v1 = {}", v1);
-        println!("v2 = {}", v2);
-    }
-
-    {
-        let mut v = lock.write().unwrap();
-        *v = 7;
-        println!("v = {}", v);
-    }
-}
-
-/* Barrier */
-fn ex_barrier() {
-    let mut v = Vec::new();
-
-    let barrier = Arc::new(Barrier::new(10));
-
-    for _ in 0..10 {
-        let b = barrier.clone();
-        let t = thread::spawn(move || {
-            b.wait();
-            println!("finished barrier");
-        });
-        v.push(t);
-    }
-
-    for t in v {
-        t.join().unwrap();
-    }
-}
-
-/* Bakery */
 const NUM_THREADS: usize = 4;
 const NUM_LOOP: usize = 100000;
 
@@ -215,7 +105,7 @@ fn countup(i: usize) {
     }
 }
 
-fn ex_bakery() {
+fn main() {
     let mut v = Vec::new();
     for i in 0..NUM_THREADS {
         let t = thread::spawn(move || countup(i));
