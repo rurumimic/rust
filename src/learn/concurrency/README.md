@@ -87,7 +87,7 @@ println!("Got: {}", received);
 ### ownership
 
 1. `send`: take ownership of its paramter
-1. receiver tkae ownership of it
+1. receiver take ownership of it
 
 ```rs
 let tx1 = tx.clone();
