@@ -17,7 +17,7 @@
 ### Advanced
 
 - [concurrent](src/concurrent/README.md)
-- algorithms
+- [algorithm](src/algorithm/README.md)
 
 ### Applications
 
