@@ -17,7 +17,7 @@
 ### Advanced
 
 - [concurrent](src/concurrent/README.md)
-- [algorithm](src/algorithm/README.md)
+- [algorithm](https://github.com/rurumimic/algorithm-rs)
 
 ### Applications
 
