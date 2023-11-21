@@ -33,7 +33,7 @@ source "$HOME/.cargo/env"
 ## VSCode
 
 - extension: [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
-- [.vscode/settings.json](.vscode/settings.json)
+- [.vscode/settings.json](/.vscode/settings.json)
 
 `settings.json`:
 
