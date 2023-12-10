@@ -7,3 +7,14 @@ edition = "2021"
 
 [dependencies]
 futures = "0.3.29"
+nix = { version = "0.27.1", features = ["event"] }
+
+[[bin]]
+name = "state_machine"
+
+[[bin]]
+name = "scheduler"
+
+[[bin]]
+name = "epoll_server"
+
