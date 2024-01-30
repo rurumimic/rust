@@ -44,7 +44,7 @@ fn main() {
                 let (reader, writer) = fd2buf.get_mut(&fd).unwrap();
 
                 let mut buf = String::new();
-                let n =reader.read_line(&mut buf).unwrap();
+                let n = reader.read_line(&mut buf).unwrap();
 
                 if n == 0 {
                     let mut ev = EpollEvent::new(epoll_in, fd as u64);
