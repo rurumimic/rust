@@ -5,9 +5,7 @@ use futures::{
 use nix::{
     errno::Errno,
     sys::{
-        epoll::{
-            EpollCreateFlags, EpollEvent, EpollFlags, Epoll,
-        },
+        epoll::{Epoll, EpollCreateFlags, EpollEvent, EpollFlags},
         eventfd::{eventfd, EfdFlags},
     },
     unistd::write,
@@ -17,7 +15,10 @@ use std::{
     future::Future,
     io::{BufRead, BufReader, BufWriter, Write},
     net::{SocketAddr, TcpListener, TcpStream},
-    os::{unix::io::{AsRawFd, RawFd}, fd::{OwnedFd, FromRawFd}},
+    os::{
+        fd::{OwnedFd, BorrowedFd},
+        unix::io::{AsRawFd, RawFd},
+    },
     pin::Pin,
     sync::{
         mpsc::{sync_channel, Receiver, SyncSender},
@@ -28,21 +29,19 @@ use std::{
 
 fn write_eventfd(fd: RawFd, n: usize) {
     let ptr = &n as *const usize as *const u8;
-    let val = unsafe {
-        std::slice::from_raw_parts(ptr, std::mem::size_of_val(&n))
-    };
-    write(fd, &val).unwrap();
+    let val = unsafe { std::slice::from_raw_parts(ptr, std::mem::size_of_val(&n)) };
+    write(fd, val).unwrap();
 }
 
 enum IOOps {
-    ADD(EpollFlags, OwnedFd, Waker),
-    REMOVE(OwnedFd),
+    ADD(EpollFlags, RawFd, Waker),
+    REMOVE(RawFd),
 }
 
 struct IOSelector {
-    wakers: Mutex<HashMap<RawFd, Waker>>,
-    queue: Mutex<VecDeque<IOOps>>,
-    epfd: Epoll,
+    wakers: Mutex<HashMap<RawFd, Waker>>, // fd -> waker
+    queue: Mutex<VecDeque<IOOps>>, // IO queue
+    epfd: Epoll, // epoll's fd
     event: OwnedFd,
 }
 
@@ -63,13 +62,20 @@ impl IOSelector {
         result
     }
 
-    fn add_event(&self, flag: EpollFlags, fd: OwnedFd, waker: Waker, wakers: &mut HashMap<RawFd, Waker>) {
-        let mut ev = EpollEvent::new(flag | EpollFlags::EPOLLONESHOT, fd.as_raw_fd() as u64);
+    fn add_event(
+        &self,
+        flag: EpollFlags,
+        fd: RawFd,
+        waker: Waker,
+        wakers: &mut HashMap<RawFd, Waker>,
+    ) {
+        let mut ev = EpollEvent::new(flag | EpollFlags::EPOLLONESHOT, fd as u64);
+        let borrowed_fd = unsafe { BorrowedFd::borrow_raw(fd) };
 
-        if let Err(err) = self.epfd.add(fd.try_clone().unwrap(), ev) {
+        if let Err(err) = self.epfd.add(borrowed_fd, ev) {
             match err {
                 Errno::EEXIST => {
-                    self.epfd.modify(fd.try_clone().unwrap(), &mut ev).unwrap();
+                    self.epfd.modify(borrowed_fd, &mut ev).unwrap();
                 }
                 _ => {
                     panic!("epoll_add: {}", err);
@@ -77,18 +83,21 @@ impl IOSelector {
             }
         }
 
-        assert!(!wakers.contains_key(&fd.as_raw_fd()));
-        wakers.insert(fd.as_raw_fd(), waker);
+        assert!(!wakers.contains_key(&fd));
+        wakers.insert(fd, waker);
     }
 
-    fn rm_event(&self, fd: OwnedFd, wakers: &mut HashMap<RawFd, Waker>) {
-        self.epfd.delete(fd.try_clone().unwrap()).ok();
-        wakers.remove(&fd.as_raw_fd());
+    fn rm_event(&self, fd: RawFd, wakers: &mut HashMap<RawFd, Waker>) {
+        let borrowed_fd = unsafe { BorrowedFd::borrow_raw(fd) };
+        self.epfd.delete(borrowed_fd).ok();
+        wakers.remove(&fd);
     }
 
     fn select(&self) {
         let ev = EpollEvent::new(EpollFlags::EPOLLIN, self.event.as_raw_fd() as u64);
-        let _ = self.epfd.add(&self.event, ev);
+        if let Err(err) = self.epfd.add(&self.event, ev) {
+            panic!("epoll_add: {}", err);
+        }
 
         let mut events = vec![EpollEvent::empty(); 1024];
         while let Ok(nfds) = self.epfd.wait(&mut events, -1) {
@@ -108,17 +117,16 @@ impl IOSelector {
                     waker.wake_by_ref();
                 }
             }
-
         }
     }
 
-    fn register(&self, flags: EpollFlags, fd: OwnedFd, waker: Waker) {
+    fn register(&self, flags: EpollFlags, fd: RawFd, waker: Waker) {
         let mut q = self.queue.lock().unwrap();
         q.push_back(IOOps::ADD(flags, fd, waker));
         write_eventfd(self.event.as_raw_fd(), 1);
     }
 
-    fn unregister(&self, fd: OwnedFd) {
+    fn unregister(&self, fd: RawFd) {
         let mut q = self.queue.lock().unwrap();
         q.push_back(IOOps::REMOVE(fd));
         write_eventfd(self.event.as_raw_fd(), 1);
@@ -132,26 +140,24 @@ struct AsyncListener {
 
 impl AsyncListener {
     fn listen(addr: &str, selector: Arc<IOSelector>) -> AsyncListener {
-        let listener = TcpListener::bind(addr).unwrap();
+        let listener = match TcpListener::bind(addr) {
+            Ok(listener) => listener,
+            Err(err) => panic!("bind: {}", err),
+        };
 
         listener.set_nonblocking(true).unwrap();
 
-        AsyncListener {
-            listener,
-            selector,
-        }
+        AsyncListener { listener, selector }
     }
 
     fn accept(&self) -> Accept {
-        Accept {
-            listener: self,
-        }
+        Accept { listener: self }
     }
 }
 
 impl Drop for AsyncListener {
     fn drop(&mut self) {
-        self.selector.unregister(unsafe { OwnedFd::from_raw_fd(self.listener.as_raw_fd()) });
+        self.selector.unregister(self.listener.as_raw_fd());
     }
 }
 
@@ -162,35 +168,34 @@ struct Accept<'a> {
 impl<'a> Future for Accept<'a> {
     type Output = (AsyncReader, BufWriter<TcpStream>, SocketAddr);
 
-    fn poll(self: Pin<&mut Self>,
-    cx: &mut Context<'_>) -> Poll<Self::Output> {
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         match self.listener.listener.accept() {
             Ok((stream, addr)) => {
-                println!("Accept! {}", addr);
                 let stream0 = stream.try_clone().unwrap();
                 Poll::Ready((
-                    AsyncReader::new(stream, self.listener.selector.clone()),
-                    BufWriter::new(stream0),
+                    AsyncReader::new(stream0, self.listener.selector.clone()),
+                    BufWriter::new(stream),
                     addr,
                 ))
             }
             Err(err) => {
-                print!("?");
                 if err.kind() == std::io::ErrorKind::WouldBlock {
-                    self.listener.selector.register(EpollFlags::EPOLLIN, unsafe { OwnedFd::from_raw_fd(self.listener.listener.as_raw_fd()) }, cx.waker().clone());
-
-                Poll::Pending
+                    self.listener.selector.register(
+                        EpollFlags::EPOLLIN,
+                        self.listener.listener.as_raw_fd(),
+                        cx.waker().clone(),
+                    );
+                    Poll::Pending
                 } else {
                     panic!("accept: {}", err);
                 }
-
             }
         }
     }
 }
 
 struct AsyncReader {
-    fd: OwnedFd,
+    fd: RawFd,
     reader: BufReader<TcpStream>,
     selector: Arc<IOSelector>,
 }
@@ -199,22 +204,20 @@ impl AsyncReader {
     fn new(stream: TcpStream, selector: Arc<IOSelector>) -> AsyncReader {
         stream.set_nonblocking(true).unwrap();
         AsyncReader {
-            fd: unsafe { OwnedFd::from_raw_fd(stream.as_raw_fd()) },
+            fd: stream.as_raw_fd(),
             reader: BufReader::new(stream),
             selector,
         }
     }
 
     fn read_line(&mut self) -> ReadLine {
-        ReadLine {
-            reader: self,
-        }
+        ReadLine { reader: self }
     }
 }
 
 impl Drop for AsyncReader {
     fn drop(&mut self) {
-        self.selector.unregister(self.fd.try_clone().unwrap());
+        self.selector.unregister(self.fd);
     }
 }
 
@@ -225,22 +228,18 @@ struct ReadLine<'a> {
 impl<'a> Future for ReadLine<'a> {
     type Output = Option<String>;
 
-    fn poll(mut self: Pin<&mut Self>,
-    cx: &mut Context<'_>) -> Poll<Self::Output> {
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let mut line = String::new();
         match self.reader.reader.read_line(&mut line) {
-            Ok(0) => {
-                print!("0");
-                Poll::Ready(None)
-            },
-            Ok(n) => {
-                print!("{}", n);
-                Poll::Ready(Some(line))
-            },
+            Ok(0) => Poll::Ready(None),
+            Ok(_) => Poll::Ready(Some(line)),
             Err(err) => {
-                print!("!");
                 if err.kind() == std::io::ErrorKind::WouldBlock {
-                    self.reader.selector.register(EpollFlags::EPOLLIN, self.reader.fd.try_clone().unwrap(), cx.waker().clone());
+                    self.reader.selector.register(
+                        EpollFlags::EPOLLIN,
+                        self.reader.fd,
+                        cx.waker().clone(),
+                    );
                     Poll::Pending
                 } else {
                     Poll::Ready(None)
@@ -313,7 +312,8 @@ fn main() {
     let selector = IOSelector::new();
     let spawner = executor.get_spawner();
 
-    println!("telnet 127.0.0.1 10000");
+    println!("Run:");
+    println!("  $ telnet 127.0.0.1 10000");
 
     let server = async move {
         let listener = AsyncListener::listen("127.0.0.1:10000", selector.clone());
@@ -323,7 +323,7 @@ fn main() {
 
             spawner.spawn(async move {
                 while let Some(buf) = reader.read_line().await {
-                    println!("recv: {}, {}", addr, buf);
+                    print!("recv: {}, {}", addr, buf);
                     writer.write(buf.as_bytes()).unwrap();
                     writer.flush().unwrap();
                 }
