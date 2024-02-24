@@ -30,8 +30,8 @@ cargo generate --help
 
 ```bash
 nvm ls-remote
-nvm install v16.19.0
-nvm use v16.19.0
+nvm install lts/gallium # v16
+nvm use lts/gallium # v16
 
 node --version # v16
 ```
@@ -53,3 +53,4 @@ node --version # v16
 - [Debugging](wasm-game-of-life/docs/debug.md)
 - [Interactive](wasm-game-of-life/docs/interactive.md)
 - [Time Profile](wasm-game-of-life/docs/profile.md)
+
