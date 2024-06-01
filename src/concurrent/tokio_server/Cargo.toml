@@ -1,0 +1,28 @@
+[package]
+name = "tokio_server"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1.38.0", features = ["full"] }
+
+[[bin]]
+name = "echo"
+
+[[bin]]
+name = "sleep"
+
+[[bin]]
+name = "mutex"
+
+[[bin]]
+name = "tokio_mutex"
+
+[[bin]]
+name = "oneshot"
+
+[[bin]]
+name = "spawn_block"
