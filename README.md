@@ -4,9 +4,10 @@
 
 ### Basic
 
-- [install](docs/install.md)
-  - vscode, ctags
+- [install](docs/install.md): vscode, ctags
 - [rust book](docs/book.md)
+- [rustonomicon](docs/nomicon.md)
+- [reference](docs/reference.md)
 
 ### Hello World
 
