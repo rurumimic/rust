@@ -13,7 +13,7 @@ struct registers {
 };
 
 uint64_t set_context(struct registers *regs);
-// void switch_context(struct registers *regs) __attribute__((noreturn));
+void switch_context(struct registers *regs) __attribute__((noreturn));
 
 int main(void) {
   struct registers regs = {
@@ -28,7 +28,6 @@ int main(void) {
   };
 
   uint64_t ret = set_context(&regs);
-
   printf("%ld", ret);
 
   return 0;

@@ -33,6 +33,6 @@ break set -n set_context
 run
 s
 register read
-memory read -f x -c 1 $rsp
+memory read -s8 -fx -c16 $rsp
 ```
 

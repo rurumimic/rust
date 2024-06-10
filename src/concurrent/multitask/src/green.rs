@@ -146,7 +146,7 @@ pub fn schedule() {
         let regs = ctx.get_regs_mut();
         CONTEXTS.push_back(ctx);
 
-        // save registers
+        // save registers in stack
         if set_context(regs) == 0 {
             let next = CONTEXTS.front().unwrap();
             switch_context((**next).get_regs());

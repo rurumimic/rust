@@ -18,11 +18,15 @@ SET_CONTEXT:
   movq %r13, 24(%rdi)
   movq %r14, 32(%rdi)
   movq %r15, 40(%rdi)
+
+  // register start address
   lea 8(%rsp), %rdx // load rdx with rsp + 8
   movq %rdx, 48(%rdi) // save rdx to rdi + 48
+
+  // save the return address
   push %rbp // push rbp to the stack
   movq (%rsp), %rdx // load rdx with the value pointed by rsp (return address)
-  movq %rdx, 56(%rdi) // save rdx to rdi + 56. save the return address
+  movq %rdx, 56(%rdi) // save rdx to rdi + 56
 
   ret // return to the caller (eax is 0)
 
@@ -40,11 +44,14 @@ SWITCH_CONTEXT:
   movq 24(%rdi), %r13
   movq 32(%rdi), %r14
   movq 40(%rdi), %r15
+
   movq 48(%rdi), %rdx
   movq %rdx, %rsp // load rsp with the value pointed by rdx. stack pointer
+
   addq $0x8, %rsp // rsp = rsp + 8
   push %rbp // push rbp to the stack
   push %rsi // push rsi to the stack
+
   movq 56(%rdi), %rdx // load rdx with the value pointed by rdi + 56. return address
   jmpq *%rdx // jump to the address pointed by rdx
 
