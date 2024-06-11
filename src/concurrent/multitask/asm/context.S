@@ -38,6 +38,7 @@ SWITCH_CONTEXT:
   inc %eax // set eax to 1. return value: 1
 
   pop %rsi // pop value from the stack and save it in rsi
+
   movq (%rdi), %rbx // load rbx with the value pointed by rdi
   movq 8(%rdi), %rbp // load rbp with the value pointed by rdi + 8
   movq 16(%rdi), %r12
@@ -47,8 +48,8 @@ SWITCH_CONTEXT:
 
   movq 48(%rdi), %rdx
   movq %rdx, %rsp // load rsp with the value pointed by rdx. stack pointer
-
   addq $0x8, %rsp // rsp = rsp + 8
+
   push %rbp // push rbp to the stack
   push %rsi // push rsi to the stack
 
