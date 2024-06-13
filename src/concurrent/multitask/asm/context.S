@@ -19,7 +19,7 @@ SET_CONTEXT:
   movq %r14, 32(%rdi)
   movq %r15, 40(%rdi)
 
-  // register start address
+  // save current stack pointer address
   lea 8(%rsp), %rdx // load rdx with rsp + 8
   movq %rdx, 48(%rdi) // save rdx to rdi + 48
 
@@ -48,7 +48,7 @@ SWITCH_CONTEXT:
 
   movq 48(%rdi), %rdx
   movq %rdx, %rsp // load rsp with the value pointed by rdx. stack pointer
-  addq $0x8, %rsp // rsp = rsp + 8
+  addq $0x8, %rsp // rsp = rsp + 8. skip the return address
 
   push %rbp // push rbp to the stack
   push %rsi // push rsi to the stack
