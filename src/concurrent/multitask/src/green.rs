@@ -13,7 +13,7 @@ static mut MESSAGES: *mut MappedList<u64> = ptr::null_mut(); // message queue
 static mut WAITING: *mut HashMap<u64, Box<Context>> = ptr::null_mut(); // waiting thread queue
 
 #[repr(C)] // C calling convention
-struct Registers {
+struct Registers { // 8 * 8 = 64 bytes
     rbx: u64, // base register
     rbp: u64, // base pointer
     r12: u64, // general-purpose register

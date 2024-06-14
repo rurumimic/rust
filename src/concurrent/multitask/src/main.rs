@@ -24,5 +24,5 @@ fn gaia() {
 }
 
 fn main() {
-    green::spwan_from_main(gaia, 2 * 1024 * 1024);
+    green::spwan_from_main(gaia, 2 * 1024 * 1024); // stack size: 2MB
 }

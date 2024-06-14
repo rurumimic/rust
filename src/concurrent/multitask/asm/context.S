@@ -23,7 +23,7 @@ SET_CONTEXT:
   lea 8(%rsp), %rdx // load rdx with rsp + 8
   movq %rdx, 48(%rdi) // save rdx to rdi + 48
 
-  // save the return address
+  // save the return address (after the call to set_context)
   push %rbp // push rbp to the stack
   movq (%rsp), %rdx // load rdx with the value pointed by rsp (return address)
   movq %rdx, 56(%rdi) // save rdx to rdi + 56
@@ -37,7 +37,7 @@ SWITCH_CONTEXT:
   xor %eax, %eax // set eax to 0
   inc %eax // set eax to 1. return value: 1
 
-  pop %rsi // pop value from the stack and save it in rsi
+  pop %rsi // pop retrun address and save it in rsi
 
   movq (%rdi), %rbx // load rbx with the value pointed by rdi
   movq 8(%rdi), %rbp // load rbp with the value pointed by rdi + 8
@@ -46,13 +46,14 @@ SWITCH_CONTEXT:
   movq 32(%rdi), %r14
   movq 40(%rdi), %r15
 
+  // point the stack pointer to the stack memory allocated by Context::new()
   movq 48(%rdi), %rdx
-  movq %rdx, %rsp // load rsp with the value pointed by rdx. stack pointer
-  addq $0x8, %rsp // rsp = rsp + 8. skip the return address
+  movq %rdx, %rsp
+  addq $0x8, %rsp
 
-  push %rbp // push rbp to the stack
-  push %rsi // push rsi to the stack
+  push %rbp // save rbp
+  push %rsi // save return address in the stack
 
-  movq 56(%rdi), %rdx // load rdx with the value pointed by rdi + 56. return address
-  jmpq *%rdx // jump to the address pointed by rdx
+  movq 56(%rdi), %rdx // load entry_point() address
+  jmpq *%rdx // jump to entry_point()
 

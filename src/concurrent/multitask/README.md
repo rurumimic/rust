@@ -36,3 +36,11 @@ register read
 memory read -s8 -fx -c16 $rsp
 ```
 
+### Rust
+
+```bash
+lldb target/debug/multitask
+break set -n main
+run
+```
+
