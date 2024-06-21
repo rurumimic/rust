@@ -13,7 +13,8 @@ static mut MESSAGES: *mut MappedList<u64> = ptr::null_mut(); // message queue
 static mut WAITING: *mut HashMap<u64, Box<Context>> = ptr::null_mut(); // waiting thread queue
 
 #[repr(C)] // C calling convention
-struct Registers { // 8 * 8 = 64 bytes
+struct Registers {
+    // 8 * 8 = 64 bytes
     rbx: u64, // base register
     rbp: u64, // base pointer
     r12: u64, // general-purpose register
@@ -26,6 +27,8 @@ struct Registers { // 8 * 8 = 64 bytes
 
 impl Registers {
     fn new(rsp: u64) -> Self {
+        let sp = format!("{:p}", rsp as *const u64);
+        dbg!(&sp);
         Self {
             rbx: 0,
             rbp: 0,
@@ -99,6 +102,7 @@ impl Context {
         }
 
         // init registers. stack pointer points to the end of the stack
+        dbg!(stack);
         let regs = Registers::new(stack as u64 + stack_size as u64);
 
         Context {
@@ -185,7 +189,7 @@ pub extern "C" fn entry_point() {
     unreachable!();
 }
 
-pub fn spwan_from_main(func: Entry, stack_size: usize) {
+pub fn spawn_from_main(func: Entry, stack_size: usize) {
     unsafe {
         if let Some(_) = &CTX_MAIN {
             panic!("spawn_from_main is called twice");

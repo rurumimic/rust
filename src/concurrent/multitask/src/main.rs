@@ -1,28 +1,34 @@
 mod green;
 
+const ITER: i32 = 2;
+const STACK_SIZE: usize = 2 * 1024 * 1024; // 2MB
+
+#[allow(dead_code)]
 fn ortega() {
-    for _ in 0..10 {
+    for _ in 0..ITER {
         println!("Ortega!");
         green::schedule();
     }
 }
 
+#[allow(dead_code)]
 fn mash() {
-    green::spawn(ortega, 2 * 1024 * 1024);
-    for _ in 0..10 {
+    green::spawn(ortega, STACK_SIZE);
+    for _ in 0..ITER {
         println!("Mash!");
         green::schedule();
     }
 }
 
+#[allow(dead_code)]
 fn gaia() {
-    green::spawn(mash, 2 * 1024 * 1024);
-    for _ in 0..10 {
+    green::spawn(mash, STACK_SIZE);
+    for _ in 0..ITER {
         println!("Gaia!");
         green::schedule();
     }
 }
 
 fn main() {
-    green::spwan_from_main(gaia, 2 * 1024 * 1024); // stack size: 2MB
+    green::spawn_from_main(gaia, STACK_SIZE);
 }
