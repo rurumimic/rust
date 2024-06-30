@@ -9,11 +9,11 @@
 .align 4 // align to 16 bytes
 
 SET_CONTEXT:
-  pop %rbp // pop return address and save it in rbp
+  pop %rbp // pop return address (after set_context()) and save it in rbp
   xor %eax, %eax // set eax to 0. return value: 0
 
-  movq %rbx, (%rdi) // save rbx to the memory pointed by rdi
-  movq %rbp, 8(%rdi) // save rbp to rdi + 8
+  movq %rbx, (%rdi) // save rbx to the memory pointed by rdi (**ctx)
+  movq %rbp, 8(%rdi) // save rbp (return address) to rdi + 8
   movq %r12, 16(%rdi)
   movq %r13, 24(%rdi)
   movq %r14, 32(%rdi)
@@ -37,7 +37,7 @@ SWITCH_CONTEXT:
   xor %eax, %eax // set eax to 0
   inc %eax // set eax to 1. return value: 1
 
-  pop %rsi // pop retrun address and save it in rsi
+  pop %rsi // pop retrun address (after set_context) and save it in rsi
 
   movq (%rdi), %rbx // load rbx with the value pointed by rdi
   movq 8(%rdi), %rbp // load rbp with the value pointed by rdi + 8
@@ -49,10 +49,10 @@ SWITCH_CONTEXT:
   // point the stack pointer to the stack memory allocated by Context::new()
   movq 48(%rdi), %rdx
   movq %rdx, %rsp
-  addq $0x8, %rsp
+  addq $0x8, %rsp // stack frame's stack pointer address
 
   push %rbp // save rbp
-  push %rsi // save return address in the stack
+  push %rsi // save return address (after set_context) in the stack
 
   movq 56(%rdi), %rdx // load entry_point() address
   jmpq *%rdx // jump to entry_point()

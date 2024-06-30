@@ -1,6 +1,6 @@
 mod green;
 
-const ITER: i32 = 2;
+const ITER: i32 = 10;
 const STACK_SIZE: usize = 2 * 1024 * 1024; // 2MB
 
 #[allow(dead_code)]

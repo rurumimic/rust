@@ -4,24 +4,42 @@
 
 ## Run
 
+### Rust
+
+Run:
+
+```bash
+./main
+
+Gaia!
+Ortega!
+Mash!
+Gaia!
+
+# ...
+
+Mash!
+Gaia!
+Ortega!
+Mash!
+```
+
 ### C
 
 Compile:
 
 ```bash
 gcc asm/context.S -c -fPIC -ggdb -o asm/context.o
+# linux
 ar cruUs asm/libcontext.a asm/context.o
+# mac
+ar crus asm/libcontext.a asm/context.o
+
 
 # gcc main.c -Lasm -lcontext -o main
 gcc -S main.c -o main.s
 gcc -c main.s -o main.o
 gcc main.s -Lasm -lcontext -o main
-```
-
-Run:
-
-```bash
-./main
 ```
 
 ### LLDB

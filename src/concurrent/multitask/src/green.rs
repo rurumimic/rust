@@ -27,8 +27,6 @@ struct Registers {
 
 impl Registers {
     fn new(rsp: u64) -> Self {
-        let sp = format!("{:p}", rsp as *const u64);
-        dbg!(&sp);
         Self {
             rbx: 0,
             rbp: 0,
@@ -102,7 +100,6 @@ impl Context {
         }
 
         // init registers. stack pointer points to the end of the stack
-        dbg!(stack);
         let regs = Registers::new(stack as u64 + stack_size as u64);
 
         Context {
@@ -150,7 +147,7 @@ pub fn schedule() {
         let regs = ctx.get_regs_mut();
         CONTEXTS.push_back(ctx);
 
-        // save registers in stack
+        // save registers in context
         if set_context(regs) == 0 {
             let next = CONTEXTS.front().unwrap();
             switch_context((**next).get_regs());
@@ -211,7 +208,6 @@ pub fn spawn_from_main(func: Entry, stack_size: usize) {
                 let first = CONTEXTS.front().unwrap();
                 switch_context(first.get_regs());
             }
-
             rm_unused_stack();
 
             CTX_MAIN = None;
