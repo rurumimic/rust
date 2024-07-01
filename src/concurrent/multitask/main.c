@@ -14,17 +14,20 @@ struct registers {
   uint64_t rdx;
 };
 
-uint64_t set_context(struct registers *regs);
-void switch_context(struct registers *regs) __attribute__((noreturn));
+extern uint64_t set_context(struct registers *regs);
+extern void switch_context(struct registers *regs) __attribute__((noreturn));
 
 int main(void) {
   struct registers *regs = malloc(sizeof(struct registers));
+  if (!regs) {
+    perror("malloc");
+    return 1;
+  }
   memset(regs, 0, sizeof(struct registers));
 
-  uint64_t ret = set_context(regs);
-  printf("%lu\n", ret);
+  set_context(regs);
+  // signal SIGSEGV
 
   free(regs);
   return 0;
 }
-

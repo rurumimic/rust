@@ -30,11 +30,7 @@ Compile:
 
 ```bash
 gcc asm/context.S -c -fPIC -ggdb -o asm/context.o
-# linux
-ar cruUs asm/libcontext.a asm/context.o
-# mac
-ar crus asm/libcontext.a asm/context.o
-
+ar cruUs asm/libcontext.a asm/context.o # linux amd64
 
 # gcc main.c -Lasm -lcontext -o main
 gcc -S main.c -o main.s
