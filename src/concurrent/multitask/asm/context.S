@@ -1,12 +1,14 @@
 #define SET_CONTEXT set_context
 #define SWITCH_CONTEXT switch_context
+#define C_SET_CONTEXT c_set_context
 
 // export symbols
 .global SET_CONTEXT
 .global SWITCH_CONTEXT
+.global C_SET_CONTEXT
 
 .text // code section
-.align 4 // align to 16 bytes
+.align 4
 
 SET_CONTEXT:
   pop %rbp // pop return address (after set_context()) and save it in rbp
@@ -57,3 +59,33 @@ SWITCH_CONTEXT:
   movq 56(%rdi), %rdx // load entry_point() address
   jmpq *%rdx // jump to entry_point()
 
+.text // code section
+.align 4
+
+C_SET_CONTEXT:
+  pushq %rbp
+  movq %rsp, %rbp
+  subq $0x10, %rsp
+
+  xor %rax, %rax // set rax to 0.
+  inc %rax // set rax to 1.
+  inc %rax // set rax to 2. return value: 2
+
+  movq %rbx, (%rdi) // save rbx to the memory pointed by rdi (**ctx)
+  movq %rbp, 8(%rdi) // save rbp (return address) to rdi + 8
+  movq %r12, 16(%rdi)
+  movq %r13, 24(%rdi)
+  movq %r14, 32(%rdi)
+  movq %r15, 40(%rdi)
+
+  // save current stack pointer address
+  lea 8(%rsp), %rdx // load rdx with rsp + 8
+  movq %rdx, 48(%rdi) // save rdx to rdi + 48
+
+  // save the return address (after the call to set_context)
+  movq 8(%rbp), %rdx // load return address
+  movq %rdx, 56(%rdi) // save rdx to rdi + 56
+
+  addq $0x10, %rsp
+  popq %rbp
+  retq // return to the caller (rax is 2)

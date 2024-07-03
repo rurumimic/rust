@@ -1,4 +1,4 @@
-CC = clang
+CC = gcc
 ASM_FILE = asm/context.S
 O_FILE = asm/context.o
 LIB_FILE = asm/libcontext.a

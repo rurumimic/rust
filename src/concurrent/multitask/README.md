@@ -38,6 +38,14 @@ gcc -c main.s -o main.o
 gcc main.s -Lasm -lcontext -o main
 ```
 
+Run:
+
+```bash
+./main
+
+result: 2
+```
+
 ### LLDB
 
 ```bash
