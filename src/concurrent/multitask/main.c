@@ -15,7 +15,6 @@ struct registers {
 };
 
 uint64_t c_set_context(struct registers *regs);
-// void switch_context(struct registers *regs) __attribute__((noreturn));
 
 int main(void) {
   uint64_t result;
@@ -23,7 +22,7 @@ int main(void) {
   memset(regs, 0, sizeof(struct registers));
 
   result = c_set_context(regs);
-  printf("result: %lu\n", result);
+  printf("Result: %lu\n", result);
 
   free(regs);
   return 0;
