@@ -1,6 +1,6 @@
-mod green;
+use multitask::green;
 
-const ITER: i32 = 10;
+const ITER: u64 = 10;
 const STACK_SIZE: usize = 2 * 1024 * 1024; // 2MB
 
 #[allow(dead_code)]
@@ -28,6 +28,8 @@ fn gaia() {
         green::schedule();
     }
 }
+
+
 
 fn main() {
     green::spawn_from_main(gaia, STACK_SIZE);

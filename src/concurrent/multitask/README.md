@@ -6,10 +6,10 @@
 
 ### Rust
 
-Run:
+#### Greenthread
 
 ```bash
-./main
+cargo run --bin greenthread
 
 Gaia!
 Ortega!
@@ -22,6 +22,35 @@ Mash!
 Gaia!
 Ortega!
 Mash!
+```
+
+#### Actors
+
+1 producer and 2 consumers:
+
+```bash
+cargo run --bin actors
+
+consumer: 9e53acc32685513c - 0
+received: count = 0
+consumer: f1b9fd8abcc7a035 - 1
+received: count = 1
+consumer: 9e53acc32685513c - 2
+received: count = 2
+consumer: f1b9fd8abcc7a035 - 3
+received: count = 3
+consumer: 9e53acc32685513c - 4
+received: count = 4
+consumer: f1b9fd8abcc7a035 - 5
+received: count = 5
+consumer: 9e53acc32685513c - 6
+received: count = 6
+consumer: f1b9fd8abcc7a035 - 7
+received: count = 7
+consumer: 9e53acc32685513c - 8
+received: count = 8
+consumer: f1b9fd8abcc7a035 - 9
+received: count = 9
 ```
 
 ### C

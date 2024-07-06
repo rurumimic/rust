@@ -64,6 +64,28 @@ impl<T> MappedList<T> {
         }
     }
 
+    fn push_back(&mut self, key: u64, val: T) {
+        if let Some(list) = self.map.get_mut(&key) {
+            list.push_back(val);
+        } else {
+            let mut list = LinkedList::new();
+            list.push_back(val);
+            self.map.insert(key, list);
+        }
+    }
+
+    fn pop_front(&mut self, key: u64) -> Option<T> {
+        if let Some(list) = self.map.get_mut(&key) {
+            let val = list.pop_front();
+            if list.len() == 0 {
+                self.map.remove(&key);
+            }
+            val
+        } else {
+            None
+        }
+    }
+
     fn clear(&mut self) {
         self.map.clear();
     }
@@ -236,5 +258,49 @@ unsafe fn rm_unused_stack() {
         .unwrap();
         dealloc(UNUSED_STACK.0, UNUSED_STACK.1);
         UNUSED_STACK = (ptr::null_mut(), Layout::new::<u8>());
+    }
+}
+
+pub fn send(key: u64, msg: u64) {
+    unsafe {
+        (*MESSAGES).push_back(key, msg); // push the message to the queue
+
+        // if the thread is waiting, move it to the run queue
+        if let Some(ctx) = (*WAITING).remove(&key) {
+            CONTEXTS.push_back(ctx);
+        }
+    }
+
+    schedule(); // schedule the next thread
+}
+
+pub fn recv() -> Option<u64> {
+    unsafe {
+        let key = CONTEXTS.front().unwrap().id;
+
+        if let Some(msg) = (*MESSAGES).pop_front(key) {
+            return Some(msg);
+        }
+
+        if CONTEXTS.len() == 1 { // CONTEXTS = [producer, consumer]
+            panic!("deadlock"); // no timeout and no other threads
+        }
+
+        // move the current context to the back of the waiting queue
+        let mut ctx = CONTEXTS.pop_front().unwrap();
+        let regs = ctx.get_regs_mut();
+        (*WAITING).insert(key, ctx);
+
+        if set_context(regs) == 0 {
+            let next = CONTEXTS.front().unwrap();
+            switch_context((**next).get_regs());
+        }
+
+        rm_unused_stack();
+
+        let msg = (*MESSAGES).pop_front(key);
+
+        println!("consumer: {:x} - {}", key, msg.unwrap());
+        msg
     }
 }
