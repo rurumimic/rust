@@ -24,9 +24,8 @@ fn main() {
         t.join().unwrap();
     }
 
-    println!(
-        "COUNT = {} (expected = {})",
-        *lock.lock(),
-        NUM_LOOP * NUM_THREADS
-    );
+    let data = lock.lock();
+    let count = *data;
+
+    println!("COUNT = {} (expected = {}).", count, NUM_LOOP * NUM_THREADS);
 }
