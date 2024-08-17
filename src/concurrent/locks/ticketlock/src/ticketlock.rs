@@ -1,6 +1,5 @@
 use std::cell::UnsafeCell;
-use std::ops::Deref;
-use std::ops::DerefMut;
+use std::ops::{Deref, DerefMut};
 use std::sync::atomic::{fence, AtomicUsize, Ordering};
 
 pub struct TicketLock<T> {
@@ -44,7 +43,10 @@ impl<'a, T> Deref for TicketLockGuard<'a, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
-        println!("ticket: {}", self.ticket_lock.ticket.load(Ordering::Relaxed));
+        println!(
+            "ticket: {}",
+            self.ticket_lock.ticket.load(Ordering::Relaxed)
+        );
         println!("turn: {}", self.ticket_lock.turn.load(Ordering::Relaxed));
         unsafe { &*self.ticket_lock.data.get() }
     }
