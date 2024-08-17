@@ -16,6 +16,8 @@ pub struct FairLock<T> {
     data: UnsafeCell<T>, // protected data
 }
 
+// FairLockGuard ensures that the FairLock remains valid
+// and locked until the guard is dropped.
 pub struct FairLockGuard<'a, T> {
     // RAII guard
     fair_lock: &'a FairLock<T>, // reference to the fairlock
@@ -89,7 +91,7 @@ impl<'a, T> Drop for FairLockGuard<'a, T> {
             turn
         };
 
-        if fl.waiting[next].load(Ordering::Relaxed) { 
+        if fl.waiting[next].load(Ordering::Relaxed) {
             // if the next thread is waiting
             fl.turn.store(next, Ordering::Relaxed); // set the next thread as the priority
             fl.waiting[next].store(false, Ordering::Relaxed); // set the next thread as not waiting
