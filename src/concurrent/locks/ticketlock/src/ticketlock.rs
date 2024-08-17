@@ -24,8 +24,6 @@ impl<T> TicketLock<T> {
 
     pub fn lock(&self) -> TicketLockGuard<T> {
         let t = self.ticket.fetch_add(1, Ordering::Relaxed);
-        // Note: If the turn value becomes higher than the number of threads,
-        // new threads may not be able to access the lock.
         while self.turn.load(Ordering::Relaxed) != t {}
         fence(Ordering::Acquire);
 
