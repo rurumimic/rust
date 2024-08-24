@@ -8,6 +8,7 @@
 - [rust book](docs/book.md)
 - [rustonomicon](docs/nomicon.md)
 - [reference](docs/reference.md)
+- [rustlings](src/rustlings/README.md)
 
 ### Hello World
 
