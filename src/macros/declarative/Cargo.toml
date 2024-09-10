@@ -1,0 +1,26 @@
+[package]
+name = "declarative"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+
+[[bin]]
+name = "my_vec"
+
+[[bin]]
+name = "my_greeting"
+
+[[bin]]
+name = "my_calculate"
+
+[[bin]]
+name = "my_recursive"
+
+[[bin]]
+name = "my_account"
+
+[[bin]]
+name = "my_compose"
+
