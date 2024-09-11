@@ -3,14 +3,21 @@ use std::future::Future;
 use std::net::SocketAddr;
 use std::pin::Pin;
 use std::sync::{Arc, Mutex};
+use std::task::Poll;
 
 use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
-use hyper::body::{Body, Bytes, Frame};
+use hyper::body::{Body, Bytes, Frame, Incoming};
 use hyper::server::conn::http1;
-use hyper::service::{service_fn, Service};
+// use hyper::service::{service_fn, Service};
 use hyper::{Method, Request, Response, StatusCode};
 use hyper_util::rt::TokioIo;
+use hyper_util::service::TowerToHyperService;
 use tokio::net::TcpListener;
+use tower::Service;
+use tower::ServiceBuilder;
+
+// use hyper_server::middleware::hyper_logger::Logger as HyperLogger;
+use hyper_server::middleware::tower_logger::Logger as TowerLogger;
 
 type Counter = i32;
 
@@ -21,30 +28,59 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let listener = TcpListener::bind(addr).await?;
     println!("Listening on http://{}", addr);
 
+    let http = http1::Builder::new();
+    let graceful = hyper_util::server::graceful::GracefulShutdown::new();
+    let mut signal = std::pin::pin!(shutdown_signal());
+
     let svc = Svc {
         counter: Arc::new(Mutex::new(0)),
     };
 
     loop {
-        let (stream, _) = listener.accept().await?;
+        tokio::select! {
+            Ok((stream, _addr)) = listener.accept() => {
+                let io = TokioIo::new(stream);
 
-        let io = TokioIo::new(stream);
+                let svc_clone = svc.clone();
+                // let svc_clone = ServiceBuilder::new()
+                //     .layer_fn(HyperLogger::new)
+                //     .service(svc_clone);
+                let svc_clone = ServiceBuilder::new()
+                    .layer_fn(TowerLogger::new)
+                    .service(svc_clone);
+                let svc_clone = TowerToHyperService::new(svc_clone);
 
-        let svc_clone = svc.clone();
+                let conn = http.serve_connection(io, svc_clone);
+                let fut = graceful.watch(conn);
 
-        tokio::task::spawn(async move {
-            if let Err(err) = http1::Builder::new()
-                // .serve_connection(io, service_fn(hello))
-                .serve_connection(io, svc_clone)
-                .await
-            {
-                eprintln!("Error serving connection: {:?}", err);
+                tokio::spawn(async move {
+                    if let Err(err) = fut.await
+                    {
+                        eprintln!("Error serving connection: {:?}", err);
+                    }
+                });
             }
-        });
+            _ = &mut signal => {
+                eprintln!("graceful shutdown signal received");
+                break;
+            }
+        }
     }
+
+    tokio::select! {
+        _ = graceful.shutdown() => {
+            eprintln!("all connections gracefully closed");
+        }
+        _ = tokio::time::sleep(std::time::Duration::from_secs(3)) => {
+            eprintln!("timed out wait for all connections to close");
+        }
+    }
+
+    Ok(())
 }
 
-async fn hello(_: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
+#[allow(dead_code)]
+async fn hello(_: Request<Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
     Ok(Response::new(Full::new(Bytes::from("Hello, World!"))))
 }
 
@@ -53,12 +89,23 @@ struct Svc {
     counter: Arc<Mutex<Counter>>,
 }
 
-impl Service<Request<hyper::body::Incoming>> for Svc {
+impl Service<Request<Incoming>> for Svc {
     type Response = Response<BoxBody<Bytes, hyper::Error>>;
     type Error = hyper::Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
 
-    fn call(&self, req: Request<hyper::body::Incoming>) -> Self::Future {
+    /* for tower middleware */
+    fn poll_ready(
+        &mut self,
+        _cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Result<(), Self::Error>> {
+        Poll::Ready(Ok(()))
+    }
+
+    /* hyper middleware
+    // fn call(&self, req: Request<Incoming>) -> Self::Future {
+     */
+    fn call(&mut self, req: Request<Incoming>) -> Self::Future {
         let counter = self.counter.clone();
 
         let future = async move {
@@ -79,6 +126,10 @@ impl Service<Request<hyper::body::Incoming>> for Svc {
                     "authors extraodinare! counter = {:?}",
                     counter
                 )))),
+                (&Method::GET, "/slow") => {
+                    std::thread::sleep(std::time::Duration::from_secs(5));
+                    Ok(Response::new(full(format!("slow response"))))
+                }
                 (&Method::POST, "/echo") => Ok(Response::new(req.into_body().boxed())),
                 (&Method::POST, "/echo/uppercase") => {
                     let frame_stream = req.into_body().map_frame(|frame| {
@@ -129,4 +180,10 @@ fn full<T: Into<Bytes>>(chunk: T) -> BoxBody<Bytes, hyper::Error> {
     Full::new(chunk.into())
         .map_err(|never| match never {})
         .boxed()
+}
+
+async fn shutdown_signal() {
+    tokio::signal::ctrl_c()
+        .await
+        .expect("failed to install CTRL+C signal handler");
 }
