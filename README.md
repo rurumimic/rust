@@ -24,7 +24,7 @@
 
 ### Applications
 
-- [tokio](src/tokio/README.md)
+- [tokio](src/tokio/README.md), hyper
 - client
   - [tauri](src/tauri/README.md)
   - [wasm](src/wasm/README.md)

@@ -14,4 +14,7 @@
   - [slab](https://github.com/tokio-rs/slab) allocator
   - [tokio-uring](https://github.com/tokio-rs/tokio-uring)
   - [tracing](https://github.com/tokio-rs/tracing): application level tracing
+- others
+  - [tower-rs](https://github.com/tower-rs)
+  - [hyperium/hyper](https://github.com/hyperium/hyper)
 
