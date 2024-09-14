@@ -17,6 +17,6 @@
 - others
   - [tower-rs](https://github.com/tower-rs)
     - [inventing the service trait](https://tokio.rs/blog/2021-05-14-inventing-the-service-trait): [tower::Service](https://docs.rs/tower/latest/tower/trait.Service.html)
-    - [building a middleware from scratch](https://github.com/tower-rs/tower/blob/master/guides/building-a-middleware-from-scratch.md)
+    - [building a middleware from scratch](https://github.com/tower-rs/tower/blob/master/guides/building-a-middleware-from-scratch.md): [tower/src/timeout/mod.rs](https://github.com/tower-rs/tower/blob/master/tower/src/timeout/mod.rs)
   - [hyperium/hyper](https://github.com/hyperium/hyper)
 

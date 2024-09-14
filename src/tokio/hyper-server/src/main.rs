@@ -127,7 +127,7 @@ impl Service<Request<Incoming>> for Svc {
                     counter
                 )))),
                 (&Method::GET, "/slow") => {
-                    std::thread::sleep(std::time::Duration::from_secs(5));
+                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                     Ok(Response::new(full(format!("slow response"))))
                 }
                 (&Method::POST, "/echo") => Ok(Response::new(req.into_body().boxed())),
