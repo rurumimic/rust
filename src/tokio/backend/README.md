@@ -54,3 +54,11 @@ systemfd --no-pid -s http::3000 -- cargo watch -x run
 cargo add anyhow
 ```
 
+#### serde
+
+- [serde.rs](https://serde.rs/)
+
+```bash
+cargo add serde -F derive
+```
+
