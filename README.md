@@ -69,6 +69,7 @@
   - [reference](https://doc.rust-lang.org/reference)
   - [rustonomicon](https://doc.rust-lang.org/stable/nomicon/)
   - [unstable](https://doc.rust-lang.org/nightly/unstable-book)
+  - [unsafe code guidelines](https://rust-lang.github.io/unsafe-code-guidelines)
 - [api guidelines](https://rust-lang.github.io/api-guidelines/)
 - [little book of rust macros](https://danielkeep.github.io/tlborm/book/index.html)
 
