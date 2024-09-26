@@ -30,6 +30,7 @@
   - [wasm](src/wasm/README.md)
     - Game of Life
 - [rustpython](src/python/README.md)
+- [v8](src/v8/README.md)
 - [kubernetes](src/kubernetes/README.md)
 
 ---
