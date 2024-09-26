@@ -1,0 +1,8 @@
+[package]
+name = "wasm_module"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+v8 = "129.0.0"
