@@ -1,0 +1,14 @@
+[package]
+name = "sessions"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+session_types = { git = "https://github.com/Munksgaard/session-types", version = "0.3.1" }
+
+[[bin]]
+name = "number"
+
+[[bin]]
+name = "database"
+
