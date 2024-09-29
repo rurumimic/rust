@@ -19,6 +19,7 @@
 ### Advanced
 
 - [concurrent](src/concurrent/README.md)
+- [atomics](src/atomics/README.md)
 - [macros](src/macros/README.md)
 - [algorithm](https://github.com/rurumimic/algorithm-rs)
 
