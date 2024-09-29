@@ -62,3 +62,19 @@ cargo add anyhow
 cargo add serde -F derive
 ```
 
+#### tower
+
+- [tower::util::ServiceExt](https://docs.rs/tower/latest/tower/util/trait.ServiceExt.html)
+
+```bash
+cargo add tower -F util
+```
+
+#### http-body-util
+
+- [http_body_util::BodyExt](https://docs.rs/http-body-util/latest/http_body_util/trait.BodyExt.html)
+
+```bash
+cargo add http-body-util
+```
+
