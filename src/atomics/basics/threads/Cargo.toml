@@ -9,3 +9,12 @@ publish = false
 [[bin]]
 name = "scope"
 
+[[bin]]
+name = "builder"
+
+[[bin]]
+name = "ownership"
+
+[[bin]]
+name = "leak"
+
