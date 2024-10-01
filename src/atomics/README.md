@@ -7,3 +7,9 @@
 - book: [marbos.nl/atomics](https://marabos.nl/atomics/)
 - repo: [rust-atomics-and-locks](https://github.com/m-ou-se/rust-atomics-and-locks)
 
+## Contents
+
+- basics
+  - [threads](basics/threads/README.md): scope, builder, leak, ownership
+  - [reference counting](basics/reference_counting/README.md): rc, arc, shadowing
+

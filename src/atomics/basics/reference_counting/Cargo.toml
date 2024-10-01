@@ -1,0 +1,17 @@
+[package]
+name = "reference_counting"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+
+[[bin]]
+name = "rc"
+
+[[bin]]
+name = "arc"
+
+[[bin]]
+name = "shadowing"
+
