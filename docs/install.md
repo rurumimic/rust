@@ -28,6 +28,22 @@ rustup update stable
 source "$HOME/.cargo/env"
 ```
 
+## rust-analyzer
+
+### rustup
+
+```bash
+rustup update
+rustup component add rust-analyzer
+rustup component add rust-src
+```
+
+### Arch Linux
+
+```bash
+sudo pacman -S rust-analyzer
+```
+
 ---
 
 ## VSCode
