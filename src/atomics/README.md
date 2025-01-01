@@ -14,4 +14,5 @@
   - [reference counting](basics/reference_counting/README.md): rc, arc, shadowing
 - atomics
   - [stop flag](atomics/stop_flag/README.md): atomic bool with thread
+  - [progress reporting](atomics/progress_reporting/README.md)
 
