@@ -12,4 +12,6 @@
 - basics
   - [threads](basics/threads/README.md): scope, builder, leak, ownership
   - [reference counting](basics/reference_counting/README.md): rc, arc, shadowing
+- atomics
+  - [stop flag](atomics/stop_flag/README.md): atomic bool with thread
 
