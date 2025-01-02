@@ -20,4 +20,5 @@
     - [lazy init](atomics/lazy_init/README.md): atomicu64
   - fetch and modify
     - [fetch add](atomics/fetch_add/README.md): atomici32
+    - [progress reporting with multiple threads](atomics/progress_reporting_multithreads/README.md)
 
