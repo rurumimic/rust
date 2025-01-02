@@ -13,8 +13,11 @@
   - [threads](basics/threads/README.md): scope, builder, leak, ownership
   - [reference counting](basics/reference_counting/README.md): rc, arc, shadowing
 - atomics
-  - [stop flag](atomics/stop_flag/README.md): atomic bool with thread
-  - [progress reporting](atomics/progress_reporting/README.md)
-  - [progress reporting with unpack](atomics/progress_reporting_unpack/README.md)
-  - [lazy init](atomics/lazy_init/README.md)
+  - basics
+    - [stop flag](atomics/stop_flag/README.md): atomic bool with thread
+    - [progress reporting](atomics/progress_reporting/README.md): ordering::relaxed, ordering::acquire, ordering::release
+    - [progress reporting with unpack](atomics/progress_reporting_unpack/README.md): unpark, park_timeout
+    - [lazy init](atomics/lazy_init/README.md): atomicu64
+  - fetch and modify
+    - [fetch add](atomics/fetch_add/README.md): atomici32
 
