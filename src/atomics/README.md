@@ -15,4 +15,5 @@
 - atomics
   - [stop flag](atomics/stop_flag/README.md): atomic bool with thread
   - [progress reporting](atomics/progress_reporting/README.md)
+  - [progress reporting with unpack](atomics/progress_reporting_unpack/README.md)
 
