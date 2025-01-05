@@ -22,4 +22,5 @@
     - [fetch add](atomics/fetch_add/README.md): atomici32
     - [progress reporting with multiple threads](atomics/progress_reporting_multithreads/README.md)
     - [progress reporting with statistics](atomics/progress_reporting_statistics/README.md)
+    - [id allocation](atomics/id_allocation/README.md)
 
