@@ -25,5 +25,11 @@ name = "fetch_update"
 [[bin]]
 name = "compare_exchange_lazy_init"
 
+[[bin]]
+name = "once_lazy_init"
+
+[[bin]]
+name = "once_lock_lazy_init"
+
 [dependencies]
 

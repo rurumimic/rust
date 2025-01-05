@@ -95,3 +95,27 @@ cargo run --bin compare_exchange_lazy_init
 [src/bin/compare_exchange_lazy_init.rs:24:5] get_key() = 42
 ```
 
+### Once with Lazy Initialization
+
+```bash
+cargo run --bin once_lazy_init
+```
+
+```bash
+[src/bin/once_lazy_init.rs:20:5] get_key() = 42
+[src/bin/once_lazy_init.rs:21:5] get_key() = 42
+[src/bin/once_lazy_init.rs:22:5] get_key() = 42
+```
+
+### Once Lock with Lazy Initialization
+
+```bash
+cargo run --bin once_lock_lazy_init
+```
+
+```bash
+[src/bin/once_lock_lazy_init.rs:14:5] get_key() = 42
+[src/bin/once_lock_lazy_init.rs:15:5] get_key() = 42
+[src/bin/once_lock_lazy_init.rs:16:5] get_key() = 42
+```
+
