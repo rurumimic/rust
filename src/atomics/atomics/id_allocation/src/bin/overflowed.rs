@@ -1,9 +1,8 @@
-use std::sync::atomic::AtomicU32;
-use std::sync::atomic::Ordering::Relaxed;
+use std::sync::atomic::{AtomicU32, Ordering};
 
 fn allocate_new_id() -> u32 {
     static NEXT_ID: AtomicU32 = AtomicU32::new(0);
-    NEXT_ID.fetch_add(1, Relaxed)
+    NEXT_ID.fetch_add(1, Ordering::Relaxed)
 }
 
 fn main() {

@@ -1,9 +1,8 @@
-use std::sync::atomic::AtomicU16;
-use std::sync::atomic::Ordering::Relaxed;
+use std::sync::atomic::{AtomicU16, Ordering};
 
 fn allocate_new_id() -> u16 {
     static NEXT_ID: AtomicU16 = AtomicU16::new(0);
-    let id = NEXT_ID.fetch_add(1, Relaxed);
+    let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
     assert!(id < 1000, "too many IDs allocated!");
     id
 }
@@ -15,7 +14,7 @@ fn main() {
         allocate_new_id();
     }
 
-    println!("overflowing the counter... (this might take a few hours)");
+    println!("overflowing the counter... (this might take a minute)");
 
     std::panic::set_hook(Box::new(|_| {}));
 

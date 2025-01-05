@@ -1,11 +1,10 @@
-use std::sync::atomic::AtomicU32;
-use std::sync::atomic::Ordering::Relaxed;
+use std::sync::atomic::{AtomicU32, Ordering};
 
 fn allocate_new_id() -> u32 {
     static NEXT_ID: AtomicU32 = AtomicU32::new(0);
-    let id = NEXT_ID.fetch_add(1, Relaxed);
+    let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
     if id >= 1000 {
-        NEXT_ID.fetch_sub(1, Relaxed);
+        NEXT_ID.fetch_sub(1, Ordering::Relaxed);
         panic!("too many IDs allocated!");
     }
     id

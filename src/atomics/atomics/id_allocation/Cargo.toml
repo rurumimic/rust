@@ -7,5 +7,23 @@ publish = false
 [[bin]]
 name = "overflowed"
 
+[[bin]]
+name = "panic"
+
+[[bin]]
+name = "subtract"
+
+[[bin]]
+name = "compare_exchange"
+
+[[bin]]
+name = "compare_exchange_no_overflow"
+
+[[bin]]
+name = "fetch_update"
+
+[[bin]]
+name = "compare_exchange_lazy_init"
+
 [dependencies]
 
