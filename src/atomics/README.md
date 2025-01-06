@@ -29,5 +29,5 @@
     - [spawn join](ordering/spawn_join/README.md)
   - [total modification order](ordering/total_modification_order/README.md)
   - [circular reference](ordering/circular_reference/README.md)
-
+  - [release acquire](ordering/release_acquire/README.md): unsafe
 
