@@ -23,4 +23,11 @@
     - [progress reporting with multiple threads](atomics/progress_reporting_multithreads/README.md)
     - [progress reporting with statistics](atomics/progress_reporting_statistics/README.md)
     - [id allocation](atomics/id_allocation/README.md): fetch_add, compare_exchange, compare_exchange_weak, fetch_update, panic::set_hook, panic::catch_unwind, lazy init, once, oncelock
+- ordering
+  - memory model, happens-before relationship
+    - [relaxed](ordering/relaxed/README.md), acquire, release, acq_rel, seq_cst
+    - [spawn join](ordering/spawn_join/README.md)
+  - [total modification order](ordering/total_modification_order/README.md)
+  - [circular reference](ordering/circular_reference/README.md)
+
 
