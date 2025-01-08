@@ -30,4 +30,6 @@
   - [total modification order](ordering/total_modification_order/README.md)
   - [circular reference](ordering/circular_reference/README.md)
   - [release acquire](ordering/release_acquire/README.md): unsafe
+    - [lock](ordering/lock/README.md): compare_exchange, swap
+    - [lazy init box](ordering/lazy_init_box/README.md): atomicptr, box::new, box::into_raw, box::from_raw, drop
 

@@ -1,0 +1,6 @@
+# Lock
+
+```bash
+cargo run
+```
+
