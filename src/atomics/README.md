@@ -32,4 +32,6 @@
   - [release acquire](ordering/release_acquire/README.md): unsafe
     - [lock](ordering/lock/README.md): compare_exchange, swap
     - [lazy init box](ordering/lazy_init_box/README.md): atomicptr, box::new, box::into_raw, box::from_raw, drop
+    - consume ordering
+  - [seq_cst](ordering/seq_cst/README.md)
 
