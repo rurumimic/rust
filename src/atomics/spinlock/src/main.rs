@@ -1,10 +1,10 @@
 use spinlock::lock::SpinLock;
 
 fn main() {
-    let spinlock = SpinLock::new();
-    spinlock.lock();
+    let spinlock = SpinLock::new(1);
+    let value: &mut u32 = spinlock.lock();
 
-    // locked
+    *value += 1;
 
-    spinlock.unlock();
+    unsafe { spinlock.unlock() };
 }
