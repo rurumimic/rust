@@ -6,7 +6,8 @@ pub struct Guard<'a, T> {
     lock: &'a SpinLock<T>,
 }
 
-impl<'a, T> Deref for Guard<'a, T> {
+/// impl<'a, T> Deref for Guard<'a, T> {
+impl<T> Deref for Guard<'_, T> {
     type Target = T;
 
     fn deref(&self) -> &T {
@@ -14,13 +15,15 @@ impl<'a, T> Deref for Guard<'a, T> {
     }
 }
 
-impl<'a, T> DerefMut for Guard<'a, T> {
+/// impl<'a, T> DerefMut for Guard<'a, T> {
+impl<T> DerefMut for Guard<'_, T> {
     fn deref_mut(&mut self) -> &mut T {
         unsafe { &mut *self.lock.value.get() }
     }
 }
 
-impl<'a, T> Drop for Guard<'a, T> {
+/// impl<'a, T> Drop for Guard<'a, T> {
+impl<T> Drop for Guard<'_, T> {
     fn drop(&mut self) {
         self.lock.locked.store(false, Ordering::Release);
     }
@@ -63,4 +66,6 @@ impl<T> SpinLock<T> {
 
 #[allow(clippy::trait_impl_incorrect_safety)]
 unsafe impl<T> Sync for SpinLock<T> where T: Send {}
+
+/// unsafe impl<'a, T> Sync for Guard<'a, T> where T: Send {}
 unsafe impl<T> Sync for Guard<'_, T> where T: Send {}

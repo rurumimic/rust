@@ -17,7 +17,6 @@ fn main() {
     });
 
     let guard = spinlock.lock();
-
     assert!(guard.as_slice() == [1, 2, 2] || guard.as_slice() == [2, 2, 1]);
     println!("Array: {:?}", guard.as_slice());
 
