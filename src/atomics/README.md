@@ -46,4 +46,6 @@
 - [spinlock](spin_lock/spinlock/README.md)
   - swap, compare_exchange, std::hint::spin_loop
   - unsafecell, unsafe func/impl, &mut T, !Sync, lifetime, clippy
+  - guard, deref, deref_mut, drop
+
 
