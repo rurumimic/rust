@@ -4,3 +4,9 @@
 cargo run
 ```
 
+## Test
+
+```bash
+cargo test -- --nocapture
+```
+
