@@ -1,6 +1,5 @@
 use std::collections::VecDeque;
 use std::sync::{Condvar, Mutex};
-use std::thread;
 
 pub struct Channel<T> {
     queue: Mutex<VecDeque<T>>,
@@ -35,6 +34,7 @@ impl<T> Channel<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::thread;
 
     #[test]
     fn test_channel() {
