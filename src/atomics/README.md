@@ -51,4 +51,9 @@
 ### channel
 
 - [channel](channel/README.md)
+  - simple
+  - unsafe
+  - runtime check
+  - single atomic
+
 
