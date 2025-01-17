@@ -2,12 +2,12 @@ use std::cell::UnsafeCell;
 use std::mem::MaybeUninit;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-pub struct UnsafeChannel<T> {
+pub struct Channel<T> {
     message: UnsafeCell<MaybeUninit<T>>,
     ready: AtomicBool,
 }
 
-impl<T> UnsafeChannel<T> {
+impl<T> Channel<T> {
     pub fn new() -> Self {
         Self {
             message: UnsafeCell::new(MaybeUninit::uninit()),
@@ -37,8 +37,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_unsafe_channel() {
-        let channel = UnsafeChannel::new();
+    fn test_channel() {
+        let channel = Channel::new();
         assert!(!channel.is_ready());
 
         unsafe {

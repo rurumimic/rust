@@ -7,14 +7,14 @@ const WRITING: u8 = 1;
 const READY: u8 = 2;
 const READING: u8 = 3;
 
-pub struct AtomicChannel<T> {
+pub struct Channel<T> {
     message: UnsafeCell<MaybeUninit<T>>,
     state: AtomicU8,
 }
 
-unsafe impl<T> Sync for AtomicChannel<T> where T: Send {}
+unsafe impl<T> Sync for Channel<T> where T: Send {}
 
-impl<T> AtomicChannel<T> {
+impl<T> Channel<T> {
     pub fn new() -> Self {
         Self {
             message: UnsafeCell::new(MaybeUninit::uninit()),
@@ -52,7 +52,7 @@ impl<T> AtomicChannel<T> {
     }
 }
 
-impl<T> Drop for AtomicChannel<T> {
+impl<T> Drop for Channel<T> {
     fn drop(&mut self) {
         if *self.state.get_mut() == READY {
             unsafe { self.message.get_mut().assume_init_drop() }
@@ -66,8 +66,8 @@ mod tests {
     use std::thread;
 
     #[test]
-    fn test_check_channel() {
-        let channel = AtomicChannel::new();
+    fn test_channel() {
+        let channel = Channel::new();
         let t = thread::current();
 
         thread::scope(|s| {

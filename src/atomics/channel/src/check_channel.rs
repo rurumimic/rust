@@ -2,15 +2,15 @@ use std::cell::UnsafeCell;
 use std::mem::MaybeUninit;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-pub struct CheckChannel<T> {
+pub struct Channel<T> {
     message: UnsafeCell<MaybeUninit<T>>,
     in_use: AtomicBool,
     ready: AtomicBool,
 }
 
-unsafe impl<T> Sync for CheckChannel<T> where T: Send {}
+unsafe impl<T> Sync for Channel<T> where T: Send {}
 
-impl<T> CheckChannel<T> {
+impl<T> Channel<T> {
     pub fn new() -> Self {
         Self {
             message: UnsafeCell::new(MaybeUninit::uninit()),
@@ -42,7 +42,7 @@ impl<T> CheckChannel<T> {
     }
 }
 
-impl<T> Drop for CheckChannel<T> {
+impl<T> Drop for Channel<T> {
     fn drop(&mut self) {
         if *self.ready.get_mut() {
             unsafe { self.message.get_mut().assume_init_drop() }
@@ -56,8 +56,8 @@ mod tests {
     use std::thread;
 
     #[test]
-    fn test_check_channel() {
-        let channel = CheckChannel::new();
+    fn test_channel() {
+        let channel = Channel::new();
         let t = thread::current();
 
         thread::scope(|s| {

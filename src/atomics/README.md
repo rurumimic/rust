@@ -51,9 +51,10 @@
 ### channel
 
 - [channel](channel/README.md)
-  - simple
-  - unsafe
+  - simple: mutex, vecdeque, condvar
+  - unsafe: unsafe cell, maybeuninit, atomicbool
   - runtime check
-  - single atomic
-  - type check
+  - single atomic: atomicu8
+  - type check: sender, receiver, arc
+  - borrowing: lifetime
 

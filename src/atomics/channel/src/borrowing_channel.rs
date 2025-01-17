@@ -1,40 +1,45 @@
 use std::cell::UnsafeCell;
 use std::mem::MaybeUninit;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
 
-pub struct Sender<T> {
-    channel: Arc<Channel<T>>,
+pub struct Sender<'a, T> {
+    channel: &'a Channel<T>,
 }
 
-pub struct Receiver<T> {
-    channel: Arc<Channel<T>>,
+pub struct Receiver<'a, T> {
+    channel: &'a Channel<T>,
 }
 
-struct Channel<T> {
+pub struct Channel<T> {
     message: UnsafeCell<MaybeUninit<T>>,
     ready: AtomicBool,
 }
 
 unsafe impl<T> Sync for Channel<T> where T: Send {}
 
-pub fn channel<T>() -> (Sender<T>, Receiver<T>) {
-    let a = Arc::new(Channel {
-        message: UnsafeCell::new(MaybeUninit::uninit()),
-        ready: AtomicBool::new(false),
-    });
+impl<T> Channel<T> {
+    pub const fn new() -> Self {
+        Self {
+            message: UnsafeCell::new(MaybeUninit::uninit()),
+            ready: AtomicBool::new(false),
+        }
+    }
 
-    (Sender { channel: a.clone() }, Receiver { channel: a })
+    //pub fn split<'a>(&'a mut self) -> (Sender<'a, T>, Receiver<'a, T>) {
+    pub fn split(&mut self) -> (Sender<T>, Receiver<T>) {
+        *self = Self::new();
+        (Sender { channel: self }, Receiver { channel: self })
+    }
 }
 
-impl<T> Sender<T> {
+impl<T> Sender<'_, T> {
     pub fn send(self, message: T) {
         unsafe { (*self.channel.message.get()).write(message) };
         self.channel.ready.store(true, Ordering::Release);
     }
 }
 
-impl<T> Receiver<T> {
+impl<T> Receiver<'_, T> {
     pub fn is_ready(&self) -> bool {
         self.channel.ready.load(Ordering::Relaxed)
     }
@@ -64,10 +69,11 @@ mod tests {
 
     #[test]
     fn test_channel() {
-        let (sender, receiver) = channel();
+        let mut channel = Channel::new();
         let t = thread::current();
 
         thread::scope(|s| {
+            let (sender, receiver) = channel.split();
             s.spawn(move || {
                 sender.send("Hello, World!");
                 // sender.send("Hello, World!"); // error[E0382]: use of moved value: `sender`
@@ -78,7 +84,10 @@ mod tests {
                 thread::park();
             }
 
-            assert_eq!(receiver.receive(), "Hello, World!");
+            let (sender, receiver) = channel.split();
+
+            // error[E0499]: cannot borrow `channel` as mutable more than once at a time
+            // assert_eq!(receiver.receive(), "Hello, World!");
         });
     }
 }
