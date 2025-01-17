@@ -53,8 +53,9 @@
 - [channel](channel/README.md)
   - simple: mutex, vecdeque, condvar
   - unsafe: unsafe cell, maybeuninit, atomicbool
-  - runtime check
+  - runtime check: thread::park
   - single atomic: atomicu8
   - type check: sender, receiver, arc
   - borrowing: lifetime
+  - blocking: phantomdata, thread::park
 

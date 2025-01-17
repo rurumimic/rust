@@ -1,13 +1,18 @@
 use std::cell::UnsafeCell;
+use std::marker::PhantomData;
 use std::mem::MaybeUninit;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::thread::{self, Thread};
 
 pub struct Sender<'a, T> {
     channel: &'a Channel<T>,
+    receiving_thread: Thread,
 }
 
 pub struct Receiver<'a, T> {
     channel: &'a Channel<T>,
+    _no_send: PhantomData<*const ()>,
+    //_no_send: PhantomData<Rc<()>>,
 }
 
 pub struct Channel<T> {
@@ -28,7 +33,16 @@ impl<T> Channel<T> {
     //pub fn split<'a>(&'a mut self) -> (Sender<'a, T>, Receiver<'a, T>) {
     pub fn split(&mut self) -> (Sender<T>, Receiver<T>) {
         *self = Self::new();
-        (Sender { channel: self }, Receiver { channel: self })
+        (
+            Sender {
+                channel: self,
+                receiving_thread: thread::current(),
+            },
+            Receiver {
+                channel: self,
+                _no_send: PhantomData,
+            },
+        )
     }
 }
 
@@ -36,19 +50,14 @@ impl<T> Sender<'_, T> {
     pub fn send(self, message: T) {
         unsafe { (*self.channel.message.get()).write(message) };
         self.channel.ready.store(true, Ordering::Release);
+        self.receiving_thread.unpark();
     }
 }
 
 impl<T> Receiver<'_, T> {
-    pub fn is_ready(&self) -> bool {
-        self.channel.ready.load(Ordering::Relaxed)
-    }
-
-    /// After `is_ready` returns `true`
     pub fn receive(self) -> T {
-        // Reset the flag to `false`
-        if !self.channel.ready.swap(false, Ordering::Acquire) {
-            panic!("Channel is not ready");
+        while !self.channel.ready.swap(false, Ordering::Acquire) {
+            thread::park();
         }
         unsafe { (*self.channel.message.get()).assume_init_read() }
     }
@@ -70,29 +79,20 @@ mod tests {
     #[test]
     fn test_channel() {
         let mut channel = Channel::new();
-        let (sender, receiver) = channel.split();
-        let t = thread::current();
 
         thread::scope(|s| {
+            let (sender, receiver) = channel.split();
             s.spawn(move || {
                 sender.send("Hello, World!");
-                // sender.send("Hello, World!"); // error[E0382]: use of moved value: `sender`
-                t.unpark();
+                //sender.send("Hello, World!"); // error[E0382]: use of moved value: `sender`
             });
 
-            while !receiver.is_ready() {
-                thread::park();
-            }
+            // error[E0277]: `*const ()` cannot be sent between threads safely
+            //s.spawn(move || {
+            //    assert_eq!(receiver.receive(), "Hello, World!");
+            //});
 
             assert_eq!(receiver.receive(), "Hello, World!");
-
-            // error[E0382]: use of moved value: `receiver`
-            // assert_eq!(receiver.receive(), "Hello, World!");
-
-            // error[E0499]: cannot borrow `channel` as mutable more than once at a time
-            // let (_sender, _receiver) = channel.split();
         });
-
-        let (_sender, _receiver) = channel.split();
     }
 }
