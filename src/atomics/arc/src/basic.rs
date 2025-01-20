@@ -27,6 +27,16 @@ impl<T> Arc<T> {
     fn data(&self) -> &ArcData<T> {
         unsafe { self.ptr.as_ref() }
     }
+
+    pub fn get_mut(arc: &mut Self) -> Option<&mut T> {
+        if arc.data().ref_count.load(Ordering::Relaxed) == 1 {
+            fence(Ordering::Acquire);
+
+            unsafe { Some(&mut arc.ptr.as_mut().data) }
+        } else {
+            None
+        }
+    }
 }
 
 impl<T> Deref for Arc<T> {
@@ -60,6 +70,30 @@ impl<T> Drop for Arc<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_mut() {
+        let mut x = Arc::new(42);
+        if let Some(v) = Arc::get_mut(&mut x) {
+            *v = 27;
+        } else {
+            assert_eq!(*x, 42);
+        }
+
+        let y = x.clone();
+
+        assert!(Arc::get_mut(&mut x).is_none());
+
+        drop(y);
+
+        if let Some(v) = Arc::get_mut(&mut x) {
+            *v = 38;
+        } else {
+            assert_eq!(*x, 27);
+        }
+
+        assert_eq!(*x, 38);
+    }
 
     #[test]
     fn test() {
