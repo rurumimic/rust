@@ -54,7 +54,7 @@
 - [book](https://doc.rust-lang.org/book/) + [quiz](https://rust-book.cs.brown.edu)
 - [rustlings](https://github.com/rust-lang/rustlings)
 - core
-  - [crate std](https://doc.rust-lang.org/std/)
+  - [create std](https://doc.rust-lang.org/std/)
   - [edition guide](https://doc.rust-lang.org/edition-guide)
   - [cargo](https://github.com/rust-lang/cargo): package manager
     - [doc](https://doc.rust-lang.org/cargo/index.html)
@@ -94,6 +94,12 @@
     <summary>editor</summary>
 
 - [vim](https://github.com/rust-lang/rust.vim)
+
+</details>
+<details>
+    <summary>youtube</summary>
+
+- [send is not about ownership](https://www.youtube.com/watch?v=eRxqX5_UxaY) by Alice Ryhl
 
 </details>
 
