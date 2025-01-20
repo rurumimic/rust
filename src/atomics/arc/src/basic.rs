@@ -72,30 +72,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_mut() {
-        let mut x = Arc::new(42);
-        if let Some(v) = Arc::get_mut(&mut x) {
-            *v = 27;
-        } else {
-            assert_eq!(*x, 42);
-        }
-
-        let y = x.clone();
-
-        assert!(Arc::get_mut(&mut x).is_none());
-
-        drop(y);
-
-        if let Some(v) = Arc::get_mut(&mut x) {
-            *v = 38;
-        } else {
-            assert_eq!(*x, 27);
-        }
-
-        assert_eq!(*x, 38);
-    }
-
-    #[test]
     fn test() {
         static NUM_DROPS: AtomicUsize = AtomicUsize::new(0);
 
@@ -123,5 +99,29 @@ mod tests {
         drop(y);
 
         assert_eq!(NUM_DROPS.load(Ordering::Relaxed), 1);
+    }
+
+    #[test]
+    fn test_mut() {
+        let mut x = Arc::new(42);
+        if let Some(v) = Arc::get_mut(&mut x) {
+            *v = 27;
+        } else {
+            assert_eq!(*x, 42);
+        }
+
+        let y = x.clone();
+
+        assert!(Arc::get_mut(&mut x).is_none());
+
+        drop(y);
+
+        if let Some(v) = Arc::get_mut(&mut x) {
+            *v = 38;
+        } else {
+            assert_eq!(*x, 27);
+        }
+
+        assert_eq!(*x, 38);
     }
 }
