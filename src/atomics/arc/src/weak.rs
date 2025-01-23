@@ -22,6 +22,13 @@ unsafe impl<T: Send + Sync> Send for Weak<T> {} // send: can be sent to another 
 unsafe impl<T: Send + Sync> Sync for Weak<T> {} // sync: can be shared between threads
 
 impl<T> Weak<T> {
+    fn counts(&self) -> (usize, usize) {
+        (
+            self.data().data_ref_count.load(Ordering::Relaxed),
+            self.data().alloc_ref_count.load(Ordering::Relaxed),
+        )
+    }
+
     fn data(&self) -> &ArcData<T> {
         unsafe { self.ptr.as_ref() } // NonNull<T>.as_ref() = &T
                                      // NonNull<T> -> unsafe {*mut T -> *const T} -> &T
@@ -71,7 +78,7 @@ impl<T> Arc<T> {
             let arcdata = unsafe { arc.weak.ptr.as_mut() };
             let option = arcdata.data.get_mut();
 
-            // We know the data is still available since we
+            // We knaft punk coverow the data is still available since we
             // have an Arc to it, so this won't panic.
             let data = option.as_mut().unwrap();
             Some(data)
@@ -127,7 +134,9 @@ impl<T> Clone for Arc<T> {
 
 impl<T> Drop for Weak<T> {
     fn drop(&mut self) {
+        println!("Weak drop");
         if self.data().alloc_ref_count.fetch_sub(1, Ordering::Release) == 1 {
+            println!("Weak remove: {:?}", self.ptr);
             fence(Ordering::Acquire);
             unsafe {
                 drop(Box::from_raw(self.ptr.as_ptr()));
@@ -138,6 +147,7 @@ impl<T> Drop for Weak<T> {
 
 impl<T> Drop for Arc<T> {
     fn drop(&mut self) {
+        println!("Arc drop");
         if self
             .weak
             .data()
@@ -160,5 +170,50 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test() {}
+    fn test() {
+        static NUM_DROPS: AtomicUsize = AtomicUsize::new(0);
+
+        struct DetectDrop;
+
+        impl Drop for DetectDrop {
+            fn drop(&mut self) {
+                println!("DetectDrop drop");
+                NUM_DROPS.fetch_add(1, Ordering::Relaxed);
+            }
+        }
+
+        let x = Arc::new(("hello", DetectDrop));
+        let y = Arc::downgrade(&x);
+        println!("Conunts: {:?}", y.counts());
+        let z = Arc::downgrade(&x);
+        println!("Conunts: {:?}", z.counts());
+
+        let t = std::thread::spawn(move || {
+            println!("Conunts: {:?}", y.counts());
+            let w = y.upgrade().unwrap();
+            println!("Conunts: {:?}", y.counts());
+            assert_eq!(w.0, "hello");
+        });
+
+        assert_eq!(x.0, "hello");
+        println!("Conunts: {:?}", z.counts());
+        t.join().unwrap();
+
+        assert_eq!(NUM_DROPS.load(Ordering::Relaxed), 0);
+        assert!(z.upgrade().is_some());
+        println!("Conunts: {:?}", z.counts());
+
+        println!("drop x");
+        drop(x);
+        println!("---");
+
+        {
+            assert_eq!(NUM_DROPS.load(Ordering::Relaxed), 1);
+            assert!(z.upgrade().is_none());
+            println!("Conunts: {:?}", z.counts());
+        }
+        assert!(z.upgrade().is_none());
+        println!("Conunts: {:?}", z.counts());
+        println!("=== end ===");
+    }
 }
