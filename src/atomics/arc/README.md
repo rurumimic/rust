@@ -7,7 +7,7 @@
 ### Weak
 
 ```bash
-cargo test weak -- --nocapture
+cargo test weak::tests::test_weak -- --nocapture
 ```
 
 ```bash
