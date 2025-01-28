@@ -1,4 +1,5 @@
 use std::cell::UnsafeCell;
+use std::fmt::Debug;
 use std::ops::Deref;
 use std::ptr::NonNull;
 use std::sync::atomic::{fence, AtomicUsize, Ordering};
@@ -14,6 +15,7 @@ pub struct Weak<T> {
     ptr: NonNull<ArcData<T>>, // niche optimization: use only 1 word (without some/none overhead)
 }
 
+#[derive(Debug)]
 pub struct Arc<T> {
     weak: Weak<T>,
 }
@@ -22,13 +24,6 @@ unsafe impl<T: Send + Sync> Send for Weak<T> {} // send: can be sent to another 
 unsafe impl<T: Send + Sync> Sync for Weak<T> {} // sync: can be shared between threads
 
 impl<T> Weak<T> {
-    fn counts(&self) -> (usize, usize) {
-        (
-            self.data().data_ref_count.load(Ordering::Relaxed),
-            self.data().alloc_ref_count.load(Ordering::Relaxed),
-        )
-    }
-
     fn data(&self) -> &ArcData<T> {
         unsafe { self.ptr.as_ref() } // NonNull<T>.as_ref() = &T
                                      // NonNull<T> -> unsafe {*mut T -> *const T} -> &T
@@ -135,6 +130,8 @@ impl<T> Clone for Arc<T> {
 impl<T> Drop for Weak<T> {
     fn drop(&mut self) {
         println!("Weak drop");
+        dbg!(&self);
+
         if self.data().alloc_ref_count.fetch_sub(1, Ordering::Release) == 1 {
             println!("Weak remove: {:?}", self.ptr);
             fence(Ordering::Acquire);
@@ -148,6 +145,8 @@ impl<T> Drop for Weak<T> {
 impl<T> Drop for Arc<T> {
     fn drop(&mut self) {
         println!("Arc drop");
+        dbg!(&self.weak);
+
         if self
             .weak
             .data()
@@ -165,43 +164,72 @@ impl<T> Drop for Arc<T> {
     }
 }
 
+impl<T> Debug for Weak<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Weak")
+            .field("data_ref (arc)", &self.data().data_ref_count)
+            .field("alloc_ref (arc + weak)", &self.data().alloc_ref_count)
+            .finish()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test() {
+        println!("=== Test Start ===");
+
         static NUM_DROPS: AtomicUsize = AtomicUsize::new(0);
 
+        println!("Num drops: {:?}", NUM_DROPS.load(Ordering::Relaxed));
+
+        #[derive(Debug)]
         struct DetectDrop;
 
         impl Drop for DetectDrop {
             fn drop(&mut self) {
-                println!("DetectDrop drop");
                 NUM_DROPS.fetch_add(1, Ordering::Relaxed);
+                println!("Drop: DetectDrop {:?}", NUM_DROPS.load(Ordering::Relaxed));
             }
         }
 
+        println!("new arc x");
         let x = Arc::new(("hello", DetectDrop));
+        dbg!(&x);
+
+        println!("new weak x->y");
         let y = Arc::downgrade(&x);
-        println!("Conunts: {:?}", y.counts());
+        dbg!(&y);
+
+        println!("new weak x->z");
         let z = Arc::downgrade(&x);
-        println!("Conunts: {:?}", z.counts());
+        dbg!(&z);
 
         let t = std::thread::spawn(move || {
-            println!("Conunts: {:?}", y.counts());
+            println!("weak y to new thread");
+            dbg!(&y);
+
+            println!("new arc w<-y in new thread");
             let w = y.upgrade().unwrap();
-            println!("Conunts: {:?}", y.counts());
+            dbg!(&y);
             assert_eq!(w.0, "hello");
         });
 
+        println!("main thread");
         assert_eq!(x.0, "hello");
-        println!("Conunts: {:?}", z.counts());
+        dbg!(&z);
         t.join().unwrap();
+        println!("thread end");
+        dbg!(&x);
+        dbg!(&z);
 
         assert_eq!(NUM_DROPS.load(Ordering::Relaxed), 0);
+
+        println!("new arc <- z");
         assert!(z.upgrade().is_some());
-        println!("Conunts: {:?}", z.counts());
+        dbg!(&z);
 
         println!("drop x");
         drop(x);
@@ -209,11 +237,14 @@ mod tests {
 
         {
             assert_eq!(NUM_DROPS.load(Ordering::Relaxed), 1);
+            println!("new arc <- z");
             assert!(z.upgrade().is_none());
-            println!("Conunts: {:?}", z.counts());
+            dbg!(&z);
         }
+
+        println!("new arc <- z");
         assert!(z.upgrade().is_none());
-        println!("Conunts: {:?}", z.counts());
-        println!("=== end ===");
+        dbg!(&z);
+        println!("=== Test End ===");
     }
 }
