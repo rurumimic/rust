@@ -4,6 +4,97 @@
 
 ## Test
 
+### Optimized
+
+```bash
+cargo test optimized -- --nocapture
+```
+
+```bash
+=== Test Start ===
+Num drops: 0
+new arc x
+[src/optimized.rs:238:9] &x = Arc {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 1,
+}
+new weak x->y
+[src/optimized.rs:242:9] &y = Weak {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 2,
+}
+new weak x->z
+[src/optimized.rs:246:9] &z = Weak {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 3,
+}
+main thread
+[src/optimized.rs:260:9] &z = Weak {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 3,
+}
+weak y to new thread
+[src/optimized.rs:250:13] &y = Weak {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 3,
+}
+new arc w<-y in new thread
+[src/optimized.rs:254:13] &y = Weak {
+    data_ref (arc): 2,
+    alloc_ref (weak + (1)): 3,
+}
+Arc drop
+[src/optimized.rs:180:9] &self.ptr = 0x000075d0d4000c40
+Weak drop
+[src/optimized.rs:165:9] &self = Weak {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 3,
+}
+thread end
+[src/optimized.rs:263:9] &x = Arc {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 2,
+}
+[src/optimized.rs:264:9] &z = Weak {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 2,
+}
+new arc <- z
+Arc drop
+[src/optimized.rs:180:9] &self.ptr = 0x000075d0d4000c40
+[src/optimized.rs:270:9] &z = Weak {
+    data_ref (arc): 1,
+    alloc_ref (weak + (1)): 2,
+}
+drop x
+Arc drop
+[src/optimized.rs:180:9] &self.ptr = 0x000075d0d4000c40
+Drop: DetectDrop 1
+Weak drop
+[src/optimized.rs:165:9] &self = Weak {
+    data_ref (arc): 0,
+    alloc_ref (weak + (1)): 2,
+}
+---
+new arc <- z
+[src/optimized.rs:280:13] &z = Weak {
+    data_ref (arc): 0,
+    alloc_ref (weak + (1)): 1,
+}
+new arc <- z
+[src/optimized.rs:285:9] &z = Weak {
+    data_ref (arc): 0,
+    alloc_ref (weak + (1)): 1,
+}
+=== Test End ===
+Weak drop
+[src/optimized.rs:165:9] &self = Weak {
+    data_ref (arc): 0,
+    alloc_ref (weak + (1)): 1,
+}
+Weak remove: 0x75d0d4000c40
+```
+
 ### Weak
 
 ```bash
