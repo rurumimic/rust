@@ -4,6 +4,21 @@
 
 ## Test
 
+```bash
+cargo test
+```
+
+```bash
+running 5 tests
+test weak::tests::test_option ... ok
+test basic::tests::test_mut ... ok
+test weak::tests::test_weak ... ok
+test basic::tests::test ... ok
+test optimized::tests::test ... ok
+
+test result: ok. 5 passed;
+```
+
 ### Optimized
 
 ```bash

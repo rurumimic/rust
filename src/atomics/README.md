@@ -62,4 +62,7 @@
 ### arc
 
 - [arc](arc/README.md)
+  - basic: nonnull, send, sync, box::leak, fence, acquire, release, drop
+  - weak: unsafecell
+  - optimized
 
