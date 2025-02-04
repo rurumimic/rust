@@ -66,3 +66,7 @@
   - weak: unsafecell
   - optimized
 
+### processor
+
+- [commands](processor/commands/README.md): rust toolchians, compile target, assembler
+

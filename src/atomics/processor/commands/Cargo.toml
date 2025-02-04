@@ -1,0 +1,23 @@
+[package]
+name = "commands"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[profile.release]
+lto = true # Enable Link Time Optimization
+codegen-units = 1 # Reduce the number of parallel codegen units to 1
+opt-level = "z" # Optimize for size
+panic = "abort" # Reduce the size of the binary
+
+[build]
+rustflags = [
+  "-C", "link-arg=-s", # Strip the binary
+  "-C", "target-cpu=native", # Optimize for the current CPU
+]
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = []
+
+[dependencies]
+
