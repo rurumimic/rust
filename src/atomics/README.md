@@ -71,4 +71,16 @@
 - [commands](processor/commands/README.md): rust toolchians, compile target, assembler
   - load, store
   - read, modify, write: fetch_add, fetch_or, compare_exchange, compare_exchange_weak
+- [cache](processor/cache/README.md)
+  - cache line: L1 > L2 > L3
+  - cache coherence protocol
+    - write-through
+    - MESI: modified, exclusive, shared, invalid
+    - MOESI
+    - MESIF
+  - cache miss
+  - false sharing
+  - black box
+
+
 
