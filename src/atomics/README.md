@@ -69,4 +69,6 @@
 ### processor
 
 - [commands](processor/commands/README.md): rust toolchians, compile target, assembler
+  - load, store
+  - read, modify, write: fetch_add, fetch_or, compare_exchange, compare_exchange_weak
 
