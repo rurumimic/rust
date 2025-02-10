@@ -5,9 +5,10 @@ edition = "2021"
 publish = false
 
 [profile.release]
-lto = true # Enable Link Time Optimization
+# off outline function in aarch64
+# lto = true # Enable Link Time Optimization
+# opt-level = "z" # Optimize for size
 codegen-units = 1 # Reduce the number of parallel codegen units to 1
-opt-level = "z" # Optimize for size
 panic = "abort" # Reduce the size of the binary
 
 [build]

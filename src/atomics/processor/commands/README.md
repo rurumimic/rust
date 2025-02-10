@@ -45,7 +45,7 @@ cargo install cargo-show-asm
 ### Show Assembly
 
 ```bash
-cargo asm --target x86_64-unknown-linux-gnu  --lib add_ten
+cargo asm --target x86_64-unknown-linux-gnu  --lib add_ten --rust
 ```
 
 ```bash
@@ -95,3 +95,27 @@ cargo asm --target x86_64-unknown-linux-gnu  --lib load_store::atomic_load_x
 cargo asm --target aarch64-unknown-linux-gnu --lib load_store::atomic_load_x
 ```
 
+#### read_monify_write
+
+```bash
+cargo asm --target x86_64-unknown-linux-gnu  --lib read_monify_write::add_x
+cargo asm --target aarch64-unknown-linux-gnu --lib read_monify_write::add_x
+
+cargo asm --target x86_64-unknown-linux-gnu  --lib read_modify_write::atomic_add_x
+cargo asm --target aarch64-unknown-linux-gnu --lib read_modify_write::atomic_add_x
+
+cargo asm --target x86_64-unknown-linux-gnu  --lib read_modify_write::atomic_add_return_x
+cargo asm --target aarch64-unknown-linux-gnu --lib read_modify_write::atomic_add_return_x
+
+cargo asm --target x86_64-unknown-linux-gnu  --lib read_modify_write::atomic_or_return_x
+cargo asm --target aarch64-unknown-linux-gnu --lib read_modify_write::atomic_or_return_x
+
+cargo asm --target x86_64-unknown-linux-gnu  --lib read_modify_write::compare_exchange_or_return_x
+cargo asm --target aarch64-unknown-linux-gnu --lib read_modify_write::compare_exchange_or_return_x
+
+cargo asm --target x86_64-unknown-linux-gnu  --lib read_modify_write::compare_exchange_weak
+cargo asm --target aarch64-unknown-linux-gnu --lib read_modify_write::compare_exchange_weak
+
+cargo asm --target x86_64-unknown-linux-gnu  --lib read_modify_write::compare_exchange_x
+cargo asm --target aarch64-unknown-linux-gnu --lib read_modify_write::compare_exchange_x
+```
