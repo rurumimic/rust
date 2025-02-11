@@ -81,6 +81,8 @@
   - cache miss
   - false sharing
   - black box
-
-
+- reorder
+  - store buffer
+  - invalidation queue
+  - pipelining
 
