@@ -85,4 +85,9 @@
   - store buffer
   - invalidation queue
   - pipelining
+- memory ordering
+  - other-multi-copy
+  - x86_64: strongly ordered
+  - arm64: weakly ordered
+  - memory fence
 
