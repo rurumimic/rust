@@ -94,7 +94,7 @@
 ### os primitives
 
 - posix: pthread
-- linux: futex, lock-free
+- linux: [futex](os_primitives/linux/futex/README.md), lock-free
 - macos
 - windows
 
