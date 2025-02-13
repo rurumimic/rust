@@ -91,3 +91,10 @@
   - arm64: weakly ordered
   - memory fence
 
+### os primitives
+
+- posix: pthread
+- linux: futex, lock-free
+- macos
+- windows
+
