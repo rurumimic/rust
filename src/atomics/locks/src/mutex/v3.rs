@@ -56,7 +56,7 @@ fn lock_contended(state: &AtomicU32) {
 }
 
 pub struct MutexGuard<'a, T> {
-    mutex: &'a Mutex<T>,
+    pub(crate) mutex: &'a Mutex<T>,
 }
 
 unsafe impl<T> Sync for MutexGuard<'_, T> where T: Sync {}
