@@ -101,4 +101,5 @@
 ### locks
 
 - [locks](locks/README.md): mutex, condvar, rwlock
+  - spurious wakeups
 
