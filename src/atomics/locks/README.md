@@ -32,3 +32,9 @@ Bench 2: locked 20000000 times in 2.416116844s
 cargo test condvar -- --nocapture
 ```
 
+## RwLock
+
+```bash
+cargo test rwlock -- --nocapture
+```
+
