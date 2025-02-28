@@ -1,0 +1,14 @@
+[package]
+name = "string_sum"
+version = "0.1.0"
+edition = "2021"
+publish = false:w
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "string_sum"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = "0.23.3"
