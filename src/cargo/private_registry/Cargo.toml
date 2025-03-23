@@ -1,0 +1,10 @@
+[package]
+name = "private_registry"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = { version = "*", registry = "sparse-registry" }
+itoa = { version = "*", registry = "git-registry" }
+

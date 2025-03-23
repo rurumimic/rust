@@ -35,6 +35,10 @@
 - [v8](src/v8/README.md)
 - [kubernetes](src/kubernetes/README.md)
 
+### Cargo
+
+- [private registry](cargo/private_registry/README.md): sparse, git
+
 ---
 
 ## Links

@@ -1,0 +1,4 @@
+[registries]
+sparse-registry = { index = "sparse+https://index.crates.io/" }
+git-registry = { index = "https://github.com/rust-lang/crates.io-index" }
+
