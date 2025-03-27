@@ -22,6 +22,7 @@
 - [atomics](src/atomics/README.md)
 - [macros](src/macros/README.md)
 - [algorithm](https://github.com/rurumimic/algorithm-rs)
+- [crossbeam](src/crossbeam/README.md)
 
 ### Applications
 
