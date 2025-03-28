@@ -1,8 +1,18 @@
-use std::sync::mpsc;
+use std::sync::{Arc, Mutex, mpsc};
 use std::thread;
 
-trait Sendable<T: Send> {
+trait Sendable<T: 'static + Send> {
     fn send(&self, value: T) -> Result<(), Box<dyn std::error::Error>>;
+}
+
+trait Receivable<T: 'static + Send>: Clone + Send + Sync {
+    fn recv(&self) -> Option<T>;
+
+    //fn iter(&self) -> impl Iterator<Item = T> + '_ {
+    //    std::iter::from_fn(move || Receivable::recv(&self))
+    //}
+
+    fn iter(&self) -> impl Iterator<Item = T> + '_;
 }
 
 impl<T: 'static + Send> Sendable<T> for mpsc::SyncSender<T> {
@@ -16,6 +26,28 @@ impl<T: 'static + Send> Sendable<T> for crossbeam_channel::Sender<T> {
     fn send(&self, value: T) -> Result<(), Box<dyn std::error::Error>> {
         self.send(value)
             .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+    }
+}
+
+impl<T: 'static + Send> Receivable<T> for Arc<Mutex<mpsc::Receiver<T>>> {
+    fn recv(&self) -> Option<T> {
+        self.lock().ok()?.recv().ok()
+    }
+
+    fn iter(&self) -> impl Iterator<Item = T> + '_ {
+        let r = self.clone();
+        std::iter::from_fn(move || Receivable::recv(&r))
+    }
+}
+
+impl<T: 'static + Send> Receivable<T> for crossbeam_channel::Receiver<T> {
+    fn recv(&self) -> Option<T> {
+        self.recv().ok()
+    }
+
+    fn iter(&self) -> impl Iterator<Item = T> + '_ {
+        let r = self.clone();
+        std::iter::from_fn(move || Receivable::recv(&r))
     }
 }
 
@@ -47,6 +79,20 @@ fn main() {
     thread::spawn(|| fibonacci(s1));
     thread::spawn(|| fibonacci(s2));
 
-    print_sequence(r1.iter(), 20);
-    print_sequence(r2.iter(), 20);
+    let r1 = Arc::new(Mutex::new(r1));
+
+    let handles = vec![
+        thread::spawn({
+            let r1 = r1.clone();
+            move || print_sequence(Receivable::iter(&r1), 10)
+        }),
+        thread::spawn({
+            let r2 = r2.clone();
+            move || print_sequence(Receivable::iter(&r2), 10)
+        }),
+    ];
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
 }
