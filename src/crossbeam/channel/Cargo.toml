@@ -6,3 +6,5 @@ publish = false
 
 [dependencies]
 crossbeam-channel = "0.5.14"
+crossbeam-utils = "0.8.21"
+signal-hook = "0.3.17"
