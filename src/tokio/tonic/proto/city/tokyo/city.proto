@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package city.tokyo;
+
+service City { rpc Process(TokyoRequest) returns (TokyoResponse); }
+
+message TokyoRequest {
+  int32 signal = 1;
+  bytes payload = 2;
+}
+
+message TokyoResponse {
+  bool ack = 1;
+  int64 duration = 2;
+}

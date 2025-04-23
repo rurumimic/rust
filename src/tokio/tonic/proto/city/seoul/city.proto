@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package city.seoul;
+
+service City { rpc Process(SeoulRequest) returns (SeoulResponse); }
+
+message SeoulRequest {
+  int32 resident_id = 1;
+  string district = 2;
+}
+
+message SeoulResponse {
+  bool granted = 1;
+  string message = 2;
+}

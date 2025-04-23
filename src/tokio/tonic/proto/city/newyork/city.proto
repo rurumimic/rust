@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package city.newyork;
+
+service City { rpc Process(NewYorkRequest) returns (NewYorkResponse); }
+
+message NewYorkRequest {
+  string type = 1;
+  int32 units = 2;
+}
+
+message NewYorkResponse {
+  string receipt = 1;
+  bool confirmed = 2;
+}

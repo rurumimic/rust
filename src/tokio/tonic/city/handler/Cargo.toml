@@ -1,0 +1,19 @@
+[package]
+name = "handler"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "server_seoul"
+
+[[bin]]
+name = "client_seoul"
+
+[dependencies]
+prost = "0.13.5"
+tokio = { version = "1.44.2", features = ["macros", "rt-multi-thread"] }
+tonic = "0.13.0"
+
+[build-dependencies]
+tonic-build = "0.13.0"
