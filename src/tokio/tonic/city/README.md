@@ -5,3 +5,9 @@ cargo run --bin server_seoul
 cargo run --bin client_seoul
 ```
 
+```bash
+cargo run --bin server
+cargo run --bin client_seoul
+cargo run --bin client_tokyo
+```
+

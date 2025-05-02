@@ -5,6 +5,9 @@ edition = "2021"
 publish = false
 
 [[bin]]
+name = "server"
+
+[[bin]]
 name = "server_seoul"
 
 [[bin]]
