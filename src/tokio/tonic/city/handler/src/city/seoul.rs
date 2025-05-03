@@ -12,7 +12,7 @@ impl City for CityService {
         &self,
         request: Request<SeoulRequest>,
     ) -> Result<Response<SeoulResponse>, Status> {
-        println!("fn process()");
+        println!("[Seoul] fn process()");
 
         let request = request.into_inner();
         println!("Received request: {:?}", request);

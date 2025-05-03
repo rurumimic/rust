@@ -17,6 +17,7 @@ name = "client_seoul"
 prost = "0.13.5"
 tokio = { version = "1.44.2", features = ["macros", "rt-multi-thread"] }
 tonic = "0.13.0"
+tonic-reflection = "0.13.0"
 
 [build-dependencies]
 tonic-build = "0.13.0"
