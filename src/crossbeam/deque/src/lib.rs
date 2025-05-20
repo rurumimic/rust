@@ -1,5 +1,7 @@
 use crossbeam_deque::{Injector, Steal, Stealer, Worker};
 use std::sync::Arc;
+use std::sync::mpsc::{Receiver, Sender};
+use std::thread::JoinHandle;
 
 pub struct Task {
     pub kind: usize,
@@ -56,26 +58,31 @@ impl Dispatcher {
                 .take(size)
                 .collect();
 
-        let mut runners = Vec::with_capacity(size);
-
-        for (i, worker) in workers.iter().enumerate() {
-            let (left, right) = workers.split_at(i);
-            let others: Vec<Stealer<Task>> = left
-                .iter()
-                .chain(&right[1..])
-                .map(|w| w.clone().stealer())
-                .collect();
-
-            let kind = i + 1;
-            let runner = TaskRunner::new(kind, worker.clone(), global.clone(), others);
-            runners.push(runner);
-        }
+        let runners = workers
+            .iter()
+            .enumerate()
+            .map(|(i, worker)| {
+                let others = Self::exclude(&workers, i);
+                let kind = i + 1;
+                TaskRunner::new(kind, Arc::clone(worker), Arc::clone(&global), others)
+            })
+            .collect();
 
         Dispatcher {
             global,
             workers,
             runners,
         }
+    }
+
+    fn exclude(workers: &[Arc<WorkerQueue>], index: usize) -> Vec<Stealer<Task>> {
+        let (left, right) = workers.split_at(index);
+        let others: Vec<Stealer<Task>> = left
+            .iter()
+            .chain(&right[1..])
+            .map(|w| w.stealer())
+            .collect();
+        others
     }
 
     pub fn run(&self, kind: usize, function: impl FnOnce() + Send + 'static) {
@@ -97,6 +104,13 @@ impl Dispatcher {
             }
         };
     }
+
+    pub fn stop(&mut self) {
+        for runner in &mut self.runners {
+            runner.stop();
+            runner.join();
+        }
+    }
 }
 
 pub struct TaskRunner {
@@ -104,6 +118,13 @@ pub struct TaskRunner {
     queue: Arc<WorkerQueue>,
     global: Arc<GlobalQueue>,
     others: Vec<Stealer<Task>>,
+    thread: Option<JoinHandle<()>>,
+    signal: Sender<TaskRunnerState>,
+}
+
+enum TaskRunnerState {
+    Run,
+    Stop,
 }
 
 impl TaskRunner {
@@ -113,11 +134,53 @@ impl TaskRunner {
         global: Arc<GlobalQueue>,
         others: Vec<Stealer<Task>>,
     ) -> Self {
+        let (sender, receiver) = std::sync::mpsc::channel();
+
+        let thread = std::thread::spawn(move || {
+            loop {
+                let receiver = receiver.recv();
+
+                match receiver {
+                    Ok(TaskRunnerState::Stop) => {
+                        println!("Stopping task runner {}", kind);
+                        break;
+                    }
+                    Ok(_) => {}
+                    Err(_) => {
+                        break;
+                    }
+                }
+
+                //let task = &queue.queue.pop();
+                //match task {
+                //    Some(task) => {
+                //        println!("Task runner {} executing task", kind);
+                //        (task.function)();
+                //    }
+                //    None => {}
+                //}
+            }
+        });
+
         TaskRunner {
             kind,
             queue,
             global,
             others,
+            thread: Some(thread),
+            signal: sender,
+        }
+    }
+
+    fn stop(&self) {
+        self.signal
+            .send(TaskRunnerState::Stop)
+            .expect("Failed to send stop signal");
+    }
+
+    fn join(&mut self) {
+        if let Some(thread) = self.thread.take() {
+            thread.join().unwrap();
         }
     }
 }
