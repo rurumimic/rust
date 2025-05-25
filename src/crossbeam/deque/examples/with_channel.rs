@@ -1,4 +1,4 @@
-use deque::Dispatcher;
+use deque::with_channel::Dispatcher;
 
 fn main() {
     let mut dispatcher = Dispatcher::new(3);
