@@ -82,6 +82,26 @@ impl Dispatcher {
         };
     }
 
+    pub fn submit_task<A, R>(
+        &self,
+        kind: InjectorKind,
+        function: impl FnOnce(A) -> R + Send + 'static,
+        arg: A,
+    ) -> Receiver<R>
+    where
+        A: Send + 'static,
+        R: Send + 'static,
+    {
+        let (tx, rx) = std::sync::mpsc::channel::<R>();
+
+        self.run(kind, move || {
+            let result = function(arg);
+            tx.send(result).unwrap();
+        });
+
+        rx
+    }
+
     pub fn stop(&mut self) {
         for runner in &mut self.runners {
             runner.join();
