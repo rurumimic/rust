@@ -38,7 +38,7 @@
 
 ### Cargo
 
-- [private registry](cargo/private_registry/README.md): sparse, git
+- [private registry](src/cargo/private_registry/README.md): sparse, git
 
 ---
 
