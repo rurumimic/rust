@@ -19,6 +19,9 @@ mkdir .cargo
 [registries]
 sparse-registry = { index = "sparse+https://index.crates.io/" }
 git-registry = { index = "https://github.com/rust-lang/crates.io-index" }
+
+[registry]
+default = "sparse-registry"
 ```
 
 - sparse registry url must end in a slash `/`.
@@ -71,3 +74,52 @@ dependencies = [
 ]
 ```
 
+---
+
+## Offline Build
+
+```bash
+cargo vendor
+```
+
+### .cargo/config.toml
+
+```toml
+[source.vendored-sources]
+directory = "vendor"
+
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source."git+https://github.com/huggingface/candle.git?tag=0.9.0]
+git = "https://github.com/huggingface/candle.git"
+tag = "0.9.0"
+replace-with = "vendored-sources"
+```
+
+### .gitignore
+
+```txt
+!vendor/**/*
+!Cargo.lock
+```
+
+### Dockerfile
+
+```dockerfile
+FROM rust:alpine AS base
+RUN apk add --no-cache musl-dev build-base protoc
+
+FROM base AS builder
+COPY app /app
+WORKDIR /app
+RUN cargo build --offline --release
+
+FROM alpine AS production
+WORKDIR /app
+RUN mkdir -p bin
+COPY --from=builder /app/target/release/myapp /app/bin/myapp
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["./bin/myapp"]
+```
