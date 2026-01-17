@@ -1,7 +1,7 @@
 # Macros
 
 - book: [Write Powerful Rust Macros](https://www.manning.com/books/write-powerful-rust-macros)
-- github: [GlenDC/write-powerful-rust-macros](https://github.com/GlenDC/write-powerful-rust-macros)
+- github: [VanOvermeire/rust-macros-book](https://github.com/VanOvermeire/rust-macros-book)
 
 ## Contents
 
