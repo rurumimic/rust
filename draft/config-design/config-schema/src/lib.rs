@@ -10,6 +10,9 @@ pub mod policy;
 pub mod settings;
 
 pub use error::SchemaError;
-pub use fruit::FruitSettingsRaw;
+pub use fruit::{
+    AppleOptions, AppleSettingsRaw, BananaOptions, BananaSettingsRaw, Curvature, FruitSettingsRaw,
+    OrangeOptions, OrangeSettingsRaw,
+};
 pub use policy::UnknownKeyPolicy;
 pub use settings::SettingsRaw;

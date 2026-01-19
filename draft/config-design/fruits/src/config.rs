@@ -18,13 +18,16 @@ impl FruitConfig {
     where
         F: Fn(&str) + Clone,
     {
-        match raw.kind.to_lowercase().as_str() {
-            "apple" => Ok(FruitConfig::Apple(AppleConfig::try_from_raw(raw, warn_fn)?)),
-            "banana" => Ok(FruitConfig::Banana(BananaConfig::try_from_raw(raw, warn_fn)?)),
-            "orange" => Ok(FruitConfig::Orange(OrangeConfig::try_from_raw(raw, warn_fn)?)),
-            unknown => Err(FruitError::Schema(
-                config_schema::SchemaError::UnknownFruitKind(unknown.to_string()),
-            )),
+        match raw {
+            FruitSettingsRaw::Apple(raw) => {
+                Ok(FruitConfig::Apple(AppleConfig::try_from_raw(raw, warn_fn)?))
+            }
+            FruitSettingsRaw::Banana(raw) => {
+                Ok(FruitConfig::Banana(BananaConfig::try_from_raw(raw, warn_fn)?))
+            }
+            FruitSettingsRaw::Orange(raw) => {
+                Ok(FruitConfig::Orange(OrangeConfig::try_from_raw(raw, warn_fn)?))
+            }
         }
     }
 
