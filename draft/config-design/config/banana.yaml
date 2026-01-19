@@ -1,0 +1,9 @@
+app: MyConfigsApp
+version: 1.0.0
+
+fruit:
+  kind: banana
+  color: yellow
+  curvature: high
+  options:
+    ripeness: 0.9

@@ -1,0 +1,9 @@
+app: MyConfigsApp
+version: 1.0.0
+
+fruit:
+  kind: orange
+  color: orange
+  segments: 12
+  options:
+    seedless: true

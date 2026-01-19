@@ -1,0 +1,10 @@
+[package]
+name = "fruits"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+config-schema = { path = "../config-schema" }
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"

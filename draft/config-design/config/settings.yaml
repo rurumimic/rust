@@ -1,0 +1,11 @@
+app: MyConfigsApp
+version: 1.0.0
+
+fruit:
+  kind: apple
+  color: red
+  sweetness: 7
+  options:
+    max_price: 5
+    season_only: true
+
