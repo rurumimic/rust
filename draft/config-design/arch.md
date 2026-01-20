@@ -54,7 +54,7 @@ pub enum FruitConfig {
 pub struct AppleConfig {
     pub color: String,
     pub sweetness: i32,       // 타입 안전
-    pub options: AppleOptions, // 구조체로 확장 옵션
+    pub options: AppleOptions, // 도메인 옵션 + 검증
 }
 ```
 
