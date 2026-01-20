@@ -2,7 +2,7 @@ use config_schema::{OrangeOptions, OrangeSettingsRaw};
 
 use crate::FruitError;
 
-/// Orange 도메인 Config (완전 타입화)
+/// Orange domain config.
 #[derive(Debug, Clone)]
 pub struct OrangeConfig {
     pub color: String,

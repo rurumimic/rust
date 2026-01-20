@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 use crate::UnknownKeyPolicy;
 
-/// Fruit 설정의 Raw 스키마 (입력 경계)
+/// Raw schema for fruit settings (input boundary).
 #[derive(Debug, Clone, Deserialize)]
 #[serde(tag = "kind", rename_all = "lowercase")]
 pub enum FruitSettingsRaw {
@@ -13,7 +13,7 @@ pub enum FruitSettingsRaw {
     Orange(OrangeSettingsRaw),
 }
 
-/// Banana 곡률
+/// Banana curvature.
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum Curvature {
@@ -22,20 +22,20 @@ pub enum Curvature {
     High,
 }
 
-/// Apple 전용 확장 옵션
+/// Apple-specific options.
 #[derive(Debug, Clone, Deserialize, Default)]
 pub struct AppleOptions {
     pub max_price: Option<u32>,
     pub season_only: Option<bool>,
 }
 
-/// Banana 전용 확장 옵션
+/// Banana-specific options.
 #[derive(Debug, Clone, Deserialize, Default)]
 pub struct BananaOptions {
     pub ripeness: Option<f64>,
 }
 
-/// Orange 전용 확장 옵션
+/// Orange-specific options.
 #[derive(Debug, Clone, Deserialize, Default)]
 pub struct OrangeOptions {
     pub seedless: Option<bool>,

@@ -2,7 +2,7 @@ use config_schema::FruitSettingsRaw;
 
 use crate::{AppleConfig, BananaConfig, FruitError, OrangeConfig};
 
-/// 과일 종류별 Config enum (타입 안전한 분기)
+/// Fruit config enum (type-safe variants).
 #[derive(Debug, Clone)]
 pub enum FruitConfig {
     Apple(AppleConfig),
@@ -11,9 +11,7 @@ pub enum FruitConfig {
 }
 
 impl FruitConfig {
-    /// FruitSettingsRaw에서 FruitConfig로 변환
-    ///
-    /// kind 필드에 따라 적절한 Config 타입으로 변환합니다.
+    /// Convert from `FruitSettingsRaw` based on the `kind` tag.
     pub fn try_from_raw(raw: &FruitSettingsRaw) -> Result<Self, FruitError> {
         match raw {
             FruitSettingsRaw::Apple(raw) => {
@@ -28,7 +26,7 @@ impl FruitConfig {
         }
     }
 
-    /// 과일 종류 이름 반환
+    /// Returns fruit kind name.
     pub fn kind(&self) -> &'static str {
         match self {
             FruitConfig::Apple(_) => "apple",
@@ -37,7 +35,7 @@ impl FruitConfig {
         }
     }
 
-    /// 색상 반환 (공통 필드)
+    /// Returns color (shared field).
     pub fn color(&self) -> &str {
         match self {
             FruitConfig::Apple(c) => &c.color,

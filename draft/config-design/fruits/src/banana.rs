@@ -2,7 +2,7 @@ use config_schema::{BananaOptions, BananaSettingsRaw, Curvature};
 
 use crate::FruitError;
 
-/// Banana 도메인 Config (완전 타입화)
+/// Banana domain config.
 #[derive(Debug, Clone)]
 pub struct BananaConfig {
     pub color: String,

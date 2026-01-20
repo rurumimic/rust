@@ -3,7 +3,6 @@ use core::AppConfig;
 fn main() {
     println!("=== Unknown Key Policy Test ===\n");
 
-    // 1. Warn 정책 테스트
     println!("--- Test: WARN policy ---");
     match AppConfig::load("config/apple_with_unknown") {
         Ok(config) => {
@@ -16,7 +15,6 @@ fn main() {
 
     println!();
 
-    // 2. Deny 정책 테스트 (기본값)
     println!("--- Test: DENY policy (default) ---");
     let yaml = r#"
 app: TestApp
@@ -30,7 +28,6 @@ fruit:
     max_price: 10
 "#;
 
-    // YAML을 직접 파싱해서 테스트
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
     match AppConfig::try_from_raw(raw) {
         Ok(config) => {
@@ -43,7 +40,6 @@ fruit:
 
     println!();
 
-    // 3. Allow 정책 테스트
     println!("--- Test: ALLOW policy ---");
     let yaml = r#"
 app: TestApp
