@@ -1,6 +1,28 @@
-use config_schema::{AppleOptions, AppleSettingsRaw};
+use config_schema::{AppleOptionsRaw, AppleSettingsRaw};
 
 use crate::FruitError;
+
+/// Apple 도메인 옵션 (비즈니스 규칙 포함)
+#[derive(Debug, Clone)]
+pub struct AppleOptions {
+    pub max_price: Option<u32>,
+    pub season_only: Option<bool>,
+}
+
+impl AppleOptions {
+    pub fn try_from_raw(raw: &AppleOptionsRaw) -> Result<Self, FruitError> {
+        if let Some(max_price) = raw.max_price {
+            if max_price == 0 {
+                return Err(FruitError::InvalidMaxPrice(max_price));
+            }
+        }
+
+        Ok(Self {
+            max_price: raw.max_price,
+            season_only: raw.season_only,
+        })
+    }
+}
 
 /// Apple 도메인 Config (완전 타입화)
 #[derive(Debug, Clone)]
@@ -28,7 +50,7 @@ impl AppleConfig {
         Ok(AppleConfig {
             color: raw.color.clone(),
             sweetness: raw.sweetness,
-            options: raw.options.clone(),
+            options: AppleOptions::try_from_raw(&raw.options)?,
         })
     }
 }

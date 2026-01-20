@@ -1,6 +1,20 @@
-use config_schema::{OrangeOptions, OrangeSettingsRaw};
+use config_schema::{OrangeOptionsRaw, OrangeSettingsRaw};
 
 use crate::FruitError;
+
+/// Orange 도메인 옵션 (비즈니스 규칙 포함)
+#[derive(Debug, Clone)]
+pub struct OrangeOptions {
+    pub seedless: Option<bool>,
+}
+
+impl OrangeOptions {
+    pub fn try_from_raw(raw: &OrangeOptionsRaw) -> Result<Self, FruitError> {
+        Ok(Self {
+            seedless: raw.seedless,
+        })
+    }
+}
 
 /// Orange 도메인 Config (완전 타입화)
 #[derive(Debug, Clone)]
@@ -25,7 +39,7 @@ impl OrangeConfig {
         Ok(OrangeConfig {
             color: raw.color.clone(),
             segments: raw.segments,
-            options: raw.options.clone(),
+            options: OrangeOptions::try_from_raw(&raw.options)?,
         })
     }
 }

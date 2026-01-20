@@ -22,22 +22,22 @@ pub enum Curvature {
     High,
 }
 
-/// Apple 전용 확장 옵션
+/// Apple 전용 확장 옵션 (Raw)
 #[derive(Debug, Clone, Deserialize, Default)]
-pub struct AppleOptions {
+pub struct AppleOptionsRaw {
     pub max_price: Option<u32>,
     pub season_only: Option<bool>,
 }
 
-/// Banana 전용 확장 옵션
+/// Banana 전용 확장 옵션 (Raw)
 #[derive(Debug, Clone, Deserialize, Default)]
-pub struct BananaOptions {
+pub struct BananaOptionsRaw {
     pub ripeness: Option<f64>,
 }
 
-/// Orange 전용 확장 옵션
+/// Orange 전용 확장 옵션 (Raw)
 #[derive(Debug, Clone, Deserialize, Default)]
-pub struct OrangeOptions {
+pub struct OrangeOptionsRaw {
     pub seedless: Option<bool>,
 }
 
@@ -46,7 +46,7 @@ pub struct AppleSettingsRaw {
     pub color: String,
     pub sweetness: i32,
     #[serde(default)]
-    pub options: AppleOptions,
+    pub options: AppleOptionsRaw,
     #[serde(default)]
     pub unknown_key_policy: UnknownKeyPolicy,
     #[serde(flatten)]
@@ -64,7 +64,7 @@ pub struct BananaSettingsRaw {
     pub color: String,
     pub curvature: Curvature,
     #[serde(default)]
-    pub options: BananaOptions,
+    pub options: BananaOptionsRaw,
     #[serde(default)]
     pub unknown_key_policy: UnknownKeyPolicy,
     #[serde(flatten)]
@@ -82,7 +82,7 @@ pub struct OrangeSettingsRaw {
     pub color: String,
     pub segments: i32,
     #[serde(default)]
-    pub options: OrangeOptions,
+    pub options: OrangeOptionsRaw,
     #[serde(default)]
     pub unknown_key_policy: UnknownKeyPolicy,
     #[serde(flatten)]
