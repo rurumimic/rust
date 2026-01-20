@@ -12,4 +12,5 @@ pub use apple::AppleConfig;
 pub use banana::BananaConfig;
 pub use config::FruitConfig;
 pub use error::FruitError;
+pub use config_schema::SchemaError;
 pub use orange::OrangeConfig;

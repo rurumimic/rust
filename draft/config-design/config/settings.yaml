@@ -1,6 +1,21 @@
 app: MyConfigsApp
 version: 1.0.0
 
+logger:
+  level: info
+  format: pretty
+  output: stdout
+
+health:
+  enabled: true
+  path: /health
+  timeout_ms: 2000
+
+redis:
+  url: redis://127.0.0.1:6379
+  pool_size: 10
+  connect_timeout_ms: 2000
+
 fruit:
   kind: apple
   color: red
@@ -8,4 +23,3 @@ fruit:
   options:
     max_price: 5
     season_only: true
-
