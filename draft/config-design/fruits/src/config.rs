@@ -14,17 +14,17 @@ impl FruitConfig {
     /// FruitSettingsRaw에서 FruitConfig로 변환
     ///
     /// kind 필드에 따라 적절한 Config 타입으로 변환합니다.
-    pub fn try_from_raw<F>(raw: &FruitSettingsRaw, warn_fn: F) -> Result<Self, FruitError>
-    where
-        F: Fn(&str) + Clone,
-    {
-        match raw.kind.to_lowercase().as_str() {
-            "apple" => Ok(FruitConfig::Apple(AppleConfig::try_from_raw(raw, warn_fn)?)),
-            "banana" => Ok(FruitConfig::Banana(BananaConfig::try_from_raw(raw, warn_fn)?)),
-            "orange" => Ok(FruitConfig::Orange(OrangeConfig::try_from_raw(raw, warn_fn)?)),
-            unknown => Err(FruitError::Schema(
-                config_schema::SchemaError::UnknownFruitKind(unknown.to_string()),
-            )),
+    pub fn try_from_raw(raw: &FruitSettingsRaw) -> Result<Self, FruitError> {
+        match raw {
+            FruitSettingsRaw::Apple(raw) => {
+                Ok(FruitConfig::Apple(AppleConfig::try_from_raw(raw)?))
+            }
+            FruitSettingsRaw::Banana(raw) => {
+                Ok(FruitConfig::Banana(BananaConfig::try_from_raw(raw)?))
+            }
+            FruitSettingsRaw::Orange(raw) => {
+                Ok(FruitConfig::Orange(OrangeConfig::try_from_raw(raw)?))
+            }
         }
     }
 

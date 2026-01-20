@@ -18,17 +18,6 @@ pub struct AppConfig {
 impl AppConfig {
     /// 설정 파일 로드 및 변환
     pub fn load(config_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
-        Self::load_with_warn(config_path, |msg| eprintln!("WARN: {}", msg))
-    }
-
-    /// 설정 파일 로드 (커스텀 warn 함수)
-    pub fn load_with_warn<F>(
-        config_path: &str,
-        warn_fn: F,
-    ) -> Result<Self, Box<dyn std::error::Error>>
-    where
-        F: Fn(&str) + Clone,
-    {
         // 1. config-rs로 파일 로드
         let settings = Config::builder()
             .add_source(File::with_name(config_path))
@@ -38,7 +27,7 @@ impl AppConfig {
         let raw: SettingsRaw = settings.try_deserialize()?;
 
         // 3. 도메인 타입으로 변환 (검증 포함)
-        let fruit = FruitConfig::try_from_raw(&raw.fruit, warn_fn)?;
+        let fruit = FruitConfig::try_from_raw(&raw.fruit)?;
 
         Ok(AppConfig {
             app: raw.app,

@@ -19,15 +19,11 @@ impl UnknownKeyPolicy {
     /// - `Deny`: Err 반환
     /// - `Warn`: 경고 출력 후 Ok
     /// - `Allow`: 무시하고 Ok
-    pub fn handle_unknown<F>(
+    pub fn handle_unknown(
         &self,
         unknown_keys: &[String],
         context: &str,
-        warn_fn: F,
-    ) -> Result<(), crate::SchemaError>
-    where
-        F: Fn(&str),
-    {
+    ) -> Result<(), crate::SchemaError> {
         if unknown_keys.is_empty() {
             return Ok(());
         }
@@ -37,10 +33,11 @@ impl UnknownKeyPolicy {
                 Err(crate::SchemaError::UnknownKeys(unknown_keys.to_vec()))
             }
             UnknownKeyPolicy::Warn => {
-                warn_fn(&format!(
+                log::warn!(
                     "[{}] unknown keys will be ignored: {:?}",
-                    context, unknown_keys
-                ));
+                    context,
+                    unknown_keys
+                );
                 Ok(())
             }
             UnknownKeyPolicy::Allow => Ok(()),
