@@ -1,6 +1,6 @@
-//! Fruits 도메인 크레이트
+//! Fruits domain crate.
 //!
-//! 과일별 도메인 로직과 타입 안전한 Config 구조체를 정의합니다.
+//! Defines domain logic and type-safe config structures for fruits.
 
 pub mod apple;
 pub mod banana;
@@ -12,4 +12,5 @@ pub use apple::AppleConfig;
 pub use banana::BananaConfig;
 pub use config::FruitConfig;
 pub use error::FruitError;
+pub use config_schema::SchemaError;
 pub use orange::OrangeConfig;

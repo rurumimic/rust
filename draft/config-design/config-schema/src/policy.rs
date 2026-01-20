@@ -1,33 +1,29 @@
 use serde::Deserialize;
 
-/// Unknown 키 처리 정책
+/// Unknown key handling policy.
 #[derive(Debug, Clone, Copy, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum UnknownKeyPolicy {
-    /// 에러 발생 (기본값)
+    /// Reject unknown keys (default).
     #[default]
     Deny,
-    /// 경고 로그 후 무시
+    /// Log a warning and ignore.
     Warn,
-    /// 무시
+    /// Ignore silently.
     Allow,
 }
 
 impl UnknownKeyPolicy {
-    /// 알려지지 않은 키들을 정책에 따라 처리
+    /// Handle unknown keys per policy.
     ///
-    /// - `Deny`: Err 반환
-    /// - `Warn`: 경고 출력 후 Ok
-    /// - `Allow`: 무시하고 Ok
-    pub fn handle_unknown<F>(
+    /// - `Deny`: return an error
+    /// - `Warn`: log and continue
+    /// - `Allow`: ignore and continue
+    pub fn handle_unknown(
         &self,
         unknown_keys: &[String],
         context: &str,
-        warn_fn: F,
-    ) -> Result<(), crate::SchemaError>
-    where
-        F: Fn(&str),
-    {
+    ) -> Result<(), crate::SchemaError> {
         if unknown_keys.is_empty() {
             return Ok(());
         }
@@ -37,10 +33,11 @@ impl UnknownKeyPolicy {
                 Err(crate::SchemaError::UnknownKeys(unknown_keys.to_vec()))
             }
             UnknownKeyPolicy::Warn => {
-                warn_fn(&format!(
+                log::warn!(
                     "[{}] unknown keys will be ignored: {:?}",
-                    context, unknown_keys
-                ));
+                    context,
+                    unknown_keys
+                );
                 Ok(())
             }
             UnknownKeyPolicy::Allow => Ok(()),

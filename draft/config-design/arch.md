@@ -27,18 +27,16 @@ config-schema  ←──  fruits  ←──  core
 
 ## 핵심 패턴
 
-### 1. 경계에서만 Value 사용 (flatten)
+### 1. 경계에서만 Value 사용 (tagged enum + unknown keys)
 
 ```rust
 // config-schema/src/fruit.rs
 #[derive(Deserialize)]
-pub struct FruitSettingsRaw {
-    pub kind: String,
-    pub color: String,
-    #[serde(flatten)]
-    pub extra: HashMap<String, Value>,  // 확장 옵션
-    #[serde(default)]
-    pub unknown_key_policy: UnknownKeyPolicy,
+#[serde(tag = "kind", rename_all = "lowercase")]
+pub enum FruitSettingsRaw {
+    Apple(AppleSettingsRaw),
+    Banana(BananaSettingsRaw),
+    Orange(OrangeSettingsRaw),
 }
 ```
 
@@ -64,25 +62,17 @@ pub struct AppleConfig {
 
 ```rust
 impl AppleConfig {
-    pub fn try_from_raw<F>(raw: &FruitSettingsRaw, warn_fn: F) -> Result<Self, FruitError>
-    where F: Fn(&str)
-    {
-        // 1. 필수 필드 추출
-        let sweetness: i32 = raw.extract_required("sweetness")?;
-
-        // 2. 유효성 검증
-        if !(0..=10).contains(&sweetness) {
-            return Err(FruitError::InvalidSweetness(sweetness));
+    pub fn try_from_raw(raw: &AppleSettingsRaw) -> Result<Self, FruitError> {
+        // 1. 유효성 검증
+        if !(0..=10).contains(&raw.sweetness) {
+            return Err(FruitError::InvalidSweetness(raw.sweetness));
         }
 
-        // 3. 확장 옵션 추출
-        let options: AppleOptions = raw.extract("options")?.unwrap_or_default();
+        // 2. unknown 키 처리
+        let unknown = raw.unknown_keys();
+        raw.unknown_key_policy.handle_unknown(&unknown, "apple")?;
 
-        // 4. unknown 키 처리
-        let unknown = raw.unknown_keys(Self::KNOWN_EXTRA_KEYS);
-        raw.unknown_key_policy.handle_unknown(&unknown, "apple", warn_fn)?;
-
-        Ok(AppleConfig { color: raw.color.clone(), sweetness, options })
+        Ok(AppleConfig { color: raw.color.clone(), sweetness: raw.sweetness, options: raw.options.clone() })
     }
 }
 ```

@@ -1,16 +1,22 @@
 use serde::Deserialize;
 
-use crate::FruitSettingsRaw;
+use crate::{FruitSettingsRaw, HealthSettingsRaw, LoggerSettingsRaw, RedisSettingsRaw};
 
-/// 전체 설정 파일의 Raw 스키마
+/// Raw schema for the full settings file.
 #[derive(Debug, Clone, Deserialize)]
 pub struct SettingsRaw {
-    /// 앱 이름
     pub app: String,
 
-    /// 버전
     pub version: String,
 
-    /// Fruit 설정
+    #[serde(default)]
+    pub logger: LoggerSettingsRaw,
+
+    #[serde(default)]
+    pub health: HealthSettingsRaw,
+
+    #[serde(default)]
+    pub redis: RedisSettingsRaw,
+
     pub fruit: FruitSettingsRaw,
 }
