@@ -33,7 +33,7 @@ fruit:
 
     // YAML을 직접 파싱해서 테스트
     let raw: config_schema::SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    match FruitConfig::try_from_raw(&raw.fruit, |msg| eprintln!("WARN: {}", msg)) {
+    match FruitConfig::try_from_raw(&raw.fruit) {
         Ok(config) => {
             println!("Unexpected success: {}", config.kind());
         }
@@ -60,7 +60,7 @@ fruit:
 "#;
 
     let raw: config_schema::SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    match FruitConfig::try_from_raw(&raw.fruit, |msg| eprintln!("WARN: {}", msg)) {
+    match FruitConfig::try_from_raw(&raw.fruit) {
         Ok(config) => {
             println!("Success (unknown key allowed): {}", config.kind());
         }
