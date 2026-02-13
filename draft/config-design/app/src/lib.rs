@@ -31,8 +31,10 @@ pub struct LoggerConfig {
     pub file: Option<String>,
 }
 
-impl LoggerConfig {
-    pub fn try_from_raw(raw: &LoggerSettingsRaw) -> Result<Self, io::Error> {
+impl TryFrom<&LoggerSettingsRaw> for LoggerConfig {
+    type Error = io::Error;
+
+    fn try_from(raw: &LoggerSettingsRaw) -> Result<Self, Self::Error> {
         let config = LoggerConfig {
             level: raw.level,
             format: raw.format,
@@ -44,7 +46,9 @@ impl LoggerConfig {
 
         Ok(config)
     }
+}
 
+impl LoggerConfig {
     pub fn validate(&self) -> Result<(), io::Error> {
         if self.output == LogOutput::File {
             match self.file.as_deref() {
@@ -67,8 +71,10 @@ pub struct HealthConfig {
     pub timeout_ms: u64,
 }
 
-impl HealthConfig {
-    pub fn try_from_raw(raw: &HealthSettingsRaw) -> Result<Self, io::Error> {
+impl TryFrom<&HealthSettingsRaw> for HealthConfig {
+    type Error = io::Error;
+
+    fn try_from(raw: &HealthSettingsRaw) -> Result<Self, Self::Error> {
         let config = HealthConfig {
             enabled: raw.enabled,
             path: raw.path.clone(),
@@ -79,7 +85,9 @@ impl HealthConfig {
 
         Ok(config)
     }
+}
 
+impl HealthConfig {
     pub fn validate(&self) -> Result<(), io::Error> {
         if self.path.trim().is_empty() {
             return Err(io::Error::new(
@@ -113,8 +121,10 @@ pub struct RedisConfig {
     pub connect_timeout_ms: u64,
 }
 
-impl RedisConfig {
-    pub fn try_from_raw(raw: &RedisSettingsRaw) -> Result<Self, io::Error> {
+impl TryFrom<&RedisSettingsRaw> for RedisConfig {
+    type Error = io::Error;
+
+    fn try_from(raw: &RedisSettingsRaw) -> Result<Self, Self::Error> {
         let config = RedisConfig {
             url: raw.url.clone(),
             pool_size: raw.pool_size,
@@ -125,7 +135,9 @@ impl RedisConfig {
 
         Ok(config)
     }
+}
 
+impl RedisConfig {
     pub fn validate(&self) -> Result<(), io::Error> {
         if self.url.trim().is_empty() {
             return Err(io::Error::new(
@@ -164,10 +176,10 @@ impl AppConfig {
     }
 
     pub fn try_from_raw(raw: SettingsRaw) -> Result<Self, Box<dyn std::error::Error>> {
-        let logger = LoggerConfig::try_from_raw(&raw.logger)?;
-        let health = HealthConfig::try_from_raw(&raw.health)?;
-        let redis = RedisConfig::try_from_raw(&raw.redis)?;
-        let fruit = FruitConfig::try_from_raw(&raw.fruit)?;
+        let logger = LoggerConfig::try_from(&raw.logger)?;
+        let health = HealthConfig::try_from(&raw.health)?;
+        let redis = RedisConfig::try_from(&raw.redis)?;
+        let fruit = FruitConfig::try_from(&raw.fruit)?;
 
         Ok(AppConfig {
             app: raw.app,

@@ -10,8 +10,10 @@ pub struct BananaConfig {
     pub options: BananaOptions,
 }
 
-impl BananaConfig {
-    pub fn try_from_raw(raw: &BananaSettingsRaw) -> Result<Self, FruitError> {
+impl TryFrom<&BananaSettingsRaw> for BananaConfig {
+    type Error = FruitError;
+
+    fn try_from(raw: &BananaSettingsRaw) -> Result<Self, Self::Error> {
         let unknown = raw.unknown_keys();
         raw.unknown_key_policy.handle_unknown(&unknown, "banana")?;
 

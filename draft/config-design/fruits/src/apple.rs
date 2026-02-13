@@ -10,9 +10,10 @@ pub struct AppleConfig {
     pub options: AppleOptions,
 }
 
-impl AppleConfig {
-    /// Convert from `AppleSettingsRaw`.
-    pub fn try_from_raw(raw: &AppleSettingsRaw) -> Result<Self, FruitError> {
+impl TryFrom<&AppleSettingsRaw> for AppleConfig {
+    type Error = FruitError;
+
+    fn try_from(raw: &AppleSettingsRaw) -> Result<Self, Self::Error> {
         if !(0..=10).contains(&raw.sweetness) {
             return Err(FruitError::InvalidSweetness(raw.sweetness));
         }

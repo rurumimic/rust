@@ -10,8 +10,10 @@ pub struct OrangeConfig {
     pub options: OrangeOptions,
 }
 
-impl OrangeConfig {
-    pub fn try_from_raw(raw: &OrangeSettingsRaw) -> Result<Self, FruitError> {
+impl TryFrom<&OrangeSettingsRaw> for OrangeConfig {
+    type Error = FruitError;
+
+    fn try_from(raw: &OrangeSettingsRaw) -> Result<Self, Self::Error> {
         if raw.segments <= 0 {
             return Err(FruitError::InvalidSegments(raw.segments));
         }

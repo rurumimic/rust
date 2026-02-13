@@ -10,22 +10,19 @@ pub enum FruitConfig {
     Orange(OrangeConfig),
 }
 
-impl FruitConfig {
-    /// Convert from `FruitSettingsRaw` based on the `kind` tag.
-    pub fn try_from_raw(raw: &FruitSettingsRaw) -> Result<Self, FruitError> {
+impl TryFrom<&FruitSettingsRaw> for FruitConfig {
+    type Error = FruitError;
+
+    fn try_from(raw: &FruitSettingsRaw) -> Result<Self, Self::Error> {
         match raw {
-            FruitSettingsRaw::Apple(raw) => {
-                Ok(FruitConfig::Apple(AppleConfig::try_from_raw(raw)?))
-            }
-            FruitSettingsRaw::Banana(raw) => {
-                Ok(FruitConfig::Banana(BananaConfig::try_from_raw(raw)?))
-            }
-            FruitSettingsRaw::Orange(raw) => {
-                Ok(FruitConfig::Orange(OrangeConfig::try_from_raw(raw)?))
-            }
+            FruitSettingsRaw::Apple(raw) => Ok(FruitConfig::Apple(AppleConfig::try_from(raw)?)),
+            FruitSettingsRaw::Banana(raw) => Ok(FruitConfig::Banana(BananaConfig::try_from(raw)?)),
+            FruitSettingsRaw::Orange(raw) => Ok(FruitConfig::Orange(OrangeConfig::try_from(raw)?)),
         }
     }
+}
 
+impl FruitConfig {
     /// Returns fruit kind name.
     pub fn kind(&self) -> &'static str {
         match self {
