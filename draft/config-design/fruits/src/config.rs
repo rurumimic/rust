@@ -15,9 +15,9 @@ impl TryFrom<&FruitSettingsRaw> for FruitConfig {
 
     fn try_from(raw: &FruitSettingsRaw) -> Result<Self, Self::Error> {
         match raw {
-            FruitSettingsRaw::Apple(raw) => Ok(FruitConfig::Apple(AppleConfig::try_from(raw)?)),
-            FruitSettingsRaw::Banana(raw) => Ok(FruitConfig::Banana(BananaConfig::try_from(raw)?)),
-            FruitSettingsRaw::Orange(raw) => Ok(FruitConfig::Orange(OrangeConfig::try_from(raw)?)),
+            FruitSettingsRaw::Apple(raw) => Ok(FruitConfig::Apple(raw.try_into()?)),
+            FruitSettingsRaw::Banana(raw) => Ok(FruitConfig::Banana(raw.try_into()?)),
+            FruitSettingsRaw::Orange(raw) => Ok(FruitConfig::Orange(raw.try_into()?)),
         }
     }
 }

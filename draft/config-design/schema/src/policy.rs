@@ -29,9 +29,7 @@ impl UnknownKeyPolicy {
         }
 
         match self {
-            UnknownKeyPolicy::Deny => {
-                Err(crate::SchemaError::UnknownKeys(unknown_keys.to_vec()))
-            }
+            UnknownKeyPolicy::Deny => Err(crate::SchemaError::UnknownKeys(unknown_keys.to_vec())),
             UnknownKeyPolicy::Warn => {
                 log::warn!(
                     "[{}] unknown keys will be ignored: {:?}",

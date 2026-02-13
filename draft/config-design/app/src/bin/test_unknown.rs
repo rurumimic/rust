@@ -30,7 +30,8 @@ fruit:
 "#;
 
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    match AppConfig::try_from_raw(raw) {
+    let result: Result<AppConfig, _> = raw.try_into();
+    match result {
         Ok(config) => {
             println!("Success! Fruit: {}", config.fruit.kind());
         }
@@ -56,7 +57,8 @@ fruit:
 "#;
 
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    match AppConfig::try_from_raw(raw) {
+    let result: Result<AppConfig, _> = raw.try_into();
+    match result {
         Ok(config) => {
             println!("Success (unknown key allowed): {}", config.fruit.kind());
         }
@@ -78,7 +80,8 @@ fruit:
 "#;
 
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    match AppConfig::try_from_raw(raw) {
+    let result: Result<AppConfig, _> = raw.try_into();
+    match result {
         Ok(_) => {
             println!("Unexpected success");
         }

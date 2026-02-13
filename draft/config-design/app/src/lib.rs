@@ -164,22 +164,14 @@ impl RedisConfig {
     }
 }
 
-impl AppConfig {
-    pub fn load(config_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
-        let settings = Config::builder()
-            .add_source(File::with_name(config_path))
-            .build()?;
+impl TryFrom<SettingsRaw> for AppConfig {
+    type Error = Box<dyn std::error::Error>;
 
-        let raw: SettingsRaw = settings.try_deserialize()?;
-
-        AppConfig::try_from_raw(raw)
-    }
-
-    pub fn try_from_raw(raw: SettingsRaw) -> Result<Self, Box<dyn std::error::Error>> {
-        let logger = LoggerConfig::try_from(&raw.logger)?;
-        let health = HealthConfig::try_from(&raw.health)?;
-        let redis = RedisConfig::try_from(&raw.redis)?;
-        let fruit = FruitConfig::try_from(&raw.fruit)?;
+    fn try_from(raw: SettingsRaw) -> Result<Self, Self::Error> {
+        let logger: LoggerConfig = (&raw.logger).try_into()?;
+        let health: HealthConfig = (&raw.health).try_into()?;
+        let redis: RedisConfig = (&raw.redis).try_into()?;
+        let fruit: FruitConfig = (&raw.fruit).try_into()?;
 
         Ok(AppConfig {
             app: raw.app,
@@ -189,5 +181,17 @@ impl AppConfig {
             health,
             redis,
         })
+    }
+}
+
+impl AppConfig {
+    pub fn load(config_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let settings = Config::builder()
+            .add_source(File::with_name(config_path))
+            .build()?;
+
+        let raw: SettingsRaw = settings.try_deserialize()?;
+
+        raw.try_into()
     }
 }

@@ -5,16 +5,14 @@ fn main() {
     println!("=== Banana Config Demo ===\n");
 
     match AppConfig::load("config/banana") {
-        Ok(config) => {
-            match &config.fruit {
-                FruitConfig::Banana(banana) => {
-                    print_banana(banana);
-                }
-                _ => {
-                    println!("Expected Banana config");
-                }
+        Ok(config) => match &config.fruit {
+            FruitConfig::Banana(banana) => {
+                print_banana(banana);
             }
-        }
+            _ => {
+                println!("Expected Banana config");
+            }
+        },
         Err(e) => {
             eprintln!("Failed to load config: {}", e);
         }
