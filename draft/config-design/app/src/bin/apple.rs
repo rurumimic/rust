@@ -4,25 +4,21 @@ use fruits::{AppleConfig, FruitConfig};
 fn main() {
     println!("=== Apple Config Demo ===\n");
 
-    match AppConfig::load("config/apple") {
-        Ok(config) => {
-            println!("App: {}", config.app);
-            println!("Version: {}", config.version);
-            println!();
+    let Ok(config) = AppConfig::load("config/apple") else {
+        eprintln!("Failed to load config");
+        return;
+    };
 
-            match &config.fruit {
-                FruitConfig::Apple(apple) => {
-                    print_apple(apple);
-                }
-                _ => {
-                    println!("Expected Apple config");
-                }
-            }
-        }
-        Err(e) => {
-            eprintln!("Failed to load config: {}", e);
-        }
-    }
+    println!("App: {}", config.app);
+    println!("Version: {}", config.version);
+    println!();
+
+    let FruitConfig::Apple(apple) = &config.fruit else {
+        eprintln!("Expected Apple config");
+        return;
+    };
+
+    print_apple(apple);
 }
 
 fn print_apple(apple: &AppleConfig) {

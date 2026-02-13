@@ -4,19 +4,17 @@ use fruits::{BananaConfig, FruitConfig};
 fn main() {
     println!("=== Banana Config Demo ===\n");
 
-    match AppConfig::load("config/banana") {
-        Ok(config) => match &config.fruit {
-            FruitConfig::Banana(banana) => {
-                print_banana(banana);
-            }
-            _ => {
-                println!("Expected Banana config");
-            }
-        },
-        Err(e) => {
-            eprintln!("Failed to load config: {}", e);
-        }
-    }
+    let Ok(config) = AppConfig::load("config/banana") else {
+        eprintln!("Failed to load config");
+        return;
+    };
+
+    let FruitConfig::Banana(banana) = &config.fruit else {
+        eprintln!("Expected Banana config");
+        return;
+    };
+
+    print_banana(banana);
 }
 
 fn print_banana(banana: &BananaConfig) {
