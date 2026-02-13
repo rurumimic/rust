@@ -1,4 +1,4 @@
-use config_schema::{OrangeOptions, OrangeSettingsRaw};
+use app::schema::{OrangeOptions, OrangeSettingsRaw};
 
 use crate::FruitError;
 

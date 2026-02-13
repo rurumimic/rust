@@ -20,8 +20,8 @@ fruit:
   kind: apple
   color: red
   sweetness: 7
-  unknown_field: should_warn   # unknown 필드
+  unknown_field: should_warn   # unknown field
   options:
     max_price: 5
     season_only: true
-  unknown_key_policy: warn     # warn 정책 설정
+  unknown_key_policy: warn     # warn policy setting

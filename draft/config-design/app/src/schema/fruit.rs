@@ -2,7 +2,7 @@ use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
 
-use crate::UnknownKeyPolicy;
+use crate::schema::UnknownKeyPolicy;
 
 /// Raw schema for fruit settings (input boundary).
 #[derive(Debug, Clone, Deserialize)]

@@ -1,4 +1,4 @@
-use config_schema::{BananaOptions, BananaSettingsRaw, Curvature};
+use app::schema::{BananaOptions, BananaSettingsRaw, Curvature};
 
 use crate::FruitError;
 

@@ -1,17 +1,17 @@
-use core::AppConfig;
-use fruits::{BananaConfig, FruitConfig};
+use app::AppConfig;
+use app::schema::{BananaSettingsRaw, FruitSettingsRaw};
 
 fn main() {
     println!("=== Banana Config Demo ===\n");
 
     match AppConfig::load("config/banana") {
         Ok(config) => {
-            match config.fruit {
-                FruitConfig::Banana(banana) => {
-                    print_banana(&banana);
+            match &config.fruit {
+                FruitSettingsRaw::Banana(banana) => {
+                    print_banana(banana);
                 }
-                other => {
-                    println!("Expected Banana, got: {}", other.kind());
+                _ => {
+                    println!("Expected Banana config");
                 }
             }
         }
@@ -21,8 +21,8 @@ fn main() {
     }
 }
 
-fn print_banana(banana: &BananaConfig) {
-    println!("=== Banana Config ===");
+fn print_banana(banana: &BananaSettingsRaw) {
+    println!("=== Banana Config (Raw) ===");
     println!("  Color: {}", banana.color);
     println!("  Curvature: {:?}", banana.curvature);
     println!("  Options:");

@@ -1,4 +1,4 @@
-use config_schema::FruitSettingsRaw;
+use app::schema::FruitSettingsRaw;
 
 use crate::{AppleConfig, BananaConfig, FruitError, OrangeConfig};
 

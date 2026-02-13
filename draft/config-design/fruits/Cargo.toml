@@ -5,5 +5,5 @@ edition = "2024"
 publish = false
 
 [dependencies]
-config-schema = { path = "../config-schema" }
-thiserror = "2"
+app = { path = "../app" }
+thiserror = { workspace = true }

@@ -1,5 +1,5 @@
 [package]
-name = "core"
+name = "app"
 version = "0.1.0"
 edition = "2024"
 publish = false
@@ -18,8 +18,9 @@ name = "orange"
 name = "test_unknown"
 
 [dependencies]
-config-schema = { path = "../config-schema" }
-fruits = { path = "../fruits" }
 config = "0.15"
+log = "0.4"
 serde = { version = "1", features = ["derive"] }
+serde_json = { workspace = true }
 serde_yaml = "0.9"
+thiserror = { workspace = true }

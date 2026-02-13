@@ -1,4 +1,4 @@
-use config_schema::{AppleOptions, AppleSettingsRaw};
+use app::schema::{AppleOptions, AppleSettingsRaw};
 
 use crate::FruitError;
 

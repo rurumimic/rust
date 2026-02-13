@@ -1,12 +1,13 @@
-use config_schema::SettingsRaw;
-use core::AppConfig;
+use app::AppConfig;
+use app::schema::{FruitSettingsRaw, SettingsRaw};
+
 fn main() {
     println!("=== Unknown Key Policy Test ===\n");
 
     println!("--- Test: WARN policy ---");
     match AppConfig::load("config/apple_with_unknown") {
         Ok(config) => {
-            println!("Success! Fruit: {}", config.fruit.kind());
+            println!("Success! Fruit: {}", fruit_kind(&config.fruit));
         }
         Err(e) => {
             eprintln!("Error: {}", e);
@@ -29,14 +30,7 @@ fruit:
 "#;
 
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    match AppConfig::try_from_raw(raw) {
-        Ok(config) => {
-            println!("Unexpected success: {}", config.fruit.kind());
-        }
-        Err(e) => {
-            println!("Expected error: {}", e);
-        }
-    }
+    println!("Parsed fruit: {}", fruit_kind(&raw.fruit));
 
     println!();
 
@@ -55,12 +49,13 @@ fruit:
 "#;
 
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    match AppConfig::try_from_raw(raw) {
-        Ok(config) => {
-            println!("Success (unknown key allowed): {}", config.fruit.kind());
-        }
-        Err(e) => {
-            println!("Error: {}", e);
-        }
+    println!("Success (unknown key allowed): {}", fruit_kind(&raw.fruit));
+}
+
+fn fruit_kind(raw: &FruitSettingsRaw) -> &'static str {
+    match raw {
+        FruitSettingsRaw::Apple(_) => "apple",
+        FruitSettingsRaw::Banana(_) => "banana",
+        FruitSettingsRaw::Orange(_) => "orange",
     }
 }

@@ -1,21 +1,21 @@
-use core::AppConfig;
-use fruits::{AppleConfig, FruitConfig};
+use app::AppConfig;
+use app::schema::{AppleSettingsRaw, FruitSettingsRaw};
 
 fn main() {
     println!("=== Apple Config Demo ===\n");
 
-    match AppConfig::load("config/settings") {
+    match AppConfig::load("config/apple") {
         Ok(config) => {
             println!("App: {}", config.app);
             println!("Version: {}", config.version);
             println!();
 
-            match config.fruit {
-                FruitConfig::Apple(apple) => {
-                    print_apple(&apple);
+            match &config.fruit {
+                FruitSettingsRaw::Apple(apple) => {
+                    print_apple(apple);
                 }
-                other => {
-                    println!("Expected Apple, got: {}", other.kind());
+                _ => {
+                    println!("Expected Apple config");
                 }
             }
         }
@@ -25,8 +25,8 @@ fn main() {
     }
 }
 
-fn print_apple(apple: &AppleConfig) {
-    println!("=== Apple Config ===");
+fn print_apple(apple: &AppleSettingsRaw) {
+    println!("=== Apple Config (Raw) ===");
     println!("  Color: {}", apple.color);
     println!("  Sweetness: {}/10", apple.sweetness);
     println!("  Options:");

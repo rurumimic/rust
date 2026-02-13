@@ -1,4 +1,4 @@
-use config_schema::SchemaError;
+use app::schema::SchemaError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
