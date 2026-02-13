@@ -185,6 +185,8 @@ impl TryFrom<SettingsRaw> for AppConfig {
 }
 
 impl AppConfig {
+    /// Load configuration from a YAML file.
+    #[must_use = "this returns the loaded config, which should be used"]
     pub fn load(config_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
         let settings = Config::builder()
             .add_source(File::with_name(config_path))

@@ -9,8 +9,10 @@ fn main() {
         return;
     };
 
-    println!("App: {}", config.app);
-    println!("Version: {}", config.version);
+    let app = &config.app;
+    let version = &config.version;
+    println!("App: {app}");
+    println!("Version: {version}");
     println!();
 
     let FruitConfig::Apple(apple) = &config.fruit else {
@@ -22,14 +24,16 @@ fn main() {
 }
 
 fn print_apple(apple: &AppleConfig) {
+    let color = &apple.color;
+    let sweetness = apple.sweetness;
     println!("=== Apple Config (Validated) ===");
-    println!("  Color: {}", apple.color);
-    println!("  Sweetness: {}/10", apple.sweetness);
+    println!("  Color: {color}");
+    println!("  Sweetness: {sweetness}/10");
     println!("  Options:");
     if let Some(price) = apple.options.max_price {
-        println!("    Max Price: ${}", price);
+        println!("    Max Price: ${price}");
     }
     if let Some(season) = apple.options.season_only {
-        println!("    Season Only: {}", season);
+        println!("    Season Only: {season}");
     }
 }

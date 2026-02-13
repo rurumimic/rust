@@ -2,6 +2,7 @@ use schema::SchemaError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
+#[non_exhaustive]
 pub enum FruitError {
     #[error("schema error: {0}")]
     Schema(#[from] SchemaError),

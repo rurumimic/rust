@@ -4,6 +4,7 @@ use crate::{AppleConfig, BananaConfig, FruitError, OrangeConfig};
 
 /// Fruit config enum (type-safe variants).
 #[derive(Debug, Clone)]
+#[non_exhaustive]
 pub enum FruitConfig {
     Apple(AppleConfig),
     Banana(BananaConfig),
@@ -24,6 +25,7 @@ impl TryFrom<&FruitSettingsRaw> for FruitConfig {
 
 impl FruitConfig {
     /// Returns fruit kind name.
+    #[must_use]
     pub fn kind(&self) -> &'static str {
         match self {
             FruitConfig::Apple(_) => "apple",
@@ -33,6 +35,7 @@ impl FruitConfig {
     }
 
     /// Returns color (shared field).
+    #[must_use]
     pub fn color(&self) -> &str {
         match self {
             FruitConfig::Apple(c) => &c.color,

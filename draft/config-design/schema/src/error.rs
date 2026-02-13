@@ -1,6 +1,7 @@
 use thiserror::Error;
 
 #[derive(Debug, Error)]
+#[non_exhaustive]
 pub enum SchemaError {
     #[error("unknown fruit kind: {0}")]
     UnknownFruitKind(String),

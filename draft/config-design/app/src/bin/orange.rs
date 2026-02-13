@@ -18,11 +18,13 @@ fn main() {
 }
 
 fn print_orange(orange: &OrangeConfig) {
+    let color = &orange.color;
+    let segments = orange.segments;
     println!("=== Orange Config (Validated) ===");
-    println!("  Color: {}", orange.color);
-    println!("  Segments: {}", orange.segments);
+    println!("  Color: {color}");
+    println!("  Segments: {segments}");
     println!("  Options:");
     if let Some(seedless) = orange.options.seedless {
-        println!("    Seedless: {}", seedless);
+        println!("    Seedless: {seedless}");
     }
 }

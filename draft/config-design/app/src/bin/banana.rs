@@ -18,11 +18,14 @@ fn main() {
 }
 
 fn print_banana(banana: &BananaConfig) {
+    let color = &banana.color;
+    let curvature = &banana.curvature;
     println!("=== Banana Config (Validated) ===");
-    println!("  Color: {}", banana.color);
-    println!("  Curvature: {:?}", banana.curvature);
+    println!("  Color: {color}");
+    println!("  Curvature: {curvature:?}");
     println!("  Options:");
     if let Some(ripeness) = banana.options.ripeness {
-        println!("    Ripeness: {:.0}%", ripeness * 100.0);
+        let percent = ripeness * 100.0;
+        println!("    Ripeness: {percent:.0}%");
     }
 }
