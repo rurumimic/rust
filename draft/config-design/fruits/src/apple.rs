@@ -10,10 +10,10 @@ pub struct AppleConfig {
     pub options: AppleOptions,
 }
 
-impl TryFrom<&AppleSettingsRaw> for AppleConfig {
+impl TryFrom<AppleSettingsRaw> for AppleConfig {
     type Error = FruitError;
 
-    fn try_from(raw: &AppleSettingsRaw) -> Result<Self, Self::Error> {
+    fn try_from(raw: AppleSettingsRaw) -> Result<Self, Self::Error> {
         if !(0..=10).contains(&raw.sweetness) {
             return Err(FruitError::InvalidSweetness(raw.sweetness));
         }
@@ -22,9 +22,9 @@ impl TryFrom<&AppleSettingsRaw> for AppleConfig {
         raw.unknown_key_policy.handle_unknown(&unknown, "apple")?;
 
         Ok(AppleConfig {
-            color: raw.color.clone(),
+            color: raw.color,
             sweetness: raw.sweetness,
-            options: raw.options.clone(),
+            options: raw.options,
         })
     }
 }

@@ -10,10 +10,10 @@ pub struct OrangeConfig {
     pub options: OrangeOptions,
 }
 
-impl TryFrom<&OrangeSettingsRaw> for OrangeConfig {
+impl TryFrom<OrangeSettingsRaw> for OrangeConfig {
     type Error = FruitError;
 
-    fn try_from(raw: &OrangeSettingsRaw) -> Result<Self, Self::Error> {
+    fn try_from(raw: OrangeSettingsRaw) -> Result<Self, Self::Error> {
         if raw.segments <= 0 {
             return Err(FruitError::InvalidSegments(raw.segments));
         }
@@ -22,9 +22,9 @@ impl TryFrom<&OrangeSettingsRaw> for OrangeConfig {
         raw.unknown_key_policy.handle_unknown(&unknown, "orange")?;
 
         Ok(OrangeConfig {
-            color: raw.color.clone(),
+            color: raw.color,
             segments: raw.segments,
-            options: raw.options.clone(),
+            options: raw.options,
         })
     }
 }

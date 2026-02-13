@@ -11,10 +11,10 @@ pub enum FruitConfig {
     Orange(OrangeConfig),
 }
 
-impl TryFrom<&FruitSettingsRaw> for FruitConfig {
+impl TryFrom<FruitSettingsRaw> for FruitConfig {
     type Error = FruitError;
 
-    fn try_from(raw: &FruitSettingsRaw) -> Result<Self, Self::Error> {
+    fn try_from(raw: FruitSettingsRaw) -> Result<Self, Self::Error> {
         match raw {
             FruitSettingsRaw::Apple(raw) => Ok(FruitConfig::Apple(raw.try_into()?)),
             FruitSettingsRaw::Banana(raw) => Ok(FruitConfig::Banana(raw.try_into()?)),

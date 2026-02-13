@@ -31,15 +31,15 @@ pub struct LoggerConfig {
     pub file: Option<String>,
 }
 
-impl TryFrom<&LoggerSettingsRaw> for LoggerConfig {
+impl TryFrom<LoggerSettingsRaw> for LoggerConfig {
     type Error = io::Error;
 
-    fn try_from(raw: &LoggerSettingsRaw) -> Result<Self, Self::Error> {
+    fn try_from(raw: LoggerSettingsRaw) -> Result<Self, Self::Error> {
         let config = LoggerConfig {
             level: raw.level,
             format: raw.format,
             output: raw.output,
-            file: raw.file.clone(),
+            file: raw.file,
         };
 
         config.validate()?;
@@ -71,13 +71,13 @@ pub struct HealthConfig {
     pub timeout_ms: u64,
 }
 
-impl TryFrom<&HealthSettingsRaw> for HealthConfig {
+impl TryFrom<HealthSettingsRaw> for HealthConfig {
     type Error = io::Error;
 
-    fn try_from(raw: &HealthSettingsRaw) -> Result<Self, Self::Error> {
+    fn try_from(raw: HealthSettingsRaw) -> Result<Self, Self::Error> {
         let config = HealthConfig {
             enabled: raw.enabled,
-            path: raw.path.clone(),
+            path: raw.path,
             timeout_ms: raw.timeout_ms,
         };
 
@@ -121,12 +121,12 @@ pub struct RedisConfig {
     pub connect_timeout_ms: u64,
 }
 
-impl TryFrom<&RedisSettingsRaw> for RedisConfig {
+impl TryFrom<RedisSettingsRaw> for RedisConfig {
     type Error = io::Error;
 
-    fn try_from(raw: &RedisSettingsRaw) -> Result<Self, Self::Error> {
+    fn try_from(raw: RedisSettingsRaw) -> Result<Self, Self::Error> {
         let config = RedisConfig {
-            url: raw.url.clone(),
+            url: raw.url,
             pool_size: raw.pool_size,
             connect_timeout_ms: raw.connect_timeout_ms,
         };
@@ -168,10 +168,10 @@ impl TryFrom<SettingsRaw> for AppConfig {
     type Error = Box<dyn std::error::Error>;
 
     fn try_from(raw: SettingsRaw) -> Result<Self, Self::Error> {
-        let logger: LoggerConfig = (&raw.logger).try_into()?;
-        let health: HealthConfig = (&raw.health).try_into()?;
-        let redis: RedisConfig = (&raw.redis).try_into()?;
-        let fruit: FruitConfig = (&raw.fruit).try_into()?;
+        let logger: LoggerConfig = raw.logger.try_into()?;
+        let health: HealthConfig = raw.health.try_into()?;
+        let redis: RedisConfig = raw.redis.try_into()?;
+        let fruit: FruitConfig = raw.fruit.try_into()?;
 
         Ok(AppConfig {
             app: raw.app,
