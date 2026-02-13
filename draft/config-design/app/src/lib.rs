@@ -9,8 +9,10 @@ use schema::{
     HealthSettingsRaw, LogFormat, LogLevel, LogOutput, LoggerSettingsRaw, RedisSettingsRaw,
     SettingsRaw,
 };
-use std::io;
+mod error;
 
+pub use error::AppConfigError;
+pub use error::ValidationError;
 pub use schema::SchemaError;
 
 #[derive(Debug)]
@@ -32,7 +34,7 @@ pub struct LoggerConfig {
 }
 
 impl TryFrom<LoggerSettingsRaw> for LoggerConfig {
-    type Error = io::Error;
+    type Error = ValidationError;
 
     fn try_from(raw: LoggerSettingsRaw) -> Result<Self, Self::Error> {
         let config = LoggerConfig {
@@ -49,14 +51,11 @@ impl TryFrom<LoggerSettingsRaw> for LoggerConfig {
 }
 
 impl LoggerConfig {
-    pub fn validate(&self) -> Result<(), io::Error> {
+    pub fn validate(&self) -> Result<(), ValidationError> {
         if self.output == LogOutput::File {
             match self.file.as_deref() {
                 Some(path) if !path.trim().is_empty() => Ok(()),
-                _ => Err(io::Error::new(
-                    io::ErrorKind::InvalidInput,
-                    "logger.output=file requires a non-empty logger.file",
-                )),
+                _ => Err(ValidationError::LoggerFileRequired),
             }
         } else {
             Ok(())
@@ -72,7 +71,7 @@ pub struct HealthConfig {
 }
 
 impl TryFrom<HealthSettingsRaw> for HealthConfig {
-    type Error = io::Error;
+    type Error = ValidationError;
 
     fn try_from(raw: HealthSettingsRaw) -> Result<Self, Self::Error> {
         let config = HealthConfig {
@@ -88,26 +87,17 @@ impl TryFrom<HealthSettingsRaw> for HealthConfig {
 }
 
 impl HealthConfig {
-    pub fn validate(&self) -> Result<(), io::Error> {
+    pub fn validate(&self) -> Result<(), ValidationError> {
         if self.path.trim().is_empty() {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                "health.path must be non-empty",
-            ));
+            return Err(ValidationError::HealthPathEmpty);
         }
 
         if !self.path.starts_with('/') {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                "health.path must start with '/'",
-            ));
+            return Err(ValidationError::HealthPathNotAbsolute);
         }
 
         if self.timeout_ms == 0 {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                "health.timeout_ms must be greater than 0",
-            ));
+            return Err(ValidationError::HealthTimeoutZero);
         }
 
         Ok(())
@@ -122,7 +112,7 @@ pub struct RedisConfig {
 }
 
 impl TryFrom<RedisSettingsRaw> for RedisConfig {
-    type Error = io::Error;
+    type Error = ValidationError;
 
     fn try_from(raw: RedisSettingsRaw) -> Result<Self, Self::Error> {
         let config = RedisConfig {
@@ -138,26 +128,17 @@ impl TryFrom<RedisSettingsRaw> for RedisConfig {
 }
 
 impl RedisConfig {
-    pub fn validate(&self) -> Result<(), io::Error> {
+    pub fn validate(&self) -> Result<(), ValidationError> {
         if self.url.trim().is_empty() {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                "redis.url must be non-empty",
-            ));
+            return Err(ValidationError::RedisUrlEmpty);
         }
 
         if self.pool_size == 0 {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                "redis.pool_size must be greater than 0",
-            ));
+            return Err(ValidationError::RedisPoolSizeZero);
         }
 
         if self.connect_timeout_ms == 0 {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                "redis.connect_timeout_ms must be greater than 0",
-            ));
+            return Err(ValidationError::RedisConnectTimeoutZero);
         }
 
         Ok(())
@@ -165,7 +146,7 @@ impl RedisConfig {
 }
 
 impl TryFrom<SettingsRaw> for AppConfig {
-    type Error = Box<dyn std::error::Error>;
+    type Error = AppConfigError;
 
     fn try_from(raw: SettingsRaw) -> Result<Self, Self::Error> {
         let logger: LoggerConfig = raw.logger.try_into()?;
@@ -187,7 +168,7 @@ impl TryFrom<SettingsRaw> for AppConfig {
 impl AppConfig {
     /// Load configuration from a YAML file.
     #[must_use = "this returns the loaded config, which should be used"]
-    pub fn load(config_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn load(config_path: &str) -> Result<Self, AppConfigError> {
         let settings = Config::builder()
             .add_source(File::with_name(config_path))
             .build()?;

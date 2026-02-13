@@ -4,13 +4,16 @@ use fruits::{BananaConfig, FruitConfig};
 fn main() {
     println!("=== Banana Config Demo ===\n");
 
-    let Ok(config) = AppConfig::load("config/banana") else {
-        eprintln!("Failed to load config");
-        return;
+    let config = match AppConfig::load("config/banana") {
+        Ok(config) => config,
+        Err(err) => {
+            eprintln!("{}", err.user_message());
+            return;
+        }
     };
 
     let FruitConfig::Banana(banana) = &config.fruit else {
-        eprintln!("Expected Banana config");
+        eprintln!("Expected banana config, got {}", config.fruit.kind());
         return;
     };
 

@@ -4,9 +4,12 @@ use fruits::{AppleConfig, FruitConfig};
 fn main() {
     println!("=== Apple Config Demo ===\n");
 
-    let Ok(config) = AppConfig::load("config/apple") else {
-        eprintln!("Failed to load config");
-        return;
+    let config = match AppConfig::load("config/apple") {
+        Ok(config) => config,
+        Err(err) => {
+            eprintln!("{}", err.user_message());
+            return;
+        }
     };
 
     let app = &config.app;
@@ -16,7 +19,7 @@ fn main() {
     println!();
 
     let FruitConfig::Apple(apple) = &config.fruit else {
-        eprintln!("Expected Apple config");
+        eprintln!("Expected apple config, got {}", config.fruit.kind());
         return;
     };
 

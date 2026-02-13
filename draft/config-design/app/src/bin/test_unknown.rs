@@ -10,7 +10,7 @@ fn main() {
             println!("Success! Fruit: {}", config.fruit.kind());
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("{}", e.user_message());
         }
     }
 
@@ -36,7 +36,7 @@ fruit:
             println!("Success! Fruit: {}", config.fruit.kind());
         }
         Err(e) => {
-            println!("Rejected (as expected): {}", e);
+            println!("Rejected (as expected): {}", e.user_message());
         }
     }
 
@@ -63,7 +63,7 @@ fruit:
             println!("Success (unknown key allowed): {}", config.fruit.kind());
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("{}", e.user_message());
         }
     }
 
@@ -86,7 +86,7 @@ fruit:
             println!("Unexpected success");
         }
         Err(e) => {
-            println!("Validation failed (as expected): {}", e);
+            println!("Validation failed (as expected): {}", e.user_message());
         }
     }
 }
