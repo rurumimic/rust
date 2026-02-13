@@ -1,5 +1,5 @@
 use app::AppConfig;
-use app::schema::{FruitSettingsRaw, SettingsRaw};
+use schema::SettingsRaw;
 
 fn main() {
     println!("=== Unknown Key Policy Test ===\n");
@@ -7,7 +7,7 @@ fn main() {
     println!("--- Test: WARN policy ---");
     match AppConfig::load("config/apple_with_unknown") {
         Ok(config) => {
-            println!("Success! Fruit: {}", fruit_kind(&config.fruit));
+            println!("Success! Fruit: {}", config.fruit.kind());
         }
         Err(e) => {
             eprintln!("Error: {}", e);
@@ -30,7 +30,14 @@ fruit:
 "#;
 
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    println!("Parsed fruit: {}", fruit_kind(&raw.fruit));
+    match AppConfig::try_from_raw(raw) {
+        Ok(config) => {
+            println!("Success! Fruit: {}", config.fruit.kind());
+        }
+        Err(e) => {
+            println!("Rejected (as expected): {}", e);
+        }
+    }
 
     println!();
 
@@ -49,13 +56,34 @@ fruit:
 "#;
 
     let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
-    println!("Success (unknown key allowed): {}", fruit_kind(&raw.fruit));
-}
+    match AppConfig::try_from_raw(raw) {
+        Ok(config) => {
+            println!("Success (unknown key allowed): {}", config.fruit.kind());
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+        }
+    }
 
-fn fruit_kind(raw: &FruitSettingsRaw) -> &'static str {
-    match raw {
-        FruitSettingsRaw::Apple(_) => "apple",
-        FruitSettingsRaw::Banana(_) => "banana",
-        FruitSettingsRaw::Orange(_) => "orange",
+    println!();
+
+    println!("--- Test: Invalid sweetness (validation) ---");
+    let yaml = r#"
+app: TestApp
+version: 1.0.0
+fruit:
+  kind: apple
+  color: red
+  sweetness: 15
+"#;
+
+    let raw: SettingsRaw = serde_yaml::from_str(yaml).unwrap();
+    match AppConfig::try_from_raw(raw) {
+        Ok(_) => {
+            println!("Unexpected success");
+        }
+        Err(e) => {
+            println!("Validation failed (as expected): {}", e);
+        }
     }
 }

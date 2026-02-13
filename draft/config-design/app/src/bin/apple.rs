@@ -1,5 +1,5 @@
 use app::AppConfig;
-use app::schema::{AppleSettingsRaw, FruitSettingsRaw};
+use fruits::{AppleConfig, FruitConfig};
 
 fn main() {
     println!("=== Apple Config Demo ===\n");
@@ -11,7 +11,7 @@ fn main() {
             println!();
 
             match &config.fruit {
-                FruitSettingsRaw::Apple(apple) => {
+                FruitConfig::Apple(apple) => {
                     print_apple(apple);
                 }
                 _ => {
@@ -25,8 +25,8 @@ fn main() {
     }
 }
 
-fn print_apple(apple: &AppleSettingsRaw) {
-    println!("=== Apple Config (Raw) ===");
+fn print_apple(apple: &AppleConfig) {
+    println!("=== Apple Config (Validated) ===");
     println!("  Color: {}", apple.color);
     println!("  Sweetness: {}/10", apple.sweetness);
     println!("  Options:");

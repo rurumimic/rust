@@ -1,5 +1,5 @@
 use app::AppConfig;
-use app::schema::{FruitSettingsRaw, OrangeSettingsRaw};
+use fruits::{FruitConfig, OrangeConfig};
 
 fn main() {
     println!("=== Orange Config Demo ===\n");
@@ -7,7 +7,7 @@ fn main() {
     match AppConfig::load("config/orange") {
         Ok(config) => {
             match &config.fruit {
-                FruitSettingsRaw::Orange(orange) => {
+                FruitConfig::Orange(orange) => {
                     print_orange(orange);
                 }
                 _ => {
@@ -21,8 +21,8 @@ fn main() {
     }
 }
 
-fn print_orange(orange: &OrangeSettingsRaw) {
-    println!("=== Orange Config (Raw) ===");
+fn print_orange(orange: &OrangeConfig) {
+    println!("=== Orange Config (Validated) ===");
     println!("  Color: {}", orange.color);
     println!("  Segments: {}", orange.segments);
     println!("  Options:");

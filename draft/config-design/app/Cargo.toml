@@ -18,6 +18,8 @@ name = "orange"
 name = "test_unknown"
 
 [dependencies]
+schema = { path = "../schema" }
+fruits = { path = "../fruits" }
 config = "0.15"
 log = "0.4"
 serde = { version = "1", features = ["derive"] }

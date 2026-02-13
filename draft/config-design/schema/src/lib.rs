@@ -1,7 +1,7 @@
-//! Input schema definitions.
+//! Pure schema definitions for configuration.
 //!
-//! Defines "raw" settings read from YAML/JSON and converts them into
-//! type-safe domain structures at the boundary.
+//! This crate contains only data structures and basic utilities
+//! for schema validation. No domain logic.
 
 pub mod error;
 pub mod fruit;

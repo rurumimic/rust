@@ -16,7 +16,7 @@ pub use error::FruitError;
 pub use orange::OrangeConfig;
 
 // Re-export schema types for convenience
-pub use app::schema::{
+pub use schema::{
     AppleOptions, AppleSettingsRaw, BananaOptions, BananaSettingsRaw, Curvature, FruitSettingsRaw,
     OrangeOptions, OrangeSettingsRaw, SchemaError,
 };

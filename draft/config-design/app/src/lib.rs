@@ -4,13 +4,12 @@
 //! then converts into domain types with validation.
 
 use config::{Config, File};
-use crate::schema::{
-    FruitSettingsRaw, HealthSettingsRaw, LogFormat, LogLevel, LogOutput, LoggerSettingsRaw,
-    RedisSettingsRaw, SettingsRaw,
+use fruits::FruitConfig;
+use schema::{
+    HealthSettingsRaw, LogFormat, LogLevel, LogOutput, LoggerSettingsRaw, RedisSettingsRaw,
+    SettingsRaw,
 };
 use std::io;
-
-pub mod schema;
 
 pub use schema::SchemaError;
 
@@ -18,7 +17,7 @@ pub use schema::SchemaError;
 pub struct AppConfig {
     pub app: String,
     pub version: String,
-    pub fruit: FruitSettingsRaw,
+    pub fruit: FruitConfig,
     pub logger: LoggerConfig,
     pub health: HealthConfig,
     pub redis: RedisConfig,
@@ -168,11 +167,12 @@ impl AppConfig {
         let logger = LoggerConfig::try_from_raw(&raw.logger)?;
         let health = HealthConfig::try_from_raw(&raw.health)?;
         let redis = RedisConfig::try_from_raw(&raw.redis)?;
+        let fruit = FruitConfig::try_from_raw(&raw.fruit)?;
 
         Ok(AppConfig {
             app: raw.app,
             version: raw.version,
-            fruit: raw.fruit,
+            fruit,
             logger,
             health,
             redis,

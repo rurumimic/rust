@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::schema::{FruitSettingsRaw, HealthSettingsRaw, LoggerSettingsRaw, RedisSettingsRaw};
+use crate::{FruitSettingsRaw, HealthSettingsRaw, LoggerSettingsRaw, RedisSettingsRaw};
 
 /// Raw schema for the full settings file.
 #[derive(Debug, Clone, Deserialize)]

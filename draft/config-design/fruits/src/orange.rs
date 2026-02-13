@@ -1,4 +1,4 @@
-use app::schema::{OrangeOptions, OrangeSettingsRaw};
+use schema::{OrangeOptions, OrangeSettingsRaw};
 
 use crate::FruitError;
 

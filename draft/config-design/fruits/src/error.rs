@@ -1,4 +1,4 @@
-use app::schema::SchemaError;
+use schema::SchemaError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]

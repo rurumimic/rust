@@ -23,14 +23,14 @@ impl UnknownKeyPolicy {
         &self,
         unknown_keys: &[String],
         context: &str,
-    ) -> Result<(), crate::schema::SchemaError> {
+    ) -> Result<(), crate::SchemaError> {
         if unknown_keys.is_empty() {
             return Ok(());
         }
 
         match self {
             UnknownKeyPolicy::Deny => {
-                Err(crate::schema::SchemaError::UnknownKeys(unknown_keys.to_vec()))
+                Err(crate::SchemaError::UnknownKeys(unknown_keys.to_vec()))
             }
             UnknownKeyPolicy::Warn => {
                 log::warn!(
