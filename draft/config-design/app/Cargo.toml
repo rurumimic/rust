@@ -1,0 +1,28 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2024"
+publish = false
+default-run = "apple"
+
+[[bin]]
+name = "apple"
+
+[[bin]]
+name = "banana"
+
+[[bin]]
+name = "orange"
+
+[[bin]]
+name = "test_unknown"
+
+[dependencies]
+schema = { path = "../schema" }
+fruits = { path = "../fruits" }
+config = "0.15"
+log = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = { workspace = true }
+serde_yaml = "0.9"
+thiserror = { workspace = true }
