@@ -51,6 +51,13 @@ rustup component add rust-src
 sudo pacman -S rust-analyzer
 ```
 
+## toolchain
+
+```bash
+rustup component list --toolchain nightly
+rustup component remove rls-preview --toolchain nightly
+```
+
 ---
 
 ## VSCode
