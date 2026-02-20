@@ -20,6 +20,13 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --help
 rustup update stable
 ```
 
+#### Install specific version
+
+```bash
+rustup toolchain list
+rustup toolchain install 1.92.0 --profile default
+```
+
 ### Modify PATH variable
 
 `~/.zprofile`:
