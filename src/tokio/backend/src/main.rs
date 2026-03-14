@@ -1,10 +1,11 @@
 use std::{fmt, str::FromStr};
 
-use axum::extract::{Query, TypedHeader};
+use axum::extract::Query;
 use axum::{response::Html, routing::get, serve, Router};
 use listenfd::ListenFd;
 use serde::{de, Deserialize, Deserializer};
 use tokio::net::TcpListener;
+use axum::http::HeaderMap;
 
 use backend::errors::AppError;
 
@@ -33,16 +34,18 @@ fn app() -> Router {
 
 #[axum::debug_handler]
 async fn handler(
+    headers: HeaderMap,
     Query(params): Query<Params>,
-    TypedHeader(accept): TypedHeader<Accept>,
 ) -> Result<Html<String>, AppError> {
     let html = format!(
         "<h1>Hello, World!</h1>
          <p>GET <a href=\"/?no=23&name=jordan\">/?no=23&name=jordan</a></p>
          <pre>no: {}</pre>
-         <pre>name: {}</pre>",
+         <pre>name: {}</pre>
+         <pre>headers: {:#?}</pre>",
         params.no.unwrap_or(0),
-        params.name.unwrap_or_else(|| "''".into()),
+        params.name.unwrap_or_else(|| "".into()),
+        headers,
     );
 
     Ok(Html(html))
@@ -78,7 +81,11 @@ mod tests {
     use tower::ServiceExt;
 
     #[tokio::test]
-    async fn test_something() {}
+    async fn test_something() {
+        let body = send_request_get_body("no=23&name=jordan").await;
+        assert!(body.contains("no: 23"));
+        assert!(body.contains("name: jordan"));
+    }
 
     async fn send_request_get_body(query: &str) -> String {
         let body = app()
