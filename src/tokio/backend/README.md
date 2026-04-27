@@ -79,3 +79,15 @@ cargo add tower -F util
 cargo add http-body-util
 ```
 
+#### tracing
+
+```bash
+cargo add tracing tracing_subscriber
+```
+
+#### thiserror
+
+```bash
+cargo add thiserror
+```
+

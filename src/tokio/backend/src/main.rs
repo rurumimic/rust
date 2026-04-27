@@ -42,9 +42,11 @@ async fn handler(
     headers: HeaderMap,
     Query(params): Query<Params>,
 ) -> Result<Html<String>, AppError> {
-    if params.no.unwrap_or(0) % 3 == 0 {
-        tracing::error!("inject error by no");
-        return Err(AppError::from(anyhow::anyhow!("inject error by no")));
+    if params.no.unwrap_or(0) % 3 == 1 {
+        tracing::error!("inject error by no % 3 == 1");
+        return Err(AppError::Injected {
+            message: "no % 3 == 1".to_string(),
+        });
     }
 
     let html = format!(
