@@ -3,14 +3,19 @@ use std::{fmt, str::FromStr};
 use axum::extract::Query;
 use axum::http::HeaderMap;
 use axum::{response::Html, routing::get, serve, Router};
+use backend::errors::AppError;
 use listenfd::ListenFd;
 use serde::{de, Deserialize, Deserializer};
 use tokio::net::TcpListener;
-
-use backend::errors::AppError;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
     let mut listenfd = ListenFd::from_env();
 
     let listener = match listenfd.take_tcp_listener(0)? {
@@ -21,7 +26,7 @@ async fn main() -> anyhow::Result<()> {
         None => TcpListener::bind("127.0.0.1:3000").await?,
     };
 
-    println!("listening on {}", listener.local_addr()?);
+    tracing::info!("listening on {}", listener.local_addr()?);
 
     serve(listener, app()).await?;
 
@@ -37,6 +42,11 @@ async fn handler(
     headers: HeaderMap,
     Query(params): Query<Params>,
 ) -> Result<Html<String>, AppError> {
+    if params.no.unwrap_or(0) % 3 == 0 {
+        tracing::error!("inject error by no");
+        return Err(AppError::from(anyhow::anyhow!("inject error by no")));
+    }
+
     let html = format!(
         "<h1>Hello, World!</h1>
          <p>GET <a href=\"/?no=23&name=jordan\">/?no=23&name=jordan</a></p>
