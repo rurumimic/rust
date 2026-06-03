@@ -15,3 +15,6 @@ name = "arc"
 [[bin]]
 name = "shadowing"
 
+[[bin]]
+name = "rc_mut"
+
