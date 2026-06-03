@@ -3,23 +3,26 @@ use axum::{
     response::{IntoResponse, Response},
 };
 
-pub struct AppError(anyhow::Error);
+use thiserror::Error;
+
+#[derive(Debug, Error)]
+pub enum AppError {
+    #[error("Injected error by no parameter: {message}")]
+    Injected { message: String },
+
+    #[error("Unexpected server error: {0}")]
+    Unexpected(#[from] anyhow::Error),
+}
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong: {}", self.0),
-        )
-            .into_response()
-    }
-}
-
-impl<E> From<E> for AppError
-where
-    E: Into<anyhow::Error>,
-{
-    fn from(err: E) -> Self {
-        Self(err.into())
+        match self {
+            AppError::Injected { .. } => {
+                (StatusCode::BAD_REQUEST, self.to_string()).into_response()
+            }
+            AppError::Unexpected(_) => {
+                (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response()
+            }
+        }
     }
 }

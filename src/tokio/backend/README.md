@@ -23,6 +23,7 @@ cargo run
 
 ```bash
 cargo watch -x run
+# or
 systemfd --no-pid -s http::3000 -- cargo watch -x run
 ```
 
@@ -76,5 +77,17 @@ cargo add tower -F util
 
 ```bash
 cargo add http-body-util
+```
+
+#### tracing
+
+```bash
+cargo add tracing tracing_subscriber
+```
+
+#### thiserror
+
+```bash
+cargo add thiserror
 ```
 
