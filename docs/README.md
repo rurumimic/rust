@@ -5,3 +5,5 @@
 - [rustonomicon](nomicon.md)
 - [reference](reference.md)
 - [sccache](sccache.md)
+- [commands](commands.md)
+
