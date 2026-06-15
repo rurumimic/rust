@@ -9,6 +9,7 @@
 - [rustonomicon](docs/nomicon.md)
 - [reference](docs/reference.md)
 - [rustlings](src/rustlings/README.md)
+- [commands](docs/commands.md)
 
 ### Hello World
 
@@ -24,6 +25,7 @@
 - [algorithm](https://github.com/rurumimic/algorithm-rs)
 - [crossbeam](src/crossbeam/README.md)
 - [sccache](docs/sccache.md)
+- [allocators](src/allocators/README.md)
 
 ### Applications
 
