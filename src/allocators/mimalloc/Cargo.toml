@@ -1,0 +1,22 @@
+[package]
+name = "mimalloc"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[features]
+default = ["stats"]
+stats = ["dep:libmimalloc-sys"]
+
+[dependencies]
+env_logger = "0.11.10"
+log = "0.4.32"
+
+# The crate is literally named `mimalloc`, which collides with this package's
+# own name, so it is renamed to `mimallocator` (mirrors `tikv-jemallocator`).
+mimallocator = { package = "mimalloc", version = "0.1" }
+
+# Raw FFI for `mi_process_info`, which lives behind the sys crate's `extended`
+# feature. Optional so a `--no-default-features` build can drop the
+# introspection and fall back to the noop backend.
+libmimalloc-sys = { version = "0.1", features = ["extended"], optional = true }
