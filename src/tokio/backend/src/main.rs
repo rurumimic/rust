@@ -34,7 +34,14 @@ async fn main() -> anyhow::Result<()> {
 }
 
 fn app() -> Router {
-    Router::new().route("/", get(handler))
+    Router::new()
+        .route("/", get(handler))
+        .route("/health", get(health))
+}
+
+#[axum::debug_handler]
+async fn health() -> Result<Html<String>, AppError> {
+    Ok(Html("ok".to_string()))
 }
 
 #[axum::debug_handler]

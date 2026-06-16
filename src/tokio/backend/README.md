@@ -10,6 +10,7 @@ cd backend
 ```bash
 cargo add axum
 cargo add axum -F macros
+cargo add axum -F http2
 cargo add tokio -F full
 ```
 
@@ -17,6 +18,14 @@ cargo add tokio -F full
 
 ```bash
 cargo run
+```
+
+### Client
+
+#### h2c
+
+```bash
+curl --http2-prior-knowledge -v http://127.0.0.1:3000/health
 ```
 
 ### auto-reload
